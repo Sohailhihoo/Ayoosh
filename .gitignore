@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+
+# Environment files (NEVER commit secrets!)
+.env
+.env.local
+.env.*.local
+.env.docker
+
+# Build outputs
+.next/
+out/
+build/
+dist/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker volumes (local data)
+mongodb_data/
+redis_data/
+
+# Debug
+*.pem
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+*.tgz

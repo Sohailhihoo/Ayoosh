@@ -1,0 +1,226 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Tan Pearl';
+  src: url('/fonts/tan-pearl.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --foreground: #171717;
+  --background: #ffffff;
+  --primary: #4a4a4a;
+  --primary-light: #6b6b6b;
+  --accent: #e8a4b8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Button styles */
+.btn-primary {
+  background-color: #4a4a4a;
+  color: white;
+  font-weight: 400;
+  padding: 0.75rem 2rem;
+  letter-spacing: 0.1em;
+  font-size: 0.875rem;
+  transition: background-color 0.3s;
+}
+
+
+.btn-primary:hover {
+  background-color: #333;
+}
+
+.btn-secondary {
+  background-color: #f5f5f5;
+  color: #4a4a4a;
+  font-weight: 400;
+  padding: 0.75rem 2rem;
+  letter-spacing: 0.1em;
+  font-size: 0.875rem;
+  transition: background-color 0.3s;
+}
+
+.btn-secondary:hover {
+  background-color: #e8e8e8;
+}
+
+.btn-outline {
+  border: 1px solid #4a4a4a;
+  color: #4a4a4a;
+  font-weight: 400;
+  padding: 0.75rem 2rem;
+  letter-spacing: 0.1em;
+  font-size: 0.875rem;
+  transition: all 0.3s;
+  border-radius: 9999px;
+}
+
+.btn-outline:hover {
+  background-color: #4a4a4a;
+  color: white;
+}
+
+/* Input styles */
+.input-field {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: 1px solid #e5e5e5;
+  background: white;
+  outline: none;
+  transition: border-color 0.3s;
+  font-size: 0.875rem;
+}
+
+.input-field:focus {
+  border-color: #4a4a4a;
+}
+
+/* Card styles */
+.card {
+  background-color: white;
+  border-radius: 0.5rem;
+  transition: box-shadow 0.3s;
+}
+
+.card:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Container */
+.container-custom {
+  max-width: 1800px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .container-custom {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d4d4d4;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b4b4b4;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection color */
+::selection {
+  background-color: #e8a4b8;
+  color: white;
+}
+
+/* Link styles */
+a {
+  transition: color 0.3s, opacity 0.3s;
+}
+
+/* Animation keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Hero panel text animation on hover */
+.group:hover h2 {
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+}
+
+/* Brands Bar Marquee Animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+  will-change: transform;
+}
+
+/* Pause animation on hover */
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Brand logo item hover effect */
+.brand-logo-item {
+  position: relative;
+}
+
+.brand-logo-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e8a4b8, transparent);
+  transform: translateX(-50%);
+  transition: width 0.4s ease;
+}
+
+.brand-logo-item:hover::after {
+  width: 80%;
+}

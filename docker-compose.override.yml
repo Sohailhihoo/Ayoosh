@@ -1,0 +1,31 @@
+# Development Override Configuration
+# ===================================
+# This file automatically extends docker-compose.yml in development
+# Use: docker-compose up (includes this automatically)
+# For production: docker-compose -f docker-compose.yml up
+
+services:
+  # Frontend with hot reloading
+  frontend:
+    build:
+      target: deps # Stop at deps stage for development
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:5000/api
+    command: npm run dev
+
+  # Backend with nodemon for auto-reload
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
