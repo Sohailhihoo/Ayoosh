@@ -1,9 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
 import { HiOutlineMenu, HiOutlineX } from 'react-icons/hi';
 import { useCartStore, useAuthStore } from '@/lib/store';
+import { ASSETS } from '@/lib/cloudinary-assets';
 
 // Navigation items configuration
 const NAV_ITEMS = [
@@ -33,6 +35,15 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const { totalItems, fetchCart } = useCartStore();
   const { isAuthenticated, user, logout, checkAuth, isLoading } = useAuthStore();
+  const pathname = usePathname();
+
+  // Pages where navbar should be transparent (overlay)
+  const isTransparentPage = pathname === '/beauty';
+
+  // Determine navbar styles based on scroll state and current page
+  const navClasses = isScrolled || !isTransparentPage
+    ? 'sticky top-0 bg-white text-black shadow-lg'
+    : 'fixed top-0 w-full bg-transparent text-white border-none z-50'; // Transparent state
 
   /**
    * Initialize user session and cart data, setup scroll listener
@@ -75,26 +86,42 @@ export default function Navbar() {
   return (
     <>
       {/* Announcement Bar */}
-      <div
-        className="bg-[#f5f5f5] text-center py-3 text-sm tracking-wide text-gray-700"
-        role="banner"
-        aria-label="Promotional announcement"
-      >
-        {ANNOUNCEMENT_TEXT}
-      </div>
+      {!isTransparentPage && (
+        <div
+          className="bg-[#f5f5f5] text-center py-3 text-sm tracking-wide text-gray-700"
+          role="banner"
+          aria-label="Promotional announcement"
+        >
+          {ANNOUNCEMENT_TEXT}
+        </div>
+      )}
 
       {/* Main Navigation */}
       <nav
-        className={`sticky top-0 z-50 bg-white text-black transition-all duration-300 ${isScrolled ? 'shadow-lg' : ''
-          }`}
+        className={`transition-all duration-300 z-50 ${navClasses}`}
         role="navigation"
         aria-label="Main navigation"
       >
         <div className="max-w-[1800px] mx-auto px-6 lg:px-12">
           <div className="flex items-center justify-between h-24">
 
-            {/* Left Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
+            {/* Logo (Left-aligned) */}
+            <Link
+              href="/home"
+              className="flex-shrink-0 mr-12" // Added margin right for spacing
+              aria-label="Ayoosh home"
+            >
+              <img
+                src={isScrolled || !isTransparentPage ? ASSETS.logos.main : ASSETS.logos.light}
+                alt="Ayoosh logo"
+                className="h-16 w-auto object-contain"
+                width="auto"
+                height="64"
+              />
+            </Link>
+
+            {/* Middle (Nav Items - now next to Logo) */}
+            <div className="hidden md:flex items-center space-x-8 flex-grow">
               {NAV_ITEMS.map((item) => (
                 <Link
                   key={item.href}
@@ -107,38 +134,23 @@ export default function Navbar() {
               ))}
             </div>
 
-            {/* Mobile Menu Button */}
-            <button
-              className="md:hidden p-2"
-              onClick={toggleMenu}
-              aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-              aria-expanded={isMenuOpen}
-              aria-controls="mobile-menu"
-            >
-              {isMenuOpen ? (
-                <HiOutlineX className="w-6 h-6" aria-hidden="true" />
-              ) : (
-                <HiOutlineMenu className="w-6 h-6" aria-hidden="true" />
-              )}
-            </button>
+            {/* Right Navigation (Search, Account, Cart) */}
+            <div className="flex items-center space-x-6 ml-auto">
 
-            {/* Center Logo */}
-            <Link
-              href="/"
-              className="absolute left-1/2 transform -translate-x-1/2"
-              aria-label="Ayush home"
-            >
-              <img
-                src="/images/brand/logo.png"
-                alt="Ayush logo"
-                className="h-20 w-auto object-contain"
-                width="auto"
-                height="80"
-              />
-            </Link>
-
-            {/* Right Navigation */}
-            <div className="flex items-center space-x-6">
+              {/* Mobile Menu Button (Visible only on mobile, aligned with right section) */}
+              <button
+                className="md:hidden p-2 mr-4"
+                onClick={toggleMenu}
+                aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+                aria-expanded={isMenuOpen}
+                aria-controls="mobile-menu"
+              >
+                {isMenuOpen ? (
+                  <HiOutlineX className="w-6 h-6" aria-hidden="true" />
+                ) : (
+                  <HiOutlineMenu className="w-6 h-6" aria-hidden="true" />
+                )}
+              </button>
               <button
                 className="text-sm tracking-widest hover:opacity-70 transition-opacity hidden md:block"
                 aria-label="Search products"

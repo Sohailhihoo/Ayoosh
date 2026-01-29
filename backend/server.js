@@ -4,6 +4,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 // Initialize Redis client (connects on import)
@@ -24,16 +25,82 @@ const app = express();
 // Trust proxy is required for secure cookies on Railway (behind load balancer)
 app.set('trust proxy', 1);
 
-// Middleware
-app.use(helmet());
+// Security Headers with Helmet
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://www.googletagmanager.com", "https://www.google-analytics.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      imgSrc: ["'self'", "data:", "blob:", "https:", "http:"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
+      connectSrc: ["'self'", "https://www.google-analytics.com", process.env.FRONTEND_URL || "http://localhost:3000"].filter(Boolean),
+      frameSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      mediaSrc: ["'self'", "blob:"],
+      workerSrc: ["'self'", "blob:"],
+      childSrc: ["'self'", "blob:"],
+      formAction: ["'self'"],
+      frameAncestors: ["'none'"],
+      baseUri: ["'self'"],
+      upgradeInsecureRequests: [],
+    },
+  },
+  crossOriginEmbedderPolicy: false, // Required for loading external images
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  hsts: {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true,
+  },
+  referrerPolicy: {
+    policy: "strict-origin-when-cross-origin",
+  },
+  xFrameOptions: { action: "deny" },
+  xContentTypeOptions: true,
+  xXssProtection: true,
+  permittedCrossDomainPolicies: { permittedPolicies: "none" },
+}));
+
+// Rate Limiting Configuration
+// 1. General Limiter: 100 requests per 15 minutes
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: 'Too many requests from this IP, please try again after 15 minutes'
+  }
+});
+
+// 2. Auth Limiter: 20 requests per 3 hours (prevent brute force)
+const authLimiter = rateLimit({
+  windowMs: 3 * 60 * 60 * 1000, // 3 Hours
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: 'Too many login attempts, please try again after 3 hours'
+  }
+});
+
+// Apply General Limiter globally
+app.use(generalLimiter);
 
 // Professional CORS Configuration
+// Professional CORS Configuration
 const allowedOrigins = [
-  'http://localhost:3000',
-  'http://localhost:5000',
   'https://ayoosh.online',
   'https://www.ayoosh.online',
-  process.env.FRONTEND_URL
+  process.env.FRONTEND_URL,
+  // Only allow localhost in development
+  ...(process.env.NODE_ENV !== 'production' ? [
+    'http://localhost:3000',
+    'http://localhost:5000'
+  ] : [])
 ].filter(Boolean); // Remove empty values
 
 app.use(cors({
@@ -59,7 +126,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/beauty-st
   .catch(err => console.error('❌ MongoDB connection error:', err));
 
 // API Routes
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/cart', cartRoutes);

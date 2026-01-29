@@ -150,7 +150,7 @@ export default function AdminProducts() {
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center">
                                                 <img
-                                                    src={product.images?.[0] || '/placeholder.png'}
+                                                    src={product.images?.[0]?.url || product.images?.[0] || '/placeholder.png'}
                                                     alt={product.name}
                                                     className="h-10 w-10 rounded object-cover"
                                                 />

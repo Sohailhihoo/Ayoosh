@@ -3,6 +3,7 @@ const router = express.Router();
 const Product = require('../models/Product');
 const { protect, authorize, optionalAuth } = require('../middleware/auth');
 const { cacheProducts, cacheFeatured, cacheNewArrivals, cacheBestsellers } = require('../lib/cache');
+const { upload } = require('../lib/cloudinary');
 
 // @route   GET /api/products
 // @desc    Get all products with filtering, sorting, pagination
@@ -49,8 +50,12 @@ router.get('/', cacheProducts, async (req, res) => {
     // Execute query
     const skip = (Number(page) - 1) * Number(limit);
 
+    // Select only essential fields for list view (performance optimization)
+    const listFields = 'name slug price compareAtPrice images brand productType stock isFeatured isNewArrival averageRating reviewCount';
+
     const [products, total] = await Promise.all([
       Product.find(query)
+        .select(listFields)
         .populate('category', 'name slug')
         .sort(sort)
         .skip(skip)
@@ -191,53 +196,134 @@ router.get('/:id', async (req, res) => {
 // @route   POST /api/products
 // @desc    Create a new product
 // @access  Private/Admin
-router.post('/', protect, authorize('admin'), async (req, res) => {
-  try {
-    const product = await Product.create(req.body);
+router.post('/', protect, authorize('admin'),
+  upload.fields([
+    { name: 'gallery', maxCount: 10 },
+    { name: 'video', maxCount: 1 }
+  ]),
+  async (req, res) => {
+    try {
+      const productData = req.body;
 
-    res.status(201).json({
-      success: true,
-      message: 'Product created successfully',
-      data: product
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
-});
+      // Initialize if fields are missing in body
+      if (!productData.images) productData.images = [];
+
+      // Handle Gallery Images (map to 'images' in DB schema)
+      // Frontend sends 'gallery', DB expects 'images'
+      if (req.files && req.files['gallery']) {
+        const galleryUrls = req.files['gallery'].map(file => ({
+          url: file.path,
+          alt: productData.name || 'Product Image'
+        }));
+        // If schema expects array of strings, map to paths.
+        // But our schema now expects objects: { url, alt, isPrimary } 
+        // OR array of strings? Let's check schema again. 
+        // Schema says: images: [{ url: String... }]
+        // Previous code handled array of strings? 
+        // "productData.images = req.files.map(file => file.path);" <-- logic from previous step.
+        // Wait, schema was: images: [{ url: String, ... }] but previous code did array of strings?
+        // Let's look at schema Line 84-88:
+        // images: [{ url: String, ... }]
+        // So mapping to string path was WRONG unless Mongoose casts it or previous code was simplistic.
+        // Let's implement robust object mapping.
+
+        productData.images = galleryUrls;
+      }
+
+      // Handle Video
+      if (req.files && req.files['video']) {
+        productData.video = req.files['video'][0].path;
+      }
+
+      const product = await Product.create(productData);
+
+      res.status(201).json({
+        success: true,
+        message: 'Product created successfully',
+        data: product
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message
+      });
+    }
+  });
 
 // @route   PUT /api/products/:id
 // @desc    Update a product
 // @access  Private/Admin
-router.put('/:id', protect, authorize('admin'), async (req, res) => {
-  try {
-    const product = await Product.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
+router.put('/:id', protect, authorize('admin'),
+  upload.fields([
+    { name: 'gallery', maxCount: 10 },
+    { name: 'video', maxCount: 1 }
+  ]),
+  async (req, res) => {
+    try {
+      const productData = req.body;
 
-    if (!product) {
-      return res.status(404).json({
+      // Logic:
+      // 1. If new 'gallery' files: we APPEND or REPLACE? Typically replace or complex logic.
+      //    Simplest for now: User sends existing images in body + new files.
+      //    But here, let's just handle NEW uploads validation.
+
+      let newImages = [];
+      if (req.files && req.files['gallery']) {
+        newImages = req.files['gallery'].map(file => ({
+          url: file.path,
+          alt: productData.name
+        }));
+      }
+
+      // If existing images passed as JSON string (common in multipart forms)
+      let existingImages = [];
+      if (productData.existingImages) {
+        try {
+          existingImages = JSON.parse(productData.existingImages);
+        } catch (e) {
+          existingImages = [];
+        }
+      }
+
+      // Merge: This logic depends on frontend. 
+      // If we just want to ADD new images to DB:
+      if (newImages.length > 0) {
+        // We'll update after fetching or let consumer handle full Replace logic
+        // Assuming 'images' field in body replaces structure.
+        // Let's construct the final array if we can.
+        productData.images = [...existingImages, ...newImages];
+      }
+
+      // Handle Video
+      if (req.files && req.files['video']) {
+        productData.video = req.files['video'][0].path;
+      }
+
+      const product = await Product.findByIdAndUpdate(
+        req.params.id,
+        productData,
+        { new: true, runValidators: true }
+      );
+
+      if (!product) {
+        return res.status(404).json({
+          success: false,
+          message: 'Product not found'
+        });
+      }
+
+      res.json({
+        success: true,
+        message: 'Product updated successfully',
+        data: product
+      });
+    } catch (error) {
+      res.status(500).json({
         success: false,
-        message: 'Product not found'
+        message: error.message
       });
     }
-
-    res.json({
-      success: true,
-      message: 'Product updated successfully',
-      data: product
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
-});
+  });
 
 // @route   DELETE /api/products/:id
 // @desc    Delete a product

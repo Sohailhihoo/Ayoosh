@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 const Order = require('../models/Order');
 const Cart = require('../models/Cart');
 const Product = require('../models/Product');
@@ -133,66 +134,90 @@ router.get('/number/:orderNumber', optionalAuth, async (req, res) => {
 // @route   POST /api/orders
 // @desc    Create a new order (supports guest and authenticated users)
 // @access  Public (with session) or Private
+// Uses MongoDB transactions to prevent race conditions on inventory
 router.post('/', optionalAuth, async (req, res) => {
+  const {
+    customerDetails,
+    shippingAddress,
+    billingAddress,
+    paymentMethod,
+    shippingMethod = 'standard',
+    customerNote
+  } = req.body;
+
+  const userId = req.user?._id;
+  const sessionId = req.headers['x-session-id'];
+
+  // Validate required fields for guests
+  if (!userId && !customerDetails?.email) {
+    return res.status(400).json({
+      success: false,
+      message: 'Email is required for guest checkout'
+    });
+  }
+
+  // Get cart (user or guest) - before transaction
+  let cart;
+  if (userId) {
+    cart = await Cart.findOne({ user: userId }).populate('items.product');
+  } else if (sessionId) {
+    cart = await Cart.findOne({ sessionId }).populate('items.product');
+  }
+
+  if (!cart || cart.items.length === 0) {
+    return res.status(400).json({
+      success: false,
+      message: 'Cart is empty'
+    });
+  }
+
+  // Validate products are active before starting transaction
+  for (const item of cart.items) {
+    if (!item.product || item.product.status !== 'active') {
+      return res.status(400).json({
+        success: false,
+        message: `Product "${item.product?.name || 'Unknown'}" is not available`
+      });
+    }
+  }
+
+  // Start MongoDB transaction for atomic stock updates
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
-    const {
-      customerDetails,
-      shippingAddress,
-      billingAddress,
-      paymentMethod,
-      shippingMethod = 'standard',
-      customerNote
-    } = req.body;
-
-    const userId = req.user?._id;
-    const sessionId = req.headers['x-session-id'];
-
-    // Validate required fields for guests
-    if (!userId && !customerDetails?.email) {
-      return res.status(400).json({
-        success: false,
-        message: 'Email is required for guest checkout'
-      });
-    }
-
-    // Get cart (user or guest)
-    let cart;
-    if (userId) {
-      cart = await Cart.findOne({ user: userId }).populate('items.product');
-    } else if (sessionId) {
-      cart = await Cart.findOne({ sessionId }).populate('items.product');
-    }
-
-    if (!cart || cart.items.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'Cart is empty'
-      });
-    }
-
-    // Verify stock and build order items with snapshots
     const orderItems = [];
+
+    // Use for...of loop - correctly awaits each async operation sequentially
     for (const item of cart.items) {
       const product = item.product;
 
-      if (!product || product.status !== 'active') {
-        return res.status(400).json({
-          success: false,
-          message: `Product "${item.product?.name || 'Unknown'}" is not available`
-        });
+      // Atomic check-and-decrement within transaction
+      // Only updates if stock >= requested quantity (prevents overselling)
+      const updated = await Product.findOneAndUpdate(
+        {
+          _id: product._id,
+          stock: { $gte: item.quantity }
+        },
+        {
+          $inc: {
+            stock: -item.quantity,
+            soldCount: item.quantity
+          }
+        },
+        { session, new: true }
+      );
+
+      // If ANY product fails, throw error → entire transaction rolls back
+      if (!updated) {
+        throw new Error(`Insufficient stock for "${product.name}". Please refresh the page.`);
       }
 
-      if (product.stock < item.quantity) {
-        return res.status(400).json({
-          success: false,
-          message: `Insufficient stock for "${product.name}". Only ${product.stock} available.`
-        });
-      }
-
+      // Build order item snapshot
       orderItems.push({
         product: product._id,
         name: product.name,
-        image: product.images?.[0] || null,  // Snapshot of product image
+        image: product.images?.[0] || null,
         sku: item.variant?.sku || product.sku,
         variant: item.variant,
         quantity: item.quantity,
@@ -210,7 +235,7 @@ router.post('/', optionalAuth, async (req, res) => {
     };
 
     const shippingCost = shippingCosts[shippingMethod] || 5.99;
-    const taxRate = 0.08; // 8% tax
+    const taxRate = 0.08;
     const tax = Math.round(cart.subtotal * taxRate * 100) / 100;
 
     // Build customer details (from user or request body)
@@ -221,8 +246,8 @@ router.post('/', optionalAuth, async (req, res) => {
       phone: req.user.phone
     } : customerDetails;
 
-    // Create order
-    const order = await Order.create({
+    // All stock updates succeeded → Create order within same transaction
+    const order = await Order.create([{
       user: userId || null,
       guestSessionId: !userId ? sessionId : null,
       customerDetails: orderCustomerDetails,
@@ -232,9 +257,9 @@ router.post('/', optionalAuth, async (req, res) => {
       subtotal: cart.subtotal,
       shippingCost,
       tax,
-      discount: cart.discountAmount,
+      discount: cart.discountAmount || 0,
       couponCode: cart.couponCode,
-      total: cart.subtotal + shippingCost + tax - cart.discountAmount,
+      total: cart.subtotal + shippingCost + tax - (cart.discountAmount || 0),
       paymentMethod,
       shippingMethod,
       customerNote,
@@ -242,33 +267,40 @@ router.post('/', optionalAuth, async (req, res) => {
         status: 'pending',
         note: 'Order created'
       }]
-    });
+    }], { session });
 
-    // Update product stock
-    for (const item of cart.items) {
-      await Product.findByIdAndUpdate(item.product._id, {
-        $inc: { stock: -item.quantity, soldCount: item.quantity }
-      });
-    }
+    // Clear cart within transaction
+    await Cart.findByIdAndUpdate(
+      cart._id,
+      { items: [], subtotal: 0, discountAmount: 0, couponCode: null },
+      { session }
+    );
 
-    // Clear cart
-    await cart.clearCart();
+    // Everything succeeded → Commit transaction
+    await session.commitTransaction();
 
     res.status(201).json({
       success: true,
       message: 'Order created successfully',
       data: {
-        orderId: order._id,
-        orderNumber: order.orderNumber,
-        total: order.total,
-        paymentMethod: order.paymentMethod
+        orderId: order[0]._id,
+        orderNumber: order[0].orderNumber,
+        total: order[0].total,
+        paymentMethod: order[0].paymentMethod
       }
     });
+
   } catch (error) {
-    res.status(500).json({
+    // Any failure → Rollback ALL stock changes automatically
+    await session.abortTransaction();
+
+    res.status(400).json({
       success: false,
       message: error.message
     });
+
+  } finally {
+    session.endSession();
   }
 });
 

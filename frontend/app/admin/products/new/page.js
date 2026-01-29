@@ -4,19 +4,20 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { adminAPI } from '@/lib/api';
 import toast from 'react-hot-toast';
-import { HiOutlineArrowLeft } from 'react-icons/hi';
+import { HiOutlineArrowLeft, HiOutlineCloudUpload, HiX } from 'react-icons/hi';
 import Link from 'next/link';
+import Image from 'next/image';
 
 /**
  * Add New Product Page
  * 
- * Form for creating a new product
- * 
- * @returns {JSX.Element}
+ * Form for creating a new product with File Uploads (Gallery + Video)
  */
 export default function NewProduct() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+
+    // Form State
     const [formData, setFormData] = useState({
         name: '',
         brand: '',
@@ -24,9 +25,14 @@ export default function NewProduct() {
         description: '',
         productType: 'beauty',
         stock: '',
-        images: '',
         isFeatured: false,
     });
+
+    // File State
+    const [galleryFiles, setGalleryFiles] = useState([]);
+    const [galleryPreviews, setGalleryPreviews] = useState([]);
+    const [videoFile, setVideoFile] = useState(null);
+    const [videoPreview, setVideoPreview] = useState(null);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -36,10 +42,56 @@ export default function NewProduct() {
         }));
     };
 
+    // Handle Gallery Selection
+    const handleGalleryChange = (e) => {
+        const files = Array.from(e.target.files);
+        if (files.length + galleryFiles.length > 10) {
+            toast.error('You can upload a maximum of 10 images');
+            return;
+        }
+
+        setGalleryFiles(prev => [...prev, ...files]);
+
+        // Generate Previews
+        const newPreviews = files.map(file => URL.createObjectURL(file));
+        setGalleryPreviews(prev => [...prev, ...newPreviews]);
+    };
+
+    // Remove Gallery Item
+    const removeGalleryItem = (index) => {
+        setGalleryFiles(prev => prev.filter((_, i) => i !== index));
+        setGalleryPreviews(prev => {
+            // Revoke URL to avoid memory leaks
+            URL.revokeObjectURL(prev[index]);
+            return prev.filter((_, i) => i !== index);
+        });
+    };
+
+    // Handle Video Selection
+    const handleVideoChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            // Check size (e.g., 50MB limit)
+            if (file.size > 50 * 1024 * 1024) {
+                toast.error('Video must be smaller than 50MB');
+                return;
+            }
+            setVideoFile(file);
+            setVideoPreview(URL.createObjectURL(file));
+        }
+    };
+
+    const removeVideo = () => {
+        setVideoFile(null);
+        if (videoPreview) {
+            URL.revokeObjectURL(videoPreview);
+            setVideoPreview(null);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Validation
         if (!formData.name || !formData.price) {
             toast.error('Please fill in all required fields');
             return;
@@ -48,15 +100,27 @@ export default function NewProduct() {
         try {
             setLoading(true);
 
-            // Convert images string to array
-            const productData = {
-                ...formData,
-                price: parseFloat(formData.price),
-                stock: parseInt(formData.stock) || 0,
-                images: formData.images ? formData.images.split(',').map(url => url.trim()) : [],
-            };
+            // Create FormData
+            const data = new FormData();
 
-            await adminAPI.createProduct(productData);
+            // Append Text Fields
+            Object.keys(formData).forEach(key => {
+                data.append(key, formData[key]);
+            });
+
+            // Append Gallery Files
+            galleryFiles.forEach(file => {
+                data.append('gallery', file);
+            });
+
+            // Append Video File
+            if (videoFile) {
+                data.append('video', videoFile);
+            }
+
+            // Send Request (Content-Type header handled by API/Browser)
+            await adminAPI.createProduct(data);
+
             toast.success('Product created successfully');
             router.push('/admin/products');
         } catch (error) {
@@ -68,7 +132,7 @@ export default function NewProduct() {
     };
 
     return (
-        <div className="max-w-4xl mx-auto space-y-6">
+        <div className="max-w-4xl mx-auto space-y-6 pb-20">
             {/* Header */}
             <div className="flex items-center space-x-4">
                 <Link
@@ -79,17 +143,17 @@ export default function NewProduct() {
                 </Link>
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900">Add New Product</h1>
-                    <p className="text-gray-600 mt-1">Create a new product in your inventory</p>
+                    <p className="text-gray-600 mt-1">Create a new product with images and video</p>
                 </div>
             </div>
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow">
-                <div className="p-6 space-y-6">
+                <div className="p-6 space-y-8">
                     {/* Basic Information */}
                     <div>
-                        <h2 className="text-lg font-semibold text-gray-900 mb-4">Basic Information</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <h2 className="text-lg font-semibold text-gray-900 mb-4 pb-2 border-b">Basic Information</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Product Name *
@@ -115,7 +179,7 @@ export default function NewProduct() {
                                     value={formData.brand}
                                     onChange={handleChange}
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="e.g., Ayush Beauty"
+                                    placeholder="e.g., Ayoosh Beauty"
                                 />
                             </div>
 
@@ -182,23 +246,6 @@ export default function NewProduct() {
                             </div>
 
                             <div className="md:col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Image URLs (comma-separated)
-                                </label>
-                                <input
-                                    type="text"
-                                    name="images"
-                                    value={formData.images}
-                                    onChange={handleChange}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
-                                />
-                                <p className="text-sm text-gray-500 mt-1">
-                                    Enter image URLs separated by commas
-                                </p>
-                            </div>
-
-                            <div className="md:col-span-2">
                                 <label className="flex items-center space-x-2">
                                     <input
                                         type="checkbox"
@@ -214,6 +261,83 @@ export default function NewProduct() {
                             </div>
                         </div>
                     </div>
+
+                    {/* Media Upload */}
+                    <div>
+                        <h2 className="text-lg font-semibold text-gray-900 mb-4 pb-2 border-b">Media</h2>
+                        <div className="space-y-6">
+
+                            {/* Gallery Upload */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Product Gallery (Max 10)
+                                </label>
+                                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                                    {/* Upload Button */}
+                                    <div className="relative aspect-square border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 transition-colors flex flex-col items-center justify-center cursor-pointer bg-gray-50">
+                                        <input
+                                            type="file"
+                                            multiple
+                                            accept="image/*"
+                                            onChange={handleGalleryChange}
+                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                        />
+                                        <HiOutlineCloudUpload className="w-8 h-8 text-gray-400" />
+                                        <span className="text-xs text-gray-500 mt-2">Upload Images</span>
+                                    </div>
+
+                                    {/* Previews */}
+                                    {galleryPreviews.map((src, index) => (
+                                        <div key={index} className="relative aspect-square rounded-lg overflow-hidden border border-gray-200 group">
+                                            <img
+                                                src={src}
+                                                alt={`Preview ${index}`}
+                                                className="w-full h-full object-cover"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => removeGalleryItem(index)}
+                                                className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                            >
+                                                <HiX className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Video Upload */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Product Video (Max 50MB)
+                                </label>
+                                {!videoPreview ? (
+                                    <div className="w-full h-32 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 transition-colors flex flex-col items-center justify-center cursor-pointer bg-gray-50 relative">
+                                        <input
+                                            type="file"
+                                            accept="video/*"
+                                            onChange={handleVideoChange}
+                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                        />
+                                        <HiOutlineCloudUpload className="w-8 h-8 text-gray-400" />
+                                        <span className="text-sm text-gray-500 mt-2">Click to upload video (MP4, MOV)</span>
+                                    </div>
+                                ) : (
+                                    <div className="relative w-full max-w-sm rounded-lg overflow-hidden border border-gray-200">
+                                        <video src={videoPreview} controls className="w-full" />
+                                        <button
+                                            type="button"
+                                            onClick={removeVideo}
+                                            className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                                        >
+                                            <HiX className="w-5 h-5" />
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
 
                 {/* Actions */}
@@ -227,9 +351,10 @@ export default function NewProduct() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="px-6 py-2 bg-[#4a4a4a] text-white rounded-lg hover:bg-[#333] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-6 py-2 bg-[#4a4a4a] text-white rounded-lg hover:bg-[#333] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
                     >
-                        {loading ? 'Creating...' : 'Create Product'}
+                        {loading && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}
+                        <span>{loading ? 'Uploading...' : 'Create Product'}</span>
                     </button>
                 </div>
             </form>

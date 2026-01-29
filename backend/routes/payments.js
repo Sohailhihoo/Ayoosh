@@ -177,7 +177,9 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
       break;
 
     default:
-      console.log(`Unhandled event type: ${event.type}`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`Unhandled event type: ${event.type}`);
+      }
   }
 
   res.json({ received: true });
@@ -196,10 +198,10 @@ async function handlePaymentSuccess(paymentIntent) {
         note: 'Payment received via Stripe'
       });
       await order.save();
-      console.log(`Order ${order.orderNumber} marked as paid`);
+      await order.save();
     }
   } catch (error) {
-    console.error('Error handling payment success:', error);
+    console.error('Error handling payment success:', error.message);
   }
 }
 
@@ -213,10 +215,10 @@ async function handlePaymentFailure(paymentIntent) {
         note: 'Payment failed'
       });
       await order.save();
-      console.log(`Order ${order.orderNumber} payment failed`);
+      await order.save();
     }
   } catch (error) {
-    console.error('Error handling payment failure:', error);
+    console.error('Error handling payment failure:', error.message);
   }
 }
 
@@ -233,10 +235,10 @@ async function handleRefund(charge) {
         note: `Refunded $${refundAmount}`
       });
       await order.save();
-      console.log(`Order ${order.orderNumber} refunded: $${refundAmount}`);
+      await order.save();
     }
   } catch (error) {
-    console.error('Error handling refund:', error);
+    console.error('Error handling refund:', error.message);
   }
 }
 

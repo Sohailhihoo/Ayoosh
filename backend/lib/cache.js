@@ -41,11 +41,15 @@ const cacheMiddleware = (prefix, ttl = CACHE_TTL.MEDIUM) => {
             const cachedData = await redis.get(cacheKey);
 
             if (cachedData) {
-                console.log(`📦 Cache HIT: ${prefix}`);
+                if (process.env.NODE_ENV !== 'production') {
+                    console.log(`📦 Cache HIT: ${prefix}`);
+                }
                 return res.json(JSON.parse(cachedData));
             }
 
-            console.log(`🔍 Cache MISS: ${prefix}`);
+            if (process.env.NODE_ENV !== 'production') {
+                console.log(`🔍 Cache MISS: ${prefix}`);
+            }
 
             // Store original json function
             const originalJson = res.json.bind(res);
@@ -56,7 +60,9 @@ const cacheMiddleware = (prefix, ttl = CACHE_TTL.MEDIUM) => {
                 if (data.success !== false && res.statusCode === 200) {
                     try {
                         await redis.setEx(cacheKey, ttl, JSON.stringify(data));
-                        console.log(`💾 Cached: ${prefix} (TTL: ${ttl}s)`);
+                        if (process.env.NODE_ENV !== 'production') {
+                            console.log(`💾 Cached: ${prefix} (TTL: ${ttl}s)`);
+                        }
                     } catch (cacheError) {
                         console.error('Cache set error:', cacheError.message);
                     }
@@ -79,7 +85,9 @@ const cacheMiddleware = (prefix, ttl = CACHE_TTL.MEDIUM) => {
  * Call this when data is modified (create, update, delete)
  */
 const invalidateCache = async (prefix) => {
-    console.log(`🗑️  Invalidating cache: ${prefix}`);
+    if (process.env.NODE_ENV !== 'production') {
+        console.log(`🗑️  Invalidating cache: ${prefix}`);
+    }
     // Note: For full pattern invalidation, you'd need Redis SCAN
     // This is a simplified version for the current setup
 };

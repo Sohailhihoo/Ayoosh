@@ -52,7 +52,7 @@ const productSchema = new mongoose.Schema({
     required: true
   },
   subcategory: String,
-  
+
   // Pricing
   price: {
     type: Number,
@@ -61,32 +61,33 @@ const productSchema = new mongoose.Schema({
   },
   compareAtPrice: Number,     // Original price for showing discounts
   costPrice: Number,          // For profit calculations
-  
+
   // Product type specific fields
   productType: {
     type: String,
     enum: ['beauty', 'sunglasses', 'accessories'],
     required: true
   },
-  
+
   // Beauty product specific
   ingredients: [String],
   skinType: [String],         // ['oily', 'dry', 'combination', 'sensitive', 'all']
   concerns: [String],         // ['acne', 'aging', 'hydration', etc.]
-  
+
   // Sunglasses specific
   frameShape: String,         // 'aviator', 'wayfarer', 'round', 'cat-eye', etc.
   frameMaterial: String,      // 'metal', 'plastic', 'acetate', etc.
   lensType: String,           // 'polarized', 'mirrored', 'gradient', etc.
   uvProtection: String,
-  
-  // Images
+
+  // Images & Media
   images: [{
     url: String,
     alt: String,
     isPrimary: { type: Boolean, default: false }
   }],
-  
+  video: String, // Cloudinary URL for product video
+
   // Inventory
   sku: {
     type: String,
@@ -100,21 +101,21 @@ const productSchema = new mongoose.Schema({
   },
   lowStockThreshold: { type: Number, default: 10 },
   trackInventory: { type: Boolean, default: true },
-  
+
   // Variants (colors, sizes, shades)
   hasVariants: { type: Boolean, default: false },
   variants: [variantSchema],
-  
+
   // Reviews
   reviews: [reviewSchema],
   averageRating: { type: Number, default: 0 },
   reviewCount: { type: Number, default: 0 },
-  
+
   // SEO
   metaTitle: String,
   metaDescription: String,
   tags: [String],
-  
+
   // Status
   status: {
     type: String,
@@ -124,7 +125,7 @@ const productSchema = new mongoose.Schema({
   isFeatured: { type: Boolean, default: false },
   isNewArrival: { type: Boolean, default: false },
   isBestseller: { type: Boolean, default: false },
-  
+
   // Shipping
   weight: Number,             // in grams
   dimensions: {
@@ -132,15 +133,15 @@ const productSchema = new mongoose.Schema({
     width: Number,
     height: Number
   },
-  
+
   // Sales data
   soldCount: { type: Number, default: 0 },
   viewCount: { type: Number, default: 0 }
-  
+
 }, { timestamps: true });
 
 // Generate slug before saving
-productSchema.pre('save', function(next) {
+productSchema.pre('save', function (next) {
   if (this.isModified('name')) {
     this.slug = this.name
       .toLowerCase()
@@ -151,7 +152,7 @@ productSchema.pre('save', function(next) {
 });
 
 // Calculate average rating when reviews change
-productSchema.methods.calculateAverageRating = function() {
+productSchema.methods.calculateAverageRating = function () {
   if (this.reviews.length === 0) {
     this.averageRating = 0;
     this.reviewCount = 0;
@@ -164,7 +165,7 @@ productSchema.methods.calculateAverageRating = function() {
 };
 
 // Check if product is in stock
-productSchema.virtual('inStock').get(function() {
+productSchema.virtual('inStock').get(function () {
   if (this.hasVariants) {
     return this.variants.some(v => v.stock > 0);
   }
@@ -173,5 +174,14 @@ productSchema.virtual('inStock').get(function() {
 
 // Index for search
 productSchema.index({ name: 'text', description: 'text', brand: 'text', tags: 'text' });
+
+// Compound indexes for common query patterns (performance optimization)
+productSchema.index({ status: 1, category: 1 });           // Category filtering
+productSchema.index({ status: 1, productType: 1 });        // Product type filtering
+productSchema.index({ status: 1, isFeatured: 1 });         // Featured products
+productSchema.index({ status: 1, isNewArrival: 1 });       // New arrivals
+productSchema.index({ status: 1, isBestseller: 1 });       // Bestsellers
+productSchema.index({ status: 1, createdAt: -1 });         // Latest products
+productSchema.index({ status: 1, price: 1 });              // Price sorting
 
 module.exports = mongoose.model('Product', productSchema);

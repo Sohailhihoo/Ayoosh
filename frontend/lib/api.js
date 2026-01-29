@@ -80,8 +80,12 @@ export const paymentAPI = {
 // Admin APIs
 export const adminAPI = {
   // Product Management
-  createProduct: (data) => api.post('/products', data),
-  updateProduct: (id, data) => api.put(`/products/${id}`, data),
+  createProduct: (data) => api.post('/products', data, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
+  updateProduct: (id, data) => api.put(`/products/${id}`, data, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
   deleteProduct: (id) => api.delete(`/products/${id}`),
   getProducts: (params) => api.get('/products', { params }),
 

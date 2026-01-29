@@ -13,6 +13,7 @@ import {
     HiOutlineX,
     HiOutlineLogout,
 } from 'react-icons/hi';
+import { ASSETS } from '@/lib/cloudinary-assets';
 
 const NAV_ITEMS = [
     { href: '/admin/dashboard', label: 'Dashboard', icon: HiOutlineHome },
@@ -58,7 +59,7 @@ export default function AdminSidebar({ isOpen, onClose }) {
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-gray-700">
                     <Link href="/admin/dashboard" className="flex items-center space-x-2">
-                        <img src="/images/brand/logo.png" alt="Admin" className="h-8 w-auto" />
+                        <img src={ASSETS.logos.main} alt="Admin" className="h-8 w-auto" />
                         <span className="text-xl font-semibold">Admin</span>
                     </Link>
                     <button

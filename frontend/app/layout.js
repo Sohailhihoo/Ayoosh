@@ -1,7 +1,7 @@
 import { Inter, Playfair_Display } from 'next/font/google';
 import './globals.css';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import LayoutWrapper from '@/components/LayoutWrapper';
+import QueryProvider from '@/components/QueryProvider';
 import { Toaster } from 'react-hot-toast';
 
 // Font configurations
@@ -21,6 +21,11 @@ const playfair = Playfair_Display({
  * Metadata configuration for SEO optimization
  */
 export const metadata = {
+  icons: {
+    icon: '/images/brand/yellow-logo.png',
+    shortcut: '/images/brand/yellow-logo.png',
+    apple: '/images/brand/yellow-logo.png',
+  },
   title: 'Ayoosh - Premium Beauty Products | ayooshonline.com',
   description: 'Shop premium beauty products, stylish sunglasses, and trendy accessories at Ayoosh. Elevate your natural glow with our curated collection of clean, effective skincare.',
   keywords: 'beauty, skincare, premium beauty products, sunglasses, accessories, ayoosh, ayooshonline, natural beauty, clean skincare',
@@ -84,8 +89,7 @@ export const metadata = {
  * Includes:
  * - Font configurations (Inter, Playfair Display)
  * - Toast notifications
- * - Navigation bar
- * - Footer
+ * - Conditional Navigation bar and Footer via LayoutWrapper
  * 
  * @param {Object} props - Component props
  * @param {React.ReactNode} props.children - Child components to render
@@ -98,33 +102,33 @@ export default function RootLayout({ children }) {
         className={`${inter.className} ${playfair.variable}`}
         suppressHydrationWarning={true}
       >
-        <Toaster
-          position="top-center"
-          toastOptions={{
-            duration: 3000,
-            style: {
-              background: '#4a4a4a',
-              color: '#fff',
-            },
-            success: {
-              iconTheme: {
-                primary: '#e8a4b8',
-                secondary: '#fff',
+        <QueryProvider>
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              duration: 3000,
+              style: {
+                background: '#4a4a4a',
+                color: '#fff',
               },
-            },
-            error: {
-              iconTheme: {
-                primary: '#ef4444',
-                secondary: '#fff',
+              success: {
+                iconTheme: {
+                  primary: '#e8a4b8',
+                  secondary: '#fff',
+                },
               },
-            },
-          }}
-        />
-        <Navbar />
-        <main className="min-h-screen">
-          {children}
-        </main>
-        <Footer />
+              error: {
+                iconTheme: {
+                  primary: '#ef4444',
+                  secondary: '#fff',
+                },
+              },
+            }}
+          />
+          <LayoutWrapper>
+            {children}
+          </LayoutWrapper>
+        </QueryProvider>
       </body>
     </html>
   );

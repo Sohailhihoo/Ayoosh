@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { FaFacebookF, FaTwitter, FaInstagram } from 'react-icons/fa';
+import { ASSETS } from '@/lib/cloudinary-assets';
 
 export default function Footer() {
   return (
@@ -12,8 +13,8 @@ export default function Footer() {
           <div className="col-span-2 md:col-span-4 lg:col-span-1 flex flex-col items-center lg:items-start mb-8 lg:mb-0">
             <Link href="/">
               <img
-                src="/images/brand/logo-light.png"
-                alt="Ayush Logo"
+                src={ASSETS.logos.light}
+                alt="Ayoosh Logo"
                 className="h-24 w-auto object-contain invert"
               />
             </Link>

@@ -44,7 +44,7 @@ exports.protect = async (req, res, next) => {
     next();
 
   } catch (error) {
-    console.error('Auth Middleware Error:', error);
+    console.error('Auth Middleware Error:', error.message);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 };

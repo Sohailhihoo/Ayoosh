@@ -34,14 +34,14 @@ const categorySchema = new mongoose.Schema({
   // SEO
   metaTitle: String,
   metaDescription: String
-}, { 
+}, {
   timestamps: true,
   toJSON: { virtuals: true },
   toObject: { virtuals: true }
 });
 
 // Generate slug before saving
-categorySchema.pre('save', function(next) {
+categorySchema.pre('save', function (next) {
   if (this.isModified('name')) {
     this.slug = this.name
       .toLowerCase()
@@ -65,5 +65,10 @@ categorySchema.virtual('productCount', {
   foreignField: 'category',
   count: true
 });
+
+// Indexes for performance
+categorySchema.index({ isActive: 1, displayOrder: 1 });  // Active categories sorted
+categorySchema.index({ parent: 1 });                      // Subcategory lookups
+categorySchema.index({ slug: 1 });                        // Slug lookups
 
 module.exports = mongoose.model('Category', categorySchema);
