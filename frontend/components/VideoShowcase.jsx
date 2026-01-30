@@ -26,19 +26,20 @@ export default function VideoShowcase() {
             // Reverted to raw URLs here so the helper can do the work consistently
             thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769624525/sunglasses_16_9_oolw5o.jpg",
             videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769624525/sunglasses_16_9_oolw5o.mp4",
+            alt: "Trendy Sunglasses"
         },
         {
             id: 2,
             thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769625247/sunscreen_16_9_skay4t.jpg",
             videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769625247/sunscreen_16_9_skay4t.mp4",
-
-            featured: true
+            featured: true,
+            alt: "Premium Sunscreen"
         },
         {
             id: 3,
             thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769624525/sunglasses_16_9_oolw5o.jpg",
             videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769624525/sunglasses_16_9_oolw5o.mp4",
-
+            alt: "Style & Protection"
         }
     ];
 
@@ -50,10 +51,8 @@ export default function VideoShowcase() {
     }));
 
     return (
-        <section ref={sectionRef} className="py-20 bg-white overflow-hidden">
+        <section ref={sectionRef} className="py-20 bg-[#f4f2f0] overflow-hidden">
             <div className="max-w-7xl mx-auto px-6 md:px-12">
-
-
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-center justify-center">
                     {videos.map((video, index) => (
                         <VideoCard key={video.id} video={video} index={index} sectionInView={isInView} />
@@ -135,8 +134,7 @@ function VideoCard({ video, index, sectionInView }) {
                 muted={true}
                 loop
                 playsInline
-                preload="auto" // Updated to 'auto' for instant loading of optimized assets
-                crossOrigin="anonymous"
+                preload="auto"
                 onLoadedData={() => setIsLoaded(true)}
                 onPlay={() => setIsPlaying(true)}
                 onPause={() => setIsPlaying(false)}

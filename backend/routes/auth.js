@@ -86,20 +86,25 @@ router.post('/login', async (req, res) => {
 
     // 1. Validate Input
     if (!email || !password) {
+      console.log('Login failed: Missing email or password');
       return res.status(400).json({ success: false, message: 'Please provide email and password' });
     }
 
     // 2. Find User (explicitly select password since it's excluded by default in schema)
     const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
+    console.log(`Login attempt for: ${email}`);
 
     if (!user) {
-      // Security Tip: Generic error message prevents user enumeration
+      console.log('Login failed: User not found');
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 
     // 3. Verify Password
     const isMatch = await user.comparePassword(password);
+    console.log(`Password match result: ${isMatch}`);
+
     if (!isMatch) {
+      console.log('Login failed: Password mismatch');
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 

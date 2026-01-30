@@ -35,16 +35,23 @@ const inMemoryClient = {
 
 // Try to connect to Redis, fall back to in-memory if failed
 const initRedis = async () => {
+    // If no REDIS_URL is set, default immediately to memory (skip connection attempt)
+    if (!process.env.REDIS_URL) {
+        console.log('ℹ️  No REDIS_URL found, using in-memory session store');
+        return inMemoryClient;
+    }
+
     try {
         redisClient = createClient({ url: redisUrl });
         redisClient.on('error', (err) => {
-            console.error('Redis Client Error:', err.message);
+            console.error('Redis Client Error (handled):', err.message);
+            // Don't crash, just log
         });
 
         // Set a short timeout for initial connection
         const connectPromise = redisClient.connect();
         const timeoutPromise = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Redis connection timeout')), 3000)
+            setTimeout(() => reject(new Error('Redis connection timeout')), 2000)
         );
 
         await Promise.race([connectPromise, timeoutPromise]);
@@ -52,7 +59,6 @@ const initRedis = async () => {
         return redisClient;
     } catch (error) {
         console.warn('⚠️  Redis not available, using in-memory session store (development only)');
-        console.warn('   To use Redis: Install Redis and ensure it is running on redis://localhost:6379');
         return inMemoryClient;
     }
 };

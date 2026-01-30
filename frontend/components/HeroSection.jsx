@@ -25,7 +25,8 @@ export default function HeroSection({
     description,
     titleStyle = {},
     buttons = [],
-    overlayOpacity = 40
+    overlayOpacity = 40,
+    align = 'center' // 'center' | 'bottom-left'
 }) {
     return (
         <section className="relative h-screen overflow-hidden">
@@ -68,15 +69,15 @@ export default function HeroSection({
             />
 
             {/* Content */}
-            <div className="relative z-10 h-full flex items-center px-6 md:px-12 lg:px-24">
-                <div className="max-w-2xl">
+            <div className={`relative z-10 h-full flex ${align === 'bottom-left' ? 'items-end justify-start pb-24 md:pb-[15vh]' : align === 'bottom-right' ? 'items-end justify-end pb-24 md:pb-[15vh]' : 'items-center justify-center'} px-6 md:px-12 lg:px-24`}>
+                <div className={`max-w-2xl ${align === 'bottom-right' ? 'text-right' : ''}`}>
                     {subtitle && (
                         <p className="text-sm md:text-base tracking-[0.3em] text-white/80 mb-4">
                             {subtitle}
                         </p>
                     )}
                     {title && (
-                        <h1 className="text-white mb-6" style={titleStyle}>
+                        <h1 className="text-white mb-12" style={titleStyle}>
                             {title}
                         </h1>
                     )}
@@ -86,15 +87,16 @@ export default function HeroSection({
                         </p>
                     )}
                     {buttons.length > 0 && (
-                        <div className="flex flex-wrap gap-4">
+                        <div className={`flex flex-wrap gap-4 ${align === 'bottom-right' ? 'justify-end' : align === 'bottom-left' ? 'justify-start' : 'justify-center'}`}>
                             {buttons.map((btn, idx) => (
                                 <Link
                                     key={idx}
                                     href={btn.href}
                                     className={`px-8 py-3 text-sm tracking-wider transition-colors rounded ${btn.variant === 'outline'
-                                            ? 'border border-white text-white hover:bg-white/10'
-                                            : 'bg-[#b87c6b] text-white hover:bg-[#a06b5a]'
+                                        ? 'border border-white text-white hover:bg-white/10'
+                                        : 'text-white hover:opacity-90'
                                         }`}
+                                    style={btn.color ? { backgroundColor: btn.color } : { backgroundColor: '#f8cb19', color: '#000' }}
                                 >
                                     {btn.label}
                                 </Link>

@@ -2,11 +2,13 @@
 
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { ASSETS } from '@/lib/cloudinary-assets';
 
 /**
- * ProductScroller - Immersive Scrollytelling Experience
- * Optimized for Mobile & Desktop
+ * ProductScroller - 3D Scroll Animation with 9 Progressive Spec Components
+ * - First scroll (0-33%): 3 components appear and stay fixed
+ * - Second scroll (33-66%): 3 more components appear and stay fixed
+ * - Third scroll (66-100%): 3 more components appear
+ * - End result: All 9 components visible around the product
  */
 export default function ProductScroller() {
     const containerRef = useRef(null);
@@ -16,65 +18,56 @@ export default function ProductScroller() {
         offset: ["start start", "end end"]
     });
 
-    // --- Animations ---
+    // --- Product Animations ---
+    const productRotateZ = useTransform(scrollYProgress, [0, 0.5, 1], [0, 5, 0]);
+    const productScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.9, 1.1, 1]);
 
-    // Product Rotation: Tilt Left -> Face Front (Zoom) -> Tilt Right
-    const productRotate = useTransform(
-        scrollYProgress,
-        [0, 0.2, 0.5, 0.8, 1],
-        [0, -10, 0, 10, 0]
-    );
+    // --- Progressive Reveal: 3 groups of 3 specs each ---
+    // Group 1: Appear at 0-25% and STAY visible
+    const group1Opacity = useTransform(scrollYProgress, [0.05, 0.15], [0, 1]);
 
-    // Product Scale: Normal -> Zoom In -> Normal
-    const productScale = useTransform(
-        scrollYProgress,
-        [0, 0.2, 0.5, 0.8, 1],
-        [1, 1, 1.2, 1, 1]
-    );
+    // Group 2: Appear at 33-50% and STAY visible
+    const group2Opacity = useTransform(scrollYProgress, [0.33, 0.45], [0, 1]);
 
-    // Card Opacities - Sequential fade in/out
-    const card1Opacity = useTransform(scrollYProgress, [0.1, 0.15, 0.25, 0.3], [0, 1, 1, 0]);
-    const card2Opacity = useTransform(scrollYProgress, [0.4, 0.45, 0.55, 0.6], [0, 1, 1, 0]);
-    const card3Opacity = useTransform(scrollYProgress, [0.7, 0.75, 0.85, 0.9], [0, 1, 1, 0]);
+    // Group 3: Appear at 66-80% and STAY visible
+    const group3Opacity = useTransform(scrollYProgress, [0.66, 0.78], [0, 1]);
 
-    // Card Y-Position - Slight parallax drift up
-    const cardY = useTransform(scrollYProgress, [0, 1], [50, -50]);
+    // 10 Spec components data - positioned on LEFT and RIGHT sides only
+    const specs = [
+        // Group 1 - Appear first (right side)
+        { id: 1, label: "Advanced Korean UV filter", value: "SPF 50+ PA++++", group: 1, angle: 340 },           // upper right
+        { id: 2, label: "Vitamin E", value: "Antioxidant Protection", group: 1, angle: 0 },      // right center
+        { id: 3, label: "Propanediol", value: "Hydration & Smoothness", group: 1, angle: 20 },  // lower right
 
-    // Data for the story steps
-    const steps = [
-        {
-            id: 1,
-            badge: "The Formula",
-            badgeColor: "text-[#b87c6b] bg-[#b87c6b]/10",
-            title: "Pure & Potent",
-            text: "Infused with 5% Niacinamide and organic botanical extracts to brighten and even out skin tone.",
-            opacity: card1Opacity,
-            position: "right" // Desktop position
-        },
-        {
-            id: 2,
-            badge: "The Texture",
-            badgeColor: "text-blue-600 bg-blue-500/10",
-            title: "Lightweight Glow",
-            text: "A non-greasy, water-gel texture that absorbs instantly, leaving a dewy glass-skin finish.",
-            opacity: card2Opacity,
-            position: "left"
-        },
-        {
-            id: 3,
-            badge: "The Impact",
-            badgeColor: "text-emerald-600 bg-emerald-500/10",
-            title: "Sustainable Beauty",
-            text: "Packaged in 100% recycled glass with a refillable pod system to minimize plastic waste.",
-            opacity: card3Opacity,
-            position: "right"
-        }
+        // Group 2 - Appear second (mixed sides)
+        { id: 4, label: "Glycerin", value: "Deep Moisturization", group: 2, angle: 50 },   // lower right
+        { id: 5, label: "Betaine", value: "Skin Barrier Support", group: 2, angle: 130 },     // lower left
+        { id: 6, label: "Centella Asiatica", value: "Soothing & Repair", group: 2, angle: 160 },       // left side
+
+        // Group 3 - Appear last (left side)
+        { id: 7, label: "Allantoin", value: "Irritation Relief", group: 3, angle: 180 },             // left center
+        { id: 8, label: "Chamomile Extract", value: "Calming Effect", group: 3, angle: 200 },      // upper left
+        { id: 10, label: "Polygonum Root Extract", value: "Intense Hydration", group: 3, angle: 220 },   // left side
+        { id: 9, label: "Licorice Root Extract", value: "Brightening", group: 3, angle: 320 },    // upper right
     ];
+
+    // Circle radius - farther from product
+    const circleRadius = 450;
+
+    // Map group number to opacity
+    const getGroupOpacity = (group) => {
+        switch (group) {
+            case 1: return group1Opacity;
+            case 2: return group2Opacity;
+            case 3: return group3Opacity;
+            default: return group1Opacity;
+        }
+    };
 
     return (
         <section
             ref={containerRef}
-            className="relative h-[300vh] bg-gradient-to-b from-[#fdf8f5] via-[#fff5f0] to-[#fdf8f5]"
+            className="relative h-[300vh] bg-[#f4f2f0]"
         >
             {/* Sticky Viewport */}
             <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-center items-center">
@@ -85,11 +78,48 @@ export default function ProductScroller() {
                     <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#e8c4b8]/30 rounded-full blur-3xl opacity-50" />
                 </div>
 
+                {/* 9 Spec Components - Positioned in a CIRCLE around the product */}
+                <div className="absolute inset-0 w-full h-full z-20 pointer-events-none flex items-center justify-center">
+                    {specs.map((spec, index) => {
+                        // Convert angle to x,y position on circle
+                        const angleRad = (spec.angle * Math.PI) / 180;
+                        const x = Math.cos(angleRad) * circleRadius;
+                        const y = Math.sin(angleRad) * circleRadius;
+
+                        const isYellow = index % 2 === 0;
+
+                        return (
+                            <motion.div
+                                key={spec.id}
+                                style={{
+                                    opacity: getGroupOpacity(spec.group),
+                                    transform: `translate(${x}px, ${y}px)`
+                                }}
+                                className="absolute flex flex-col items-center text-center transition-all duration-500"
+                            >
+                                <div className={`
+                                    backdrop-blur-md rounded-xl px-4 py-3 shadow-lg border transition-colors duration-300
+                                    ${isYellow
+                                        ? 'bg-[#f9cb19]/90 border-[#e8ba17] text-black'
+                                        : 'bg-white/90 border-white/50 text-gray-900'}
+                                `}>
+                                    <p className={`text-[10px] md:text-xs uppercase tracking-widest font-medium mb-1 ${isYellow ? 'text-black/70' : 'text-gray-500'}`}>
+                                        {spec.label}
+                                    </p>
+                                    <p className={`text-lg md:text-xl font-sans font-medium leading-tight ${isYellow ? 'text-black' : 'text-gray-900'}`}>
+                                        {spec.value}
+                                    </p>
+                                </div>
+                            </motion.div>
+                        );
+                    })}
+                </div>
+
                 {/* Main Product Stage */}
-                <div className="relative z-10 w-full max-w-md md:max-w-xl lg:max-w-2xl px-6 flex justify-center mb-0 md:mb-12">
+                <div className="relative z-10 w-full max-w-md md:max-w-xl lg:max-w-2xl px-6 flex justify-center">
                     <motion.div
                         style={{
-                            rotate: productRotate,
+                            rotate: productRotateZ,
                             scale: productScale,
                         }}
                         className="relative"
@@ -98,56 +128,15 @@ export default function ProductScroller() {
                         <div className="absolute inset-0 top-1/2 -translate-y-1/2 bg-white/40 blur-3xl rounded-full scale-110 pointer-events-none" />
 
                         <img
-                            src={ASSETS.homepage.rejoosh}
-                            alt="Rejoosh Star Product"
-                            className="w-auto h-[350px] md:h-[500px] object-contain drop-shadow-2xl relative z-10"
+                            src="https://res.cloudinary.com/dpdg462fb/image/upload/v1769715388/Sun_Tube_cmxezs.png"
+                            alt="Ayoosh Sun Cream"
+                            className="w-auto h-[550px] md:h-[750px] object-contain relative z-10"
+                            style={{
+                                transform: 'scaleY(-1) translateY(-50px)',
+                                filter: 'drop-shadow(0 30px 60px rgba(0, 0, 0, 0.35)) drop-shadow(0 15px 30px rgba(0, 0, 0, 0.25))'
+                            }}
                         />
                     </motion.div>
-                </div>
-
-                {/* Scrollytelling Cards Layer - Absolute Positioned over sticky view */}
-                <div className="absolute inset-0 w-full h-full pointer-events-none z-20">
-                    <div className="max-w-7xl mx-auto h-full relative">
-                        {steps.map((step) => (
-                            <motion.div
-                                key={step.id}
-                                style={{
-                                    opacity: step.opacity,
-                                    y: cardY,
-                                }}
-                                className={`
-                                    absolute top-1/2 -translate-y-1/2 
-                                    w-[85%] md:w-80 lg:w-96
-                                    left-1/2 -translate-x-1/2  /* Default Mobile: Centered */
-                                    md:left-auto md:translate-x-0 /* Reset for Desktop */
-                                    ${step.position === 'left'
-                                        ? 'md:left-12 lg:left-24'
-                                        : 'md:right-12 lg:right-24 md:left-auto'
-                                    }
-                                    p-6 md:p-8
-                                    bg-white/70 backdrop-blur-xl rounded-3xl 
-                                    border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.05)]
-                                    flex flex-col gap-3 md:gap-4
-                                    transition-colors duration-300
-                                `}
-                            >
-                                <div className="flex items-center gap-3">
-                                    <span className={`text-[10px] md:text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full ${step.badgeColor}`}>
-                                        {step.badge}
-                                    </span>
-                                    <div className="h-px flex-1 bg-black/5" />
-                                </div>
-
-                                <h3 className="text-2xl md:text-3xl font-serif text-gray-900 leading-tight">
-                                    {step.title}
-                                </h3>
-
-                                <p className="text-sm md:text-base text-gray-600 leading-relaxed font-light">
-                                    {step.text}
-                                </p>
-                            </motion.div>
-                        ))}
-                    </div>
                 </div>
 
                 {/* Scroll Indicator */}

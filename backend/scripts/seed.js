@@ -324,6 +324,12 @@ const seedData = async () => {
           price: item.price,
           total: item.price * item.quantity
         })),
+        customerDetails: {
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          phone: user.phone || ''
+        },
         shippingAddress: {
           street: '123 Main St',
           city: 'New York',
@@ -467,7 +473,12 @@ const seedData = async () => {
 
     process.exit(0);
   } catch (error) {
-    console.error('❌ Error:', error);
+    console.error('❌ Error:', JSON.stringify(error, null, 2));
+    if (error.errors) {
+      Object.keys(error.errors).forEach(key => {
+        console.error(`- ${key}: ${error.errors[key].message}`);
+      });
+    }
     process.exit(1);
   }
 };

@@ -39,7 +39,7 @@ const articles = [
 
 export default function JournalGrid() {
     return (
-        <section className="py-24 bg-white border-t border-gray-50">
+        <section className="py-24 bg-[#f4f2f0] border-t border-gray-50">
             <div className="w-full max-w-7xl mx-auto px-6 md:px-12">
 
                 {/* 4. Header */}
@@ -49,7 +49,7 @@ export default function JournalGrid() {
                             {/* Sparkle Icon */}
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-sparkles"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275Z" /></svg>
                         </span>
-                        <h2 className="text-3xl md:text-4xl font-serif text-gray-900">Our Journal</h2>
+                        <h2 className="text-3xl md:text-4xl font-sans text-gray-900">Our Journal</h2>
                     </div>
                 </div>
 
@@ -84,7 +84,7 @@ export default function JournalGrid() {
                                     <span className="text-gray-400 text-xs italic">{article.readTime}</span>
                                 </div>
 
-                                <h3 className="text-xl font-serif text-gray-900 leading-snug mb-3 font-semibold group-hover:text-[#b87c6b] transition-colors">
+                                <h3 className="text-xl font-sans text-gray-900 leading-snug mb-3 font-semibold group-hover:text-[#b87c6b] transition-colors">
                                     {article.title}
                                 </h3>
 

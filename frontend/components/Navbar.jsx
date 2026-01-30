@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
-import { HiOutlineMenu, HiOutlineX } from 'react-icons/hi';
+import { HiOutlineMenu, HiOutlineX, HiOutlineSearch, HiOutlineUser, HiOutlineShoppingBag } from 'react-icons/hi';
 import { useCartStore, useAuthStore } from '@/lib/store';
 import { ASSETS } from '@/lib/cloudinary-assets';
 
@@ -15,7 +15,7 @@ const NAV_ITEMS = [
 ];
 
 const SCROLL_THRESHOLD = 50;
-const ANNOUNCEMENT_TEXT = 'FREE US SHIPPING ON ORDERS OVER $45';
+
 
 /**
  * Navbar Component
@@ -38,12 +38,24 @@ export default function Navbar() {
   const pathname = usePathname();
 
   // Pages where navbar should be transparent (overlay)
-  const isTransparentPage = pathname === '/beauty';
+  const isTransparentPage = pathname === '/beauty' || pathname === '/sunglasses';
 
   // Determine navbar styles based on scroll state and current page
-  const navClasses = isScrolled || !isTransparentPage
-    ? 'sticky top-0 bg-white text-black shadow-lg'
-    : 'fixed top-0 w-full bg-transparent text-white border-none z-50'; // Transparent state
+  const getNavClasses = () => {
+    if (isTransparentPage) {
+      if (isScrolled) {
+        // Special case for sunglasses: keep transparent bg but switch to black text
+        if (pathname === '/sunglasses') {
+          return 'fixed top-0 w-full z-50 transition-all duration-300 bg-transparent text-gray-900 shadow-none';
+        }
+        return 'fixed top-0 w-full z-50 transition-all duration-300 bg-white text-black shadow-lg';
+      }
+      return 'fixed top-0 w-full z-50 transition-all duration-300 bg-transparent text-white border-none';
+    }
+    return 'sticky top-0 bg-white text-black shadow-lg z-50';
+  };
+
+  const navClasses = getNavClasses();
 
   /**
    * Initialize user session and cart data, setup scroll listener
@@ -85,16 +97,7 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Announcement Bar */}
-      {!isTransparentPage && (
-        <div
-          className="bg-[#f5f5f5] text-center py-3 text-sm tracking-wide text-gray-700"
-          role="banner"
-          aria-label="Promotional announcement"
-        >
-          {ANNOUNCEMENT_TEXT}
-        </div>
-      )}
+
 
       {/* Main Navigation */}
       <nav
@@ -108,25 +111,25 @@ export default function Navbar() {
             {/* Logo (Left-aligned) */}
             <Link
               href="/home"
-              className="flex-shrink-0 mr-12" // Added margin right for spacing
+              className={`flex-shrink-0 mr-12 ${isTransparentPage && !isScrolled ? 'mt-12 -ml-8' : '-ml-6'}`} // Conditional spacing
               aria-label="Ayoosh home"
             >
               <img
                 src={isScrolled || !isTransparentPage ? ASSETS.logos.main : ASSETS.logos.light}
                 alt="Ayoosh logo"
-                className="h-16 w-auto object-contain"
+                className={`w-auto object-contain ${isTransparentPage && !isScrolled ? 'h-20' : 'h-12'}`}
                 width="auto"
-                height="64"
+                height="48"
               />
             </Link>
 
-            {/* Middle (Nav Items - now next to Logo) */}
-            <div className="hidden md:flex items-center space-x-8 flex-grow">
+            {/* Middle (Nav Items - now on Right) */}
+            <div className="hidden md:flex items-center space-x-8 ml-auto mr-12">
               {NAV_ITEMS.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-sm tracking-widest hover:opacity-70 transition-opacity"
+                  className="text-base tracking-widest hover:opacity-70 transition-opacity"
                   aria-label={item.ariaLabel}
                 >
                   {item.label}
@@ -135,7 +138,7 @@ export default function Navbar() {
             </div>
 
             {/* Right Navigation (Search, Account, Cart) */}
-            <div className="flex items-center space-x-6 ml-auto">
+            <div className="flex items-center space-x-6">
 
               {/* Mobile Menu Button (Visible only on mobile, aligned with right section) */}
               <button
@@ -152,20 +155,20 @@ export default function Navbar() {
                 )}
               </button>
               <button
-                className="text-sm tracking-widest hover:opacity-70 transition-opacity hidden md:block"
+                className="hover:opacity-70 transition-opacity hidden md:block" // Removed text tracking classes
                 aria-label="Search products"
               >
-                SEARCH
+                <HiOutlineSearch className="w-6 h-6" />
               </button>
 
               {isAuthenticated ? (
                 <div className="relative group">
                   <button
-                    className="text-sm tracking-widest hover:opacity-70 transition-opacity hidden md:block"
+                    className="hover:opacity-70 transition-opacity hidden md:block"
                     aria-label="Account menu"
                     aria-haspopup="true"
                   >
-                    ACCOUNT
+                    <HiOutlineUser className="w-6 h-6" />
                   </button>
                   <div
                     className="absolute right-0 mt-2 w-48 bg-white text-gray-800 rounded-lg shadow-lg py-2 hidden group-hover:block border border-gray-100"
@@ -195,19 +198,19 @@ export default function Navbar() {
               ) : (
                 <Link
                   href="/login"
-                  className="text-sm tracking-widest hover:opacity-70 transition-opacity hidden md:block"
+                  className="hover:opacity-80 transition-opacity hidden md:block"
                   aria-label="Login to your account"
                 >
-                  ACCOUNT
+                  <HiOutlineUser className="w-6 h-6" />
                 </Link>
               )}
 
               <Link
                 href="/cart"
-                className="text-sm tracking-widest hover:opacity-70 transition-opacity flex items-center"
+                className="text-base tracking-widest hover:opacity-80 transition-opacity flex items-center"
                 aria-label={`Shopping cart with ${totalItems} item${totalItems !== 1 ? 's' : ''}`}
               >
-                <span className="hidden md:inline">CART</span>
+                <span className="hidden md:inline"><HiOutlineShoppingBag className="w-6 h-6" /></span>
                 <span className="ml-1" aria-live="polite">({totalItems})</span>
               </Link>
             </div>
@@ -227,7 +230,7 @@ export default function Navbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="block text-sm tracking-widest hover:opacity-70"
+                  className="block text-base tracking-widest hover:opacity-80"
                   onClick={closeMenu}
                   role="menuitem"
                   aria-label={item.ariaLabel}
@@ -237,7 +240,7 @@ export default function Navbar() {
               ))}
               <hr className="border-gray-100" />
               <button
-                className="block text-sm tracking-widest hover:opacity-70"
+                className="block text-base tracking-widest hover:opacity-80"
                 aria-label="Search products"
               >
                 SEARCH
@@ -246,7 +249,7 @@ export default function Navbar() {
                 <>
                   <Link
                     href="/orders"
-                    className="block text-sm tracking-widest hover:opacity-70"
+                    className="block text-base tracking-widest hover:opacity-80"
                     onClick={closeMenu}
                     role="menuitem"
                   >
@@ -254,7 +257,7 @@ export default function Navbar() {
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="block text-sm tracking-widest hover:opacity-70 text-left w-full"
+                    className="block text-base tracking-widest hover:opacity-80 text-left w-full"
                     role="menuitem"
                   >
                     LOGOUT
@@ -263,7 +266,7 @@ export default function Navbar() {
               ) : (
                 <Link
                   href="/login"
-                  className="block text-sm tracking-widest hover:opacity-70"
+                  className="block text-base tracking-widest hover:opacity-80"
                   onClick={closeMenu}
                   role="menuitem"
                   aria-label="Login to your account"

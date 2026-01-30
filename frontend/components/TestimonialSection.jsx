@@ -138,7 +138,7 @@ export default function TestimonialSection() {
     };
 
     return (
-        <section className="py-24 bg-[#f9f9f9] overflow-hidden">
+        <section className="py-24 bg-[#f4f2f0] overflow-hidden">
             <div className="max-w-7xl mx-auto px-6 md:px-12">
 
                 {/* Header */}
@@ -151,7 +151,7 @@ export default function TestimonialSection() {
                     <span className="text-[#b87c6b] tracking-[0.2em] text-xs font-bold uppercase mb-3 block">
                         Community Love
                     </span>
-                    <h2 className="text-3xl md:text-4xl font-serif text-gray-900">
+                    <h2 className="text-3xl md:text-4xl font-sans text-gray-900">
                         Loved by 10,000+ Beautiful Customers
                     </h2>
                 </motion.div>

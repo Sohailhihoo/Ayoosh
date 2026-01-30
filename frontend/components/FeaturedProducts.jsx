@@ -18,7 +18,7 @@ export default function FeaturedProducts({
     const displayProducts = products.slice(0, maxProducts);
 
     return (
-        <section className="py-16 md:py-24 px-6 md:px-12 bg-gray-50">
+        <section className="py-16 md:py-24 px-6 md:px-12 bg-[#f4f2f0]">
             <div className="max-w-5xl mx-auto">
                 {/* Section Title */}
                 <motion.h2
@@ -74,7 +74,7 @@ function FeaturedProductCard({ product, index }) {
         >
             <Link href={`/products/${product._id}`} className="block">
                 {/* Product Image Container */}
-                <div className="relative bg-white rounded-lg overflow-hidden aspect-square mb-4 shadow-sm">
+                <div className="relative bg-[#f4f2f0] rounded-lg overflow-hidden aspect-square mb-4 shadow-sm">
                     {/* Sale Badge */}
                     {product.onSale && (
                         <span className="absolute top-4 left-4 z-10 bg-orange-500 text-white text-xs font-semibold px-3 py-1 rounded">
@@ -108,6 +108,7 @@ function FeaturedProductCard({ product, index }) {
                                 src={product.images?.[0] || product.image}
                                 alt={product.name}
                                 className="max-w-full max-h-full object-contain"
+                                style={{ transform: `scale(${product.imageScale || 1})` }}
                             />
                         ) : (
                             <div className="text-8xl">🧴</div>

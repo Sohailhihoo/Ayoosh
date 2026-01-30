@@ -69,7 +69,7 @@ export default function ProductScrollShowcase() {
                         style={{ opacity: useTransform(smoothProgress, [0, 0.3], [0, 1]), x: useTransform(smoothProgress, [0, 0.3], [-50, 0]) }}
                         className="relative z-10"
                     >
-                        <h2 className="text-5xl md:text-7xl font-serif leading-[1] mb-6 text-gray-900">
+                        <h2 className="text-5xl md:text-7xl font-sans leading-[1] mb-6 text-gray-900">
                             Pure.<br />
                             Potent.<br />
                             <span className="text-[#b87c6b] italic">Proven.</span>

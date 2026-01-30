@@ -90,7 +90,7 @@ export default function HomePage() {
                 setShowFinalLogo(true);
             }, 2000);
 
-        }, 4000);
+        }, 5000);
 
         return () => clearTimeout(moveTimer);
     }, []);
@@ -152,8 +152,48 @@ export default function HomePage() {
 
     return (
         <div className="bg-white">
-            {/* Newsletter Popup - Hidden per user request */}
-            {/* <NewsletterPopup /> */}
+            {/* Intro Logo Animation */}
+            {/* Phase 1: Rotating Loading Logo (0s - 4s) -> Moves (4s - 5.5s) */}
+            <div className={`fixed inset-0 z-[60] flex items-center justify-center pointer-events-none transition-opacity duration-500 ${showFinalLogo ? 'opacity-0' : 'opacity-100'}`}>
+                <motion.div
+                    initial={{ scale: 1, rotate: 0, x: 0, y: 0 }}
+                    animate={{
+                        rotate: 360, // Keep rotating effectively by just targeting 360 with infinite repeat
+                        x: logoMoved ? 'calc(min(-45vw, -600px) + 3px)' : 0, // Nudge 3px right
+                        y: logoMoved ? '-42vh' : 0, // Move Up slightly less/more depending on height
+                        scale: logoMoved ? 0.75 : 1, // Shrink slightly more (0.75)
+                    }}
+                    transition={{
+                        rotate: { duration: 2, ease: "linear", repeat: Infinity }, // Never stop rotating
+                        x: { duration: 1.5, ease: "easeInOut" },
+                        y: { duration: 1.5, ease: "easeInOut" },
+                        scale: { duration: 1.5, ease: "easeInOut" }
+                    }}
+                    className="relative w-[150px] h-[150px]"
+                >
+                    <img
+                        src={ASSETS.logos.loading}
+                        alt="Loading..."
+                        className="w-full h-full object-contain"
+                    />
+                </motion.div>
+            </div>
+
+            {/* Phase 2: Final Logo (Appears after move completes) */}
+            {/* This simulates the 'faded into permanent logo' effect at the destination position */}
+            <motion.div
+                className="fixed z-[55] w-32 h-32 md:w-48 md:h-48 pointer-events-none"
+                style={{ top: 'calc(1.5rem - 3px)', left: 'calc(1.5rem - 3px)' }} // precise 3px nudge
+                initial={{ opacity: 0 }}
+                animate={{ opacity: showFinalLogo ? 1 : 0 }}
+                transition={{ duration: 0.8 }}
+            >
+                <img
+                    src={ASSETS.logos.final}
+                    alt="Ayoosh"
+                    className="w-full h-full object-contain"
+                />
+            </motion.div>
 
             {/* Custom Cursor for Hero */}
             {isHoveringHero && (
@@ -196,7 +236,7 @@ export default function HomePage() {
                         className="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110 brightness-[0.3] group-hover:brightness-110 grayscale group-hover:grayscale-0"
                         aria-label="Skincare collection video"
                     >
-                        <source src="/videos/homepage/split1.mp4" type="video/mp4" />
+                        <source src="/videos/homepage/1.mp4" type="video/mp4" />
                         Your browser does not support the video tag.
                     </video>
 
@@ -214,11 +254,11 @@ export default function HomePage() {
 
 
 
-                {/* Right Panel - SkinBooster */}
+                {/* Right Panel - Sunglasses */}
                 <Link
-                    href="/products"
+                    href="/sunglasses"
                     className="relative w-full md:w-1/2 h-1/2 md:h-full overflow-hidden group cursor-none block"
-                    aria-label="Shop SkinBooster collection"
+                    aria-label="Shop Sunglasses collection"
                     onMouseEnter={() => handleMouseEnter(centerVideoRef)}
                     onMouseLeave={() => handleMouseLeave(centerVideoRef)}
                 >
@@ -231,7 +271,7 @@ export default function HomePage() {
                         className="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110 brightness-[0.3] group-hover:brightness-110 grayscale group-hover:grayscale-0"
                         aria-label="SkinBooster collection video"
                     >
-                        <source src="/videos/homepage/split2.mp4" type="video/mp4" />
+                        <source src="/videos/homepage/2.mp4" type="video/mp4" />
                         Your browser does not support the video tag.
                     </video>
 

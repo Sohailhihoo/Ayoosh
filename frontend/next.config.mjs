@@ -32,7 +32,7 @@ const nextConfig = {
       },
       {
         key: 'Content-Security-Policy',
-        value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https: http:; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' https://www.google-analytics.com https://ayoosh.online https://www.ayoosh.online; frame-ancestors 'none'; form-action 'self'; base-uri 'self'; object-src 'none';",
+        value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https: http:; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' https://www.google-analytics.com https://ayoosh.online https://www.ayoosh.online http://localhost:5000 http://127.0.0.1:5000 https://backend-production-55b5.up.railway.app; frame-ancestors 'none'; form-action 'self'; base-uri 'self'; object-src 'none';",
       },
     ];
 

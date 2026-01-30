@@ -88,7 +88,7 @@ const authLimiter = rateLimit({
 });
 
 // Apply General Limiter globally
-app.use(generalLimiter);
+// app.use(generalLimiter);
 
 // Professional CORS Configuration
 // Professional CORS Configuration
@@ -104,15 +104,8 @@ const allowedOrigins = [
 ].filter(Boolean); // Remove empty values
 
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
-      return callback(new Error('The CORS policy for this site does not allow access from the specified Origin.'), false);
-    }
-    return callback(null, true);
-  },
-  credentials: true // Allow cookies to be sent cross-origin
+  origin: true, // Allow all origins
+  credentials: true
 }));
 
 app.use(morgan('dev'));
@@ -126,7 +119,8 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/beauty-st
   .catch(err => console.error('❌ MongoDB connection error:', err));
 
 // API Routes
-app.use('/api/auth', authLimiter, authRoutes);
+// app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/cart', cartRoutes);

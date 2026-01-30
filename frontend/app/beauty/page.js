@@ -4,19 +4,20 @@ import { useEffect, useState } from 'react';
 import { ASSETS } from '@/lib/cloudinary-assets';
 import ProductScroller from '@/components/ProductScroller';
 import HeroSection from '@/components/HeroSection';
-import ProductShowcase from '@/components/ProductShowcase';
+
 import SplitFeatureSection from '@/components/SplitFeatureSection';
 import FeaturedProducts from '@/components/FeaturedProducts';
 import VideoShowcase from '@/components/VideoShowcase';
 import BrandLogos from '@/components/BrandLogos';
 import TestimonialSection from '@/components/TestimonialSection';
 import JournalGrid from '@/components/JournalGrid';
+import PromoBar from '@/components/PromoBar';
 
 // Title style for hero section
 const heroTitleStyle = {
     fontFamily: "'Tan Pearl', serif",
     fontWeight: 400,
-    fontSize: 'clamp(36px, 6vw, 64px)',
+    fontSize: 'clamp(28px, 4vw, 48px)', // Reduced from 36px, 6vw, 64px
     lineHeight: '1.2',
     letterSpacing: '0.02em'
 };
@@ -24,7 +25,7 @@ const heroTitleStyle = {
 // Hero buttons configuration
 const heroButtons = [
     { href: '/products?productType=beauty', label: 'Shop Now', variant: 'primary' },
-    { href: '/products', label: 'See all Collections', variant: 'outline' }
+
 ];
 
 // Split section configuration
@@ -33,12 +34,18 @@ const splitSectionConfig = {
         subtitle: 'THE AYOOSH DIFFERENCE',
         title: 'Why Choose',
         titleHighlight: 'Us?',
-        description: 'We believe in delivering exceptional quality with a commitment to your skin\'s health and the environment.',
-        tags: ['100% Cruelty Free', 'Dermatologist Tested', 'Natural Ingredients', 'Sustainable Packaging']
+        description: 'Being the best sun cream brand, we know that your skin deserves care, not just SPF. Ayoosh sun range is built to fit real South African life, not just skincare routines.',
+        tags: [
+            'SPF 50+ PA+++ Lightweight',
+            'Natural Glow, No White Cast',
+            'All Skin Types',
+            'UVA & UVB Protection',
+            'Dermatologically Tested'
+        ]
     },
     rightPanel: {
         imageOnly: true,
-        backgroundImage: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769617529/ayoosh_why_choose_us_cl2s0p.png'
+        backgroundImage: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769691023/Why_choose_ayoosh_bjb1af.jpg'
     }
 };
 
@@ -48,41 +55,40 @@ export default function BeautyPage() {
         {
             _id: 'featured-1',
             name: 'SUN CREAM',
-            variant: 'variant',
+            variant: '50ml Tube',
             price: 20,
-            image: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769514674/ayoosh-beauty/brand/heroes/landing.png',
+            image: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769715388/Sun_Tube_cmxezs.png',
             onSale: true,
             rating: 5.0
         },
         {
             _id: 'featured-2',
-            name: 'SUN CREAM TUBE',
-            variant: 'all gram weight',
+            name: 'SUN CREAM POUCH',
+            variant: '10 x 5ml Sachet',
             price: 20,
-            image: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769514674/ayoosh-beauty/brand/heroes/landing.png',
+            image: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769748802/Pouch_and_Sachet_bjidrn.png',
             onSale: true,
-            rating: 5.0
+            rating: 5.0,
+            imageScale: 1.4
         }
     ];
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-[#f4f2f0]">
             {/* Hero Section */}
             <HeroSection
-                videoSrc="/videos/hero-video.mp4"
-                subtitle="LUXURY SKINCARE"
-                title="DAILY ROUTINE"
+                videoSrc="/videos/beauty/hero.mp4"
+                title="Ayoosh Sun Cream"
                 titleStyle={heroTitleStyle}
-                description="I love how natural the products feel. The Aloe Vera Gel and Green Tea Cream became part of my daily routine..."
                 buttons={heroButtons}
-                overlayOpacity={40}
+                overlayOpacity={0}
+                align="bottom-left"
             />
 
             {/* Scrollytelling Section */}
             <ProductScroller />
 
-            {/* Product Showcase (Rejoosh) */}
-            <ProductShowcase />
+
 
             {/* Two-Split Feature Section */}
             <SplitFeatureSection
@@ -96,6 +102,9 @@ export default function BeautyPage() {
                 products={featuredProducts}
                 maxProducts={2}
             />
+
+            {/* Promo Bar */}
+            <PromoBar />
 
             {/* Video Showcase Section */}
             <VideoShowcase />

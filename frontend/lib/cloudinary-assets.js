@@ -10,11 +10,11 @@ const CLOUDINARY_BASE = 'https://res.cloudinary.com/dpdg462fb/image/upload';
 export const ASSETS = {
     // Brand Logos
     logos: {
-        main: `${CLOUDINARY_BASE}/v1/ayoosh-beauty/brand/logos/main`,
-        loading: `${CLOUDINARY_BASE}/v1/ayoosh-beauty/brand/logos/loading`,
-        final: `${CLOUDINARY_BASE}/v1/ayoosh-beauty/brand/logos/final`,
+        main: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769767511/Horizontal-Logo-Black_qxiylj.png',
+        loading: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769514667/ayoosh-beauty/brand/logos/loading.png',
+        final: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769514668/ayoosh-beauty/brand/logos/final.png',
         alt: `${CLOUDINARY_BASE}/v1/ayoosh-beauty/brand/logos/alt`,
-        light: `${CLOUDINARY_BASE}/v1/ayoosh-beauty/brand/logos/light`,
+        light: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769758114/Horizontal_Logo_clepcg.png',
         yellow: `${CLOUDINARY_BASE}/v1/ayoosh-beauty/brand/logos/yellow`,
         yellowAccent: `${CLOUDINARY_BASE}/v1/ayoosh-beauty/brand/logos/yellow-accent`,
     },
