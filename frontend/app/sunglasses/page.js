@@ -6,6 +6,8 @@ import HeroSection from '@/components/HeroSection';
 import SunglassesCircle from '@/components/SunglassesCircle';
 import BrandLogos from '@/components/BrandLogos';
 import TestimonialSection from '@/components/TestimonialSection';
+import PromoBar from '@/components/PromoBar';
+import VideoShowcase from '@/components/VideoShowcase';
 
 // Hero configuration
 const heroTitleStyle = {
@@ -20,9 +22,31 @@ const heroButtons = [
     { href: '/products?productType=sunglasses', label: 'Shop Now', variant: 'primary', color: '#0077b6' },
 ];
 
+const sunglassesVideos = [
+    {
+        id: 1,
+        thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769624525/sunglasses_16_9_oolw5o.jpg",
+        videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769624525/sunglasses_16_9_oolw5o.mp4",
+        alt: "Summer Vibes"
+    },
+    {
+        id: 2,
+        thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769624525/sunglasses_16_9_oolw5o.jpg",
+        videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769624525/sunglasses_16_9_oolw5o.mp4",
+        featured: true,
+        alt: "The Perfect Fit"
+    },
+    {
+        id: 3,
+        thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769624525/sunglasses_16_9_oolw5o.jpg",
+        videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769624525/sunglasses_16_9_oolw5o.mp4",
+        alt: "Chic & Bold"
+    }
+];
+
 export default function SunglassesPage() {
     return (
-        <div className="min-h-screen bg-[#f4f2f0]">
+        <div className="min-h-screen bg-[#d9d9d9]">
             {/* Hero Section */}
             <HeroSection
                 videoSrc="/videos/sunglasses/sunglasses.mp4"
@@ -36,91 +60,21 @@ export default function SunglassesPage() {
             {/* Circular Showcase */}
             <SunglassesCircle />
 
-            {/* Introduction Section */}
-            <section className="py-20 md:py-28 px-6">
-                <div className="max-w-4xl mx-auto text-center">
-                    <motion.span
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: false, amount: 0.5 }}
-                        transition={{ duration: 0.6 }}
-                        className="text-sm tracking-[0.3em] text-[#b87c6b] uppercase font-medium mb-4 block"
-                    >
-                        Premium Eyewear
-                    </motion.span>
+            {/* Promo Bar (Yellow Feature Section) */}
+            <div className="mt-8">
+                <PromoBar bgColor="#649BC3" hoverTextColor="#649BC3" />
+            </div>
 
-                    <motion.h2
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: false, amount: 0.5 }}
-                        transition={{ duration: 0.6, delay: 0.1 }}
-                        className="text-3xl md:text-5xl font-sans font-light mb-6 text-gray-900"
-                    >
-                        Style Meets <span className="text-[#b87c6b] italic">Protection</span>
-                    </motion.h2>
+            {/* Video Showcase (Reels) */}
+            <VideoShowcase videos={sunglassesVideos} bgColor="#d9d9d9" />
 
-                    <motion.p
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: false, amount: 0.5 }}
-                        transition={{ duration: 0.6, delay: 0.2 }}
-                        className="text-gray-600 leading-relaxed max-w-2xl mx-auto"
-                    >
-                        Discover our collection of premium sunglasses designed to complement your style
-                        while providing superior UV protection. Crafted with precision and elegance.
-                    </motion.p>
-                </div>
-            </section>
 
-            {/* Coming Soon Banner */}
-            <section className="py-20 md:py-28 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
-                <div className="max-w-4xl mx-auto px-6 text-center">
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: false, amount: 0.5 }}
-                        transition={{ duration: 0.8 }}
-                    >
-                        <span className="text-sm tracking-[0.3em] text-[#d4a574] uppercase font-medium mb-4 block">
-                            New Collection
-                        </span>
-
-                        <h2 className="text-4xl md:text-6xl font-sans font-light mb-6">
-                            Coming <span className="text-[#d4a574] italic">Soon</span>
-                        </h2>
-
-                        <p className="text-gray-400 max-w-lg mx-auto mb-8">
-                            Our exclusive sunglasses collection is in the works.
-                            Be the first to know when we launch.
-                        </p>
-
-                        {/* Animated dots */}
-                        <div className="flex items-center justify-center gap-2">
-                            <motion.div
-                                className="w-2 h-2 rounded-full bg-[#d4a574]"
-                                animate={{ scale: [1, 1.3, 1] }}
-                                transition={{ duration: 1.5, repeat: Infinity, delay: 0 }}
-                            />
-                            <motion.div
-                                className="w-2 h-2 rounded-full bg-[#b87c6b]"
-                                animate={{ scale: [1, 1.3, 1] }}
-                                transition={{ duration: 1.5, repeat: Infinity, delay: 0.3 }}
-                            />
-                            <motion.div
-                                className="w-2 h-2 rounded-full bg-[#d4a574]"
-                                animate={{ scale: [1, 1.3, 1] }}
-                                transition={{ duration: 1.5, repeat: Infinity, delay: 0.6 }}
-                            />
-                        </div>
-                    </motion.div>
-                </div>
-            </section>
 
             {/* Brand Logos */}
-            <BrandLogos />
+            <BrandLogos bgColor="#d9d9d9" />
 
             {/* Testimonials */}
-            <TestimonialSection />
+            <TestimonialSection bgColor="#d9d9d9" />
         </div>
     );
 }

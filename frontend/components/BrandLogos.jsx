@@ -5,9 +5,9 @@ import { motion } from 'framer-motion';
  * BrandLogos Component
  * Displays a "Coming Soon" message instead of brand logos
  */
-export default function BrandLogos() {
+export default function BrandLogos({ bgColor = '#fdf6f0' }) {
     return (
-        <section className="py-20 md:py-28 bg-[#fdf6f0] border-t border-[#eee5df] overflow-hidden relative flex items-center justify-center">
+        <section className="py-10 md:py-16 border-t border-[#eee5df] overflow-hidden relative flex items-center justify-center" style={{ backgroundColor: bgColor }}>
             <div className="w-full max-w-4xl mx-auto px-6 text-center">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}

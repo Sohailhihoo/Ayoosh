@@ -4,11 +4,9 @@ import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
 /**
- * ProductScroller - 3D Scroll Animation with 9 Progressive Spec Components
- * - First scroll (0-33%): 3 components appear and stay fixed
- * - Second scroll (33-66%): 3 more components appear and stay fixed
- * - Third scroll (66-100%): 3 more components appear
- * - End result: All 9 components visible around the product
+ * ProductScroller - 3D Scroll Animation with Progressive Spec Components
+ * - Desktop: Complex circular scroll animation (Sticky)
+ * - Mobile: Simple static product showcase with specs grid (Normal flow)
  */
 export default function ProductScroller() {
     const containerRef = useRef(null);
@@ -18,43 +16,30 @@ export default function ProductScroller() {
         offset: ["start start", "end end"]
     });
 
-    // --- Product Animations ---
+    // --- Product Animations (Desktop) ---
     const productRotateZ = useTransform(scrollYProgress, [0, 0.5, 1], [0, 5, 0]);
     const productScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.9, 1.1, 1]);
 
-    // --- Progressive Reveal: 3 groups of 3 specs each ---
-    // Group 1: Appear at 0-25% and STAY visible
+    // --- Progressive Reveal (Desktop) ---
     const group1Opacity = useTransform(scrollYProgress, [0.05, 0.15], [0, 1]);
-
-    // Group 2: Appear at 33-50% and STAY visible
     const group2Opacity = useTransform(scrollYProgress, [0.33, 0.45], [0, 1]);
-
-    // Group 3: Appear at 66-80% and STAY visible
     const group3Opacity = useTransform(scrollYProgress, [0.66, 0.78], [0, 1]);
 
-    // 10 Spec components data - positioned on LEFT and RIGHT sides only
     const specs = [
-        // Group 1 - Appear first (right side)
-        { id: 1, label: "Advanced Korean UV filter", value: "SPF 50+ PA++++", group: 1, angle: 340 },           // upper right
-        { id: 2, label: "Vitamin E", value: "Antioxidant Protection", group: 1, angle: 0 },      // right center
-        { id: 3, label: "Propanediol", value: "Hydration & Smoothness", group: 1, angle: 20 },  // lower right
-
-        // Group 2 - Appear second (mixed sides)
-        { id: 4, label: "Glycerin", value: "Deep Moisturization", group: 2, angle: 50 },   // lower right
-        { id: 5, label: "Betaine", value: "Skin Barrier Support", group: 2, angle: 130 },     // lower left
-        { id: 6, label: "Centella Asiatica", value: "Soothing & Repair", group: 2, angle: 160 },       // left side
-
-        // Group 3 - Appear last (left side)
-        { id: 7, label: "Allantoin", value: "Irritation Relief", group: 3, angle: 180 },             // left center
-        { id: 8, label: "Chamomile Extract", value: "Calming Effect", group: 3, angle: 200 },      // upper left
-        { id: 10, label: "Polygonum Root Extract", value: "Intense Hydration", group: 3, angle: 220 },   // left side
-        { id: 9, label: "Licorice Root Extract", value: "Brightening", group: 3, angle: 320 },    // upper right
+        { id: 1, label: "Advanced Korean UV filter", value: "SPF 50+ PA++++", group: 1, angle: 340 },
+        { id: 2, label: "Vitamin E", value: "Antioxidant Protection", group: 1, angle: 0 },
+        { id: 3, label: "Propanediol", value: "Hydration & Smoothness", group: 1, angle: 20 },
+        { id: 4, label: "Glycerin", value: "Deep Moisturization", group: 2, angle: 50 },
+        { id: 5, label: "Betaine", value: "Skin Barrier Support", group: 2, angle: 130 },
+        { id: 6, label: "Centella Asiatica", value: "Soothing & Repair", group: 2, angle: 160 },
+        { id: 7, label: "Allantoin", value: "Irritation Relief", group: 3, angle: 180 },
+        { id: 8, label: "Chamomile Extract", value: "Calming Effect", group: 3, angle: 200 },
+        { id: 10, label: "Polygonum Root Extract", value: "Intense Hydration", group: 3, angle: 220 },
+        { id: 9, label: "Licorice Root Extract", value: "Brightening", group: 3, angle: 320 },
     ];
 
-    // Circle radius - farther from product
     const circleRadius = 450;
 
-    // Map group number to opacity
     const getGroupOpacity = (group) => {
         switch (group) {
             case 1: return group1Opacity;
@@ -67,10 +52,50 @@ export default function ProductScroller() {
     return (
         <section
             ref={containerRef}
-            className="relative h-[300vh] bg-[#f4f2f0]"
+            className="relative bg-[#f4f2f0] md:h-[300vh]"
         >
-            {/* Sticky Viewport */}
-            <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-center items-center">
+            {/* ==================== MOBILE VIEW (Visible < 768px) ==================== */}
+            <div className="md:hidden py-16 px-4">
+                {/* Product Image */}
+                <div className="flex justify-center mb-8">
+                    <img
+                        src="https://res.cloudinary.com/dpdg462fb/image/upload/v1769715388/Sun_Tube_cmxezs.png"
+                        alt="Ayoosh Sun Cream"
+                        className="w-auto h-[280px] object-contain"
+                        style={{
+                            filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.25))'
+                        }}
+                    />
+                </div>
+
+                {/* Specs Grid */}
+                <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto">
+                    {specs.slice(0, 8).map((spec, index) => {
+                        const isYellow = index % 2 === 0;
+                        return (
+                            <div
+                                key={spec.id}
+                                className={`
+                                    rounded-lg px-3 py-3 text-center
+                                    ${isYellow
+                                        ? 'bg-[#f9cb19] text-black'
+                                        : 'bg-white text-gray-900 shadow-sm'}
+                                `}
+                            >
+                                <p className={`text-[9px] uppercase tracking-wide font-medium mb-1 ${isYellow ? 'text-black/60' : 'text-gray-500'}`}>
+                                    {spec.label}
+                                </p>
+                                <p className="text-sm font-semibold">
+                                    {spec.value}
+                                </p>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+
+            {/* ==================== DESKTOP VIEW (Visible >= 768px) ==================== */}
+            <div className="hidden md:flex sticky top-0 h-screen w-full overflow-hidden flex-col justify-center items-center">
 
                 {/* Background Ambience */}
                 <div className="absolute inset-0 pointer-events-none">
@@ -78,14 +103,12 @@ export default function ProductScroller() {
                     <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#e8c4b8]/30 rounded-full blur-3xl opacity-50" />
                 </div>
 
-                {/* 9 Spec Components - Positioned in a CIRCLE around the product */}
+                {/* Circular Spec Layout */}
                 <div className="absolute inset-0 w-full h-full z-20 pointer-events-none flex items-center justify-center">
                     {specs.map((spec, index) => {
-                        // Convert angle to x,y position on circle
                         const angleRad = (spec.angle * Math.PI) / 180;
                         const x = Math.cos(angleRad) * circleRadius;
                         const y = Math.sin(angleRad) * circleRadius;
-
                         const isYellow = index % 2 === 0;
 
                         return (
@@ -103,10 +126,10 @@ export default function ProductScroller() {
                                         ? 'bg-[#f9cb19]/90 border-[#e8ba17] text-black'
                                         : 'bg-white/90 border-white/50 text-gray-900'}
                                 `}>
-                                    <p className={`text-[10px] md:text-xs uppercase tracking-widest font-medium mb-1 ${isYellow ? 'text-black/70' : 'text-gray-500'}`}>
+                                    <p className={`text-xs uppercase tracking-widest font-medium mb-1 ${isYellow ? 'text-black/70' : 'text-gray-500'}`}>
                                         {spec.label}
                                     </p>
-                                    <p className={`text-lg md:text-xl font-sans font-medium leading-tight ${isYellow ? 'text-black' : 'text-gray-900'}`}>
+                                    <p className={`text-xl font-sans font-medium leading-tight ${isYellow ? 'text-black' : 'text-gray-900'}`}>
                                         {spec.value}
                                     </p>
                                 </div>
@@ -116,7 +139,7 @@ export default function ProductScroller() {
                 </div>
 
                 {/* Main Product Stage */}
-                <div className="relative z-10 w-full max-w-md md:max-w-xl lg:max-w-2xl px-6 flex justify-center">
+                <div className="relative z-10 w-full max-w-xl lg:max-w-2xl px-6 flex justify-center">
                     <motion.div
                         style={{
                             rotate: productRotateZ,
@@ -130,9 +153,8 @@ export default function ProductScroller() {
                         <img
                             src="https://res.cloudinary.com/dpdg462fb/image/upload/v1769715388/Sun_Tube_cmxezs.png"
                             alt="Ayoosh Sun Cream"
-                            className="w-auto h-[550px] md:h-[750px] object-contain relative z-10"
+                            className="w-auto h-[750px] object-contain relative z-10"
                             style={{
-                                transform: 'scaleY(-1) translateY(-50px)',
                                 filter: 'drop-shadow(0 30px 60px rgba(0, 0, 0, 0.35)) drop-shadow(0 15px 30px rgba(0, 0, 0, 0.25))'
                             }}
                         />

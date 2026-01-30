@@ -15,7 +15,7 @@ export default function Footer() {
               <img
                 src={ASSETS.logos.light}
                 alt="Ayoosh Logo"
-                className="h-24 w-auto object-contain invert"
+                className="h-24 w-auto object-contain"
               />
             </Link>
             <p className="mt-4 text-sm text-gray-400 text-center lg:text-left">

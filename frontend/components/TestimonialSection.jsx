@@ -124,7 +124,7 @@ function ReviewCard({ review }) {
 }
 
 // Testimonial Section (The Parent)
-export default function TestimonialSection() {
+export default function TestimonialSection({ bgColor = '#f4f2f0' }) {
     const scrollRef = useRef(null);
 
     const scroll = (direction) => {
@@ -138,7 +138,7 @@ export default function TestimonialSection() {
     };
 
     return (
-        <section className="py-24 bg-[#f4f2f0] overflow-hidden">
+        <section className="py-24 overflow-hidden" style={{ backgroundColor: bgColor }}>
             <div className="max-w-7xl mx-auto px-6 md:px-12">
 
                 {/* Header */}

@@ -32,7 +32,9 @@ const SCROLL_THRESHOLD = 50;
  */
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrollPos, setScrollPos] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
+
   const { totalItems, fetchCart } = useCartStore();
   const { isAuthenticated, user, logout, checkAuth, isLoading } = useAuthStore();
   const pathname = usePathname();
@@ -42,12 +44,27 @@ export default function Navbar() {
 
   // Determine navbar styles based on scroll state and current page
   const getNavClasses = () => {
+    // Special detailed logic for Sunglasses page (3 Stages)
+    if (pathname === '/sunglasses') {
+      const vh = typeof window !== 'undefined' ? window.innerHeight : 1000;
+
+      // Stage 1: Hero (0 - 100vh) -> Transparent / White Text
+      if (scrollPos < vh - 100) {
+        return 'fixed top-0 w-full z-50 transition-all duration-300 bg-transparent text-white border-none';
+      }
+      // Stage 2: Product Scroll (100vh - 500vh) -> Transparent / Dark Text
+      // We use 450vh to be safe as the scroll section ends
+      else if (scrollPos < vh * 4.5) {
+        return 'fixed top-0 w-full z-50 transition-all duration-300 bg-transparent text-gray-900 shadow-none';
+      }
+      // Stage 3: Rest of content -> White BG / Dark Text
+      else {
+        return 'fixed top-0 w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md text-black shadow-lg';
+      }
+    }
+
     if (isTransparentPage) {
       if (isScrolled) {
-        // Special case for sunglasses: keep transparent bg but switch to black text
-        if (pathname === '/sunglasses') {
-          return 'fixed top-0 w-full z-50 transition-all duration-300 bg-transparent text-gray-900 shadow-none';
-        }
         return 'fixed top-0 w-full z-50 transition-all duration-300 bg-white text-black shadow-lg';
       }
       return 'fixed top-0 w-full z-50 transition-all duration-300 bg-transparent text-white border-none';
@@ -57,6 +74,45 @@ export default function Navbar() {
 
   const navClasses = getNavClasses();
 
+  // Determine which logo to use based on current navbar state
+  const getLogoSrc = () => {
+    // Sunglasses page has 3-stage logic
+    if (pathname === '/sunglasses') {
+      const vh = typeof window !== 'undefined' ? window.innerHeight : 1000;
+      // Stage 1: Hero - use white logo on dark background
+      if (scrollPos < vh - 100) {
+        return ASSETS.logos.light;
+      }
+      // Stage 2 & 3: Use black logo on light/white background
+      return ASSETS.logos.main;
+    }
+
+    // Beauty page and other transparent pages
+    if (isTransparentPage) {
+      return isScrolled ? ASSETS.logos.main : ASSETS.logos.light;
+    }
+
+    // Default pages - always use main (black) logo
+    return ASSETS.logos.main;
+  };
+
+  // Determine logo size based on navbar state
+  const getLogoSize = () => {
+    if (pathname === '/sunglasses') {
+      const vh = typeof window !== 'undefined' ? window.innerHeight : 1000;
+      if (scrollPos < vh - 100) {
+        return 'h-20 md:h-28'; // Large on hero
+      }
+      return 'h-14 md:h-20'; // Smaller after scroll
+    }
+
+    if (isTransparentPage && !isScrolled) {
+      return 'h-20 md:h-28'; // Large on transparent
+    }
+
+    return 'h-14 md:h-20'; // Default smaller size
+  };
+
   /**
    * Initialize user session and cart data, setup scroll listener
    */
@@ -65,7 +121,9 @@ export default function Navbar() {
     fetchCart();
 
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > SCROLL_THRESHOLD);
+      const pos = window.scrollY;
+      setScrollPos(pos);
+      setIsScrolled(pos > SCROLL_THRESHOLD);
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -105,48 +163,17 @@ export default function Navbar() {
         role="navigation"
         aria-label="Main navigation"
       >
-        <div className="max-w-[1800px] mx-auto px-6 lg:px-12">
-          <div className="flex items-center justify-between h-24">
+        <div className="max-w-[1800px] mx-auto px-6 md:px-12 lg:px-24 relative">
+          <div className={`flex items-center justify-between transition-all duration-300 ${isScrolled || !isTransparentPage ? 'h-24' : 'h-32'}`}>
 
-            {/* Logo (Left-aligned) */}
-            <Link
-              href="/home"
-              className={`flex-shrink-0 mr-12 ${isTransparentPage && !isScrolled ? 'mt-12 -ml-8' : '-ml-6'}`} // Conditional spacing
-              aria-label="Ayoosh home"
-            >
-              <img
-                src={isScrolled || !isTransparentPage ? ASSETS.logos.main : ASSETS.logos.light}
-                alt="Ayoosh logo"
-                className={`w-auto object-contain ${isTransparentPage && !isScrolled ? 'h-20' : 'h-12'}`}
-                width="auto"
-                height="48"
-              />
-            </Link>
-
-            {/* Middle (Nav Items - now on Right) */}
-            <div className="hidden md:flex items-center space-x-8 ml-auto mr-12">
-              {NAV_ITEMS.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="text-base tracking-widest hover:opacity-70 transition-opacity"
-                  aria-label={item.ariaLabel}
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </div>
-
-            {/* Right Navigation (Search, Account, Cart) */}
-            <div className="flex items-center space-x-6">
-
-              {/* Mobile Menu Button (Visible only on mobile, aligned with right section) */}
+            {/* Left Section: Mobile Menu & Desktop Nav */}
+            <div className="flex items-center">
+              {/* Mobile Menu Button */}
               <button
-                className="md:hidden p-2 mr-4"
+                className="md:hidden p-2 -ml-2 mr-4"
                 onClick={toggleMenu}
                 aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
                 aria-expanded={isMenuOpen}
-                aria-controls="mobile-menu"
               >
                 {isMenuOpen ? (
                   <HiOutlineX className="w-6 h-6" aria-hidden="true" />
@@ -154,6 +181,40 @@ export default function Navbar() {
                   <HiOutlineMenu className="w-6 h-6" aria-hidden="true" />
                 )}
               </button>
+
+              {/* Desktop Nav Items (Moved to Left) */}
+              <div className="hidden md:flex items-center space-x-8">
+                {NAV_ITEMS.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="text-base tracking-widest hover:opacity-70 transition-opacity"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Center Section: Logo (Absolute Centered) */}
+            <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <Link
+                href="/home"
+                className="block"
+                aria-label="Ayoosh home"
+              >
+                <img
+                  src={getLogoSrc()}
+                  alt="Ayoosh logo"
+                  className={`w-auto object-contain transition-all duration-300 ${getLogoSize()}`}
+                  width="auto"
+                  height="80"
+                />
+              </Link>
+            </div>
+
+            {/* Right Section: Icons */}
+            <div className="flex items-center space-x-6">
               <button
                 className="hover:opacity-70 transition-opacity hidden md:block" // Removed text tracking classes
                 aria-label="Search products"

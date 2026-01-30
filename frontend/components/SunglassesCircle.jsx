@@ -1,49 +1,58 @@
 'use client';
+// Re-trigger HMR
 
 import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
+import { Montserrat } from 'next/font/google';
+
+const montserrat = Montserrat({
+    subsets: ['latin'],
+    weight: ['300', '400', '500'],
+    display: 'swap'
+});
+
 
 // Product Data
 const sunglasses = [
     {
         id: 1,
-        name: 'Confidence',
+        name: 'The Confidence',
         price: 'R 2,450.00',
         tagline: 'Confidence',
         description: 'The Confidence frame is joy, worn boldly. A bright yellow sunglass full of warmth and energy. Fearless. Radiant. Alive. It turns heads and lifts moods. Feels like sunshine and movement. For women who enter fully, choose happiness, and let their presence speak first.',
         specs: ['Yellow Tint', 'UV400', 'Lightweight'],
         image: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769767397/Yellow-Glasses_faznsr.png',
-        color: '#f9cb19'
+        color: '#DEA835'
     },
     {
         id: 2,
-        name: 'Coffee Brown',
+        name: 'The Focus',
         price: 'R 2,550.00',
         tagline: 'Focus',
         description: 'The Focus is a grounded perspective. A rich coffee-brown frame with quiet strength. Calm. Stable. Effortless. Designed to feel present without overpowering. It anchors your look and sharpens your style. An everyday essential that adds depth, warmth, and polish.',
         specs: ['Brown Lens', 'Acetate', 'Anti-Glare'],
         image: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769767395/Brown-Glasses_u6obla.png',
-        color: '#8b4513'
+        color: '#A87E5A'
     },
     {
         id: 3,
-        name: 'Ocean Drive',
+        name: 'The Leadership',
         price: 'R 2,350.00',
         tagline: 'Leadership',
         description: 'The Leadership is clarity from a motion perspective. A deep blue frame for focused minds. Thoughtful. Intelligent. Forward. It speaks without volume. Strong without force. Made for those who choose direction, trust their vision, and lead on their own terms.',
         specs: ['Blue Gradient', 'Polarized', 'Impact Resistant'],
         image: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769767393/Blue-Glasses_fky8v9.png',
-        color: '#3b82f6'
+        color: '#649BC3'
     },
     {
         id: 4,
-        name: 'Rose Aviator',
+        name: 'The Roseview',
         price: 'R 2,650.00',
         tagline: 'RoseView',
         description: "The Roseview in pink is soft power. A warm pink frame rooted in self-love. Gentle yet strong. Romantic. Healing. Feminine. It flatters the skin and softens every look. Made for those who lead with grace and glow without effort.See the world through rose-colored glasses. A feminine touch with a modern edge for the bold spirit.",
         specs: ['Pink Tint', 'Gold Frame', 'Adjustable'],
         image: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769767392/Pink-Glasses_o5hxf2.png',
-        color: '#ec4899'
+        color: '#D47E9C'
     }
 ];
 
@@ -73,7 +82,7 @@ export default function SunglassesCircle() {
     const activeProduct = sunglasses[activeIndex];
 
     return (
-        <section ref={containerRef} className="relative h-[400vh] bg-[#f8f9fa] z-10 overflow-clip">
+        <section ref={containerRef} className="relative h-[400vh] bg-[#d9d9d9] z-10 overflow-clip">
             <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-visible">
 
                 {/* Central Text Content - Shifted down slightly */}
@@ -87,7 +96,10 @@ export default function SunglassesCircle() {
                             transition={{ duration: 0.2 }}
                             className="flex flex-col items-center"
                         >
-                            <p className="text-gray-600 text-base leading-relaxed mb-8 font-medium font-sans max-w-sm">
+                            <h2 className="text-3xl md:text-4xl text-gray-900 mb-4" style={{ fontFamily: "'Tan Pearl', serif" }}>
+                                {activeProduct.name}
+                            </h2>
+                            <p className={`${montserrat.className} text-gray-600 text-base leading-[2] mb-8 font-normal max-w-sm`}>
                                 {activeProduct.description}
                             </p>
 

@@ -78,7 +78,7 @@ export default function BeautyPage() {
             {/* Hero Section */}
             <HeroSection
                 videoSrc="/videos/beauty/hero.mp4"
-                title="Ayoosh Sun Cream"
+                title="AYOOSH SUN CREAM"
                 titleStyle={heroTitleStyle}
                 buttons={heroButtons}
                 overlayOpacity={0}

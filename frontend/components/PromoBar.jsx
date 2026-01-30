@@ -8,7 +8,8 @@ import { FiGift, FiHeart, FiStar } from 'react-icons/fi';
  * PromoBar - Horizontal promotional banner with 3 sections
  * Golden/yellow background with icons and CTA buttons
  */
-export default function PromoBar() {
+export default function PromoBar({ bgColor = '#f8cb19', hoverTextColor = '#f8cb19' }) {
+    // ... items ...
     const promoItems = [
         {
             id: 1,
@@ -37,7 +38,7 @@ export default function PromoBar() {
     ];
 
     return (
-        <section className="bg-[#f8cb19] py-12 md:py-16">
+        <section className="py-12 md:py-16" style={{ backgroundColor: bgColor }}>
             <div className="max-w-7xl mx-auto px-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4">
                     {promoItems.map((item, index) => (
@@ -67,10 +68,15 @@ export default function PromoBar() {
                             {/* CTA Button */}
                             <Link
                                 href={item.href}
-                                className="inline-flex items-center gap-2 px-5 py-2 border border-white/80 rounded-full text-sm font-medium hover:bg-white hover:text-[#f8cb19] transition-all duration-300"
+                                className="group inline-flex items-center gap-2 px-5 py-2 border border-white/80 rounded-full text-sm font-medium hover:bg-white transition-all duration-300"
+                                style={{
+                                    '--hover-color': hoverTextColor
+                                }}
                             >
-                                {item.buttonText}
-                                <span>→</span>
+                                <span className="text-white group-hover:text-[var(--hover-color)] transition-colors">
+                                    {item.buttonText}
+                                </span>
+                                <span className="text-white group-hover:text-[var(--hover-color)] transition-colors">→</span>
                             </Link>
                         </motion.div>
                     ))}
@@ -79,3 +85,4 @@ export default function PromoBar() {
         </section>
     );
 }
+
