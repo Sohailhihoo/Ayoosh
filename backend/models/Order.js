@@ -86,10 +86,10 @@ const orderSchema = new mongoose.Schema({
     required: true
   },
 
-  // Payment
+  // Payment - UPDATED TO INCLUDE PAYFAST
   paymentMethod: {
     type: String,
-    enum: ['stripe', 'paypal', 'cod'],
+    enum: ['stripe', 'paypal', 'cod', 'payfast'],  // Added 'payfast'
     required: true
   },
   paymentStatus: {
@@ -97,7 +97,7 @@ const orderSchema = new mongoose.Schema({
     enum: ['pending', 'paid', 'failed', 'refunded', 'partially_refunded'],
     default: 'pending'
   },
-  paymentId: String,          // Stripe payment intent ID
+  paymentId: String,          // PayFast pf_payment_id or Stripe payment intent ID
   paidAt: Date,
 
   // Shipping

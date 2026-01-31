@@ -9,33 +9,7 @@ import { FaHandHoldingHeart } from 'react-icons/fa';
 import NewsletterPopup from '@/components/NewsletterPopup';
 import { ASSETS } from '@/lib/cloudinary-assets';
 
-// Animation variants for scroll-triggered animations
-const fadeInUp = {
-    hidden: { opacity: 0, y: 60 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: { duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }
-    }
-};
 
-const fadeInLeft = {
-    hidden: { opacity: 0, x: -80 },
-    visible: {
-        opacity: 1,
-        x: 0,
-        transition: { duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }
-    }
-};
-
-const fadeInRight = {
-    hidden: { opacity: 0, x: 80 },
-    visible: {
-        opacity: 1,
-        x: 0,
-        transition: { duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }
-    }
-};
 
 const scaleIn = {
     hidden: { opacity: 0, scale: 0.85 },
@@ -288,71 +262,7 @@ export default function HomePage() {
                 </Link>
             </section>
 
-            {/* New Section - Picture & Text */}
-            <section className="relative h-[50vh] min-h-[400px] flex flex-col md:flex-row overflow-hidden">
 
-                {/* Left Panel - Image (Fade in from left) */}
-                <motion.div
-                    className="w-full md:w-1/2 h-1/2 md:h-full relative overflow-hidden group"
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: false, amount: 0.3 }}
-                    variants={fadeInLeft}
-                >
-                    <div className="absolute inset-0 bg-gray-900">
-                        <img
-                            src={ASSETS.homepage.rejoosh}
-                            alt="Brand Philosophy"
-                            className="w-full h-full object-contain p-8 transition-transform duration-1000 group-hover:scale-105 opacity-90"
-                        />
-                        <div className="absolute inset-0 bg-black/10 transition-opacity duration-500 group-hover:opacity-0"></div>
-                    </div>
-                </motion.div>
-
-                {/* Right Panel - Text (Fade in from right) */}
-                <motion.div
-                    className="w-full md:w-1/2 h-1/2 md:h-full bg-white flex flex-col items-center justify-center p-8 md:p-16 text-center"
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: false, amount: 0.3 }}
-                    variants={fadeInRight}
-                >
-                    <div className="max-w-xl">
-                        <motion.h3
-                            className="text-sm font-light tracking-[0.3em] uppercase text-gray-500 mb-4"
-                            variants={fadeInUp}
-                        >
-                            Our Philosophy
-                        </motion.h3>
-                        <motion.h2
-                            className="text-3xl md:text-5xl font-playfair font-medium text-gray-900 mb-8 leading-tight"
-                            variants={fadeInUp}
-                        >
-                            Elevating Beauty <br /> to an Art Form
-                        </motion.h2>
-                        <motion.div
-                            className="w-12 h-px bg-black mx-auto mb-8"
-                            variants={fadeInUp}
-                        />
-                        <motion.p
-                            className="text-gray-600 font-light leading-relaxed mb-8 text-lg"
-                            variants={fadeInUp}
-                        >
-                            At Ayoosh, we believe that beauty is more than just appearance—it is a reflection of self-care and confidence.
-                            Our curated collection brings together the finest elements of nature and science to enhance your natural radiance.
-                        </motion.p>
-                        <motion.div variants={fadeInUp}>
-                            <Link
-                                href="/about"
-                                className="inline-block border-b border-black pb-1 text-sm tracking-[0.2em] uppercase hover:text-gray-600 hover:border-gray-400 transition-all duration-300"
-                            >
-                                Read Our Story
-                            </Link>
-                        </motion.div>
-                    </div>
-                </motion.div>
-
-            </section>
 
             {/* New Section - 4 Boxes (Features/Values) */}
             <section className="bg-white py-20 px-6 md:px-12 border-t border-gray-100 mt-20">

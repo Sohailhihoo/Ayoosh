@@ -28,20 +28,16 @@ export default function Footer() {
             <h3 className="text-sm font-semibold tracking-wider mb-4 md:mb-6">Products</h3>
             <ul className="space-y-2 md:space-y-3">
               <li>
-                <Link href="/products?category=inner-care" className="text-sm text-gray-400 hover:text-white transition-colors">
-                  Inner Care
+                <Link href="/beauty" className="text-sm text-gray-400 hover:text-white transition-colors">
+                  AYOOSH CARE
                 </Link>
               </li>
               <li>
-                <Link href="/products?category=skin-care" className="text-sm text-gray-400 hover:text-white transition-colors">
-                  Skin Care
+                <Link href="/sunglasses" className="text-sm text-gray-400 hover:text-white transition-colors">
+                  Perspective Range
                 </Link>
               </li>
-              <li>
-                <Link href="/products?category=scalp-care" className="text-sm text-gray-400 hover:text-white transition-colors">
-                  Scalp Care
-                </Link>
-              </li>
+
             </ul>
           </div>
 
@@ -50,40 +46,31 @@ export default function Footer() {
             <h3 className="text-sm font-semibold tracking-wider mb-4 md:mb-6">Guides</h3>
             <ul className="space-y-2 md:space-y-3">
               <li>
-                <Link href="/news" className="text-sm text-gray-400 hover:text-white transition-colors">
-                  News
+                <Link href="/blogs" className="text-sm text-gray-400 hover:text-white transition-colors">
+                  Blogs
                 </Link>
               </li>
-              <li>
-                <Link href="/vision" className="text-sm text-gray-400 hover:text-white transition-colors">
-                  Vision
-                </Link>
-              </li>
-              <li>
-                <Link href="/faq" className="text-sm text-gray-400 hover:text-white transition-colors">
-                  Q&A
-                </Link>
-              </li>
+
             </ul>
           </div>
 
           {/* Service */}
           <div>
-            <h3 className="text-sm font-semibold tracking-wider mb-4 md:mb-6">Service</h3>
+            <h3 className="text-sm font-semibold tracking-wider mb-4 md:mb-6">Information</h3>
             <ul className="space-y-2 md:space-y-3">
               <li>
                 <Link href="/about" className="text-sm text-gray-400 hover:text-white transition-colors">
-                  About Us
+                  About us
                 </Link>
               </li>
               <li>
-                <Link href="/consultation" className="text-sm text-gray-400 hover:text-white transition-colors">
-                  Consultation
+                <Link href="/privacy" className="text-sm text-gray-400 hover:text-white transition-colors">
+                  Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-sm text-gray-400 hover:text-white transition-colors">
-                  Contact
+                <Link href="/terms" className="text-sm text-gray-400 hover:text-white transition-colors">
+                  Terms and Condition
                 </Link>
               </li>
             </ul>
@@ -110,21 +97,10 @@ export default function Footer() {
       {/* Bottom Bar */}
       <div className="border-t border-gray-800">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12 py-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex flex-col md:flex-row justify-center items-center gap-4">
             <p className="text-xs text-gray-500">
               © 2025 Ayoosh. All rights reserved.
             </p>
-            <div className="flex flex-wrap justify-center gap-4 md:gap-6">
-              <Link href="/privacy" className="text-xs text-gray-500 hover:text-white transition-colors">
-                Privacy Policy
-              </Link>
-              <Link href="/terms" className="text-xs text-gray-500 hover:text-white transition-colors">
-                Terms of Service
-              </Link>
-              <Link href="/refund-policy" className="text-xs text-gray-500 hover:text-white transition-colors">
-                Refund Policy
-              </Link>
-            </div>
           </div>
         </div>
       </div>

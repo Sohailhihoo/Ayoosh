@@ -181,9 +181,9 @@ router.post('/', optionalAuth, async (req, res) => {
     }
   }
 
-  // Start MongoDB transaction for atomic stock updates
-  const session = await mongoose.startSession();
-  session.startTransaction();
+  // Transaction removed for standalone MongoDB compatibility
+  // const session = await mongoose.startSession();
+  // session.startTransaction();
 
   try {
     const orderItems = [];
@@ -205,7 +205,7 @@ router.post('/', optionalAuth, async (req, res) => {
             soldCount: item.quantity
           }
         },
-        { session, new: true }
+        { new: true }
       );
 
       // If ANY product fails, throw error → entire transaction rolls back
@@ -267,17 +267,15 @@ router.post('/', optionalAuth, async (req, res) => {
         status: 'pending',
         note: 'Order created'
       }]
-    }], { session });
+    }]);
 
     // Clear cart within transaction
     await Cart.findByIdAndUpdate(
       cart._id,
-      { items: [], subtotal: 0, discountAmount: 0, couponCode: null },
-      { session }
+      { items: [], subtotal: 0, discountAmount: 0, couponCode: null }
     );
 
-    // Everything succeeded → Commit transaction
-    await session.commitTransaction();
+    // await session.commitTransaction();
 
     res.status(201).json({
       success: true,
@@ -291,8 +289,7 @@ router.post('/', optionalAuth, async (req, res) => {
     });
 
   } catch (error) {
-    // Any failure → Rollback ALL stock changes automatically
-    await session.abortTransaction();
+    // await session.abortTransaction();
 
     res.status(400).json({
       success: false,
@@ -300,7 +297,7 @@ router.post('/', optionalAuth, async (req, res) => {
     });
 
   } finally {
-    session.endSession();
+    // session.endSession();
   }
 });
 

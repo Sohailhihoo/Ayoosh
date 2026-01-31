@@ -1,20 +1,29 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useCartStore, useAuthStore } from '@/lib/store';
-import { orderAPI, paymentAPI } from '@/lib/api';
+import { orderAPI } from '@/lib/api';
+import { initiatePayFastPayment } from '@/lib/payfast';
 import toast from 'react-hot-toast';
 import { HiArrowLeft, HiLockClosed, HiCheck } from 'react-icons/hi';
 
 export default function CheckoutPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const { items, subtotal, totalItems, fetchCart, clearCart } = useCartStore();
     const { user, isAuthenticated } = useAuthStore();
 
     const [loading, setLoading] = useState(false);
     const [pageLoading, setPageLoading] = useState(true);
+
+    // Check if returning from cancelled PayFast payment
+    useEffect(() => {
+        if (searchParams.get('cancelled') === 'true') {
+            toast.error('Payment was cancelled. Please try again.');
+        }
+    }, [searchParams]);
 
     // Form state
     const [formData, setFormData] = useState({
@@ -28,9 +37,9 @@ export default function CheckoutPage() {
         city: '',
         state: '',
         zipCode: '',
-        country: 'United States',
+        country: 'South Africa',
         // Payment & Shipping
-        paymentMethod: 'stripe',
+        paymentMethod: 'payfast',  // Default to PayFast
         shippingMethod: 'standard',
         customerNote: '',
         // Same as shipping
@@ -38,9 +47,9 @@ export default function CheckoutPage() {
     });
 
     const shippingCosts = {
-        standard: 5.99,
-        express: 12.99,
-        overnight: 24.99,
+        standard: 99.00,
+        express: 199.00,
+        overnight: 349.00,
         pickup: 0
     };
 
@@ -129,22 +138,35 @@ export default function CheckoutPage() {
             if (response.data.success) {
                 const { orderId, orderNumber } = response.data.data;
 
-                // For demo: Skip Stripe payment API (not configured)
-                // In production with real Stripe key, you'd integrate Stripe Elements here
-                toast.success('Order placed successfully!');
-                await clearCart();
-                router.push(`/order-confirmation?orderNumber=${orderNumber}`);
+                // Handle payment based on method
+                if (formData.paymentMethod === 'payfast') {
+                    // Redirect to PayFast
+                    toast.loading('Redirecting to PayFast...', { duration: 3000 });
+
+                    const result = await initiatePayFastPayment(orderId);
+
+                    if (!result.success) {
+                        throw new Error(result.error || 'Failed to initiate PayFast payment');
+                    }
+                    // User will be redirected to PayFast - don't clear cart yet
+                    // Cart will be cleared on successful return
+
+                } else if (formData.paymentMethod === 'cod') {
+                    // Cash on Delivery
+                    toast.success('Order placed successfully!');
+                    await clearCart();
+                    router.push(`/order-confirmation?orderNumber=${orderNumber}`);
+                }
             }
         } catch (error) {
             console.error('Checkout error:', error);
-            toast.error(error.response?.data?.message || 'Failed to place order');
-        } finally {
+            toast.error(error.response?.data?.message || error.message || 'Failed to place order');
             setLoading(false);
         }
     };
 
-    const tax = subtotal * 0.08;
-    const shipping = shippingCosts[formData.shippingMethod] || 5.99;
+    const tax = subtotal * 0.15; // 15% VAT for South Africa
+    const shipping = shippingCosts[formData.shippingMethod] || 99.00;
     const total = subtotal + tax + shipping;
 
     if (pageLoading) {
@@ -238,7 +260,7 @@ export default function CheckoutPage() {
                                             value={formData.phone}
                                             onChange={handleChange}
                                             className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
-                                            placeholder="+1 (555) 000-0000"
+                                            placeholder="+27 12 345 6789"
                                         />
                                     </div>
                                 </div>
@@ -274,18 +296,28 @@ export default function CheckoutPage() {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">State / Province *</label>
-                                        <input
-                                            type="text"
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Province *</label>
+                                        <select
                                             name="state"
                                             value={formData.state}
                                             onChange={handleChange}
                                             className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
                                             required
-                                        />
+                                        >
+                                            <option value="">Select Province</option>
+                                            <option value="Eastern Cape">Eastern Cape</option>
+                                            <option value="Free State">Free State</option>
+                                            <option value="Gauteng">Gauteng</option>
+                                            <option value="KwaZulu-Natal">KwaZulu-Natal</option>
+                                            <option value="Limpopo">Limpopo</option>
+                                            <option value="Mpumalanga">Mpumalanga</option>
+                                            <option value="Northern Cape">Northern Cape</option>
+                                            <option value="North West">North West</option>
+                                            <option value="Western Cape">Western Cape</option>
+                                        </select>
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">ZIP Code *</label>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Postal Code *</label>
                                         <input
                                             type="text"
                                             name="zipCode"
@@ -303,9 +335,7 @@ export default function CheckoutPage() {
                                             onChange={handleChange}
                                             className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
                                         >
-                                            <option>United States</option>
-                                            <option>Canada</option>
-                                            <option>United Kingdom</option>
+                                            <option>South Africa</option>
                                         </select>
                                     </div>
                                 </div>
@@ -319,9 +349,9 @@ export default function CheckoutPage() {
                                 </h2>
                                 <div className="space-y-3">
                                     {[
-                                        { id: 'standard', name: 'Standard Shipping', time: '5-7 business days', price: 5.99 },
-                                        { id: 'express', name: 'Express Shipping', time: '2-3 business days', price: 12.99 },
-                                        { id: 'overnight', name: 'Overnight', time: 'Next business day', price: 24.99 },
+                                        { id: 'standard', name: 'Standard Shipping', time: '5-7 business days', price: 99.00 },
+                                        { id: 'express', name: 'Express Shipping', time: '2-3 business days', price: 199.00 },
+                                        { id: 'overnight', name: 'Overnight', time: 'Next business day', price: 349.00 },
                                         { id: 'pickup', name: 'Store Pickup', time: 'Ready in 2 hours', price: 0 }
                                     ].map(method => (
                                         <label
@@ -346,7 +376,7 @@ export default function CheckoutPage() {
                                                 </div>
                                             </div>
                                             <span className="font-semibold">
-                                                {method.price === 0 ? 'FREE' : `$${method.price.toFixed(2)}`}
+                                                {method.price === 0 ? 'FREE' : `R${method.price.toFixed(2)}`}
                                             </span>
                                         </label>
                                     ))}
@@ -360,8 +390,9 @@ export default function CheckoutPage() {
                                     Payment Method
                                 </h2>
                                 <div className="space-y-3">
+                                    {/* PayFast Option */}
                                     <label
-                                        className={`flex items-center justify-between p-4 border rounded-lg cursor-pointer transition-colors ${formData.paymentMethod === 'stripe'
+                                        className={`flex items-center justify-between p-4 border rounded-lg cursor-pointer transition-colors ${formData.paymentMethod === 'payfast'
                                             ? 'border-pink-500 bg-pink-50'
                                             : 'border-gray-200 hover:border-pink-300'
                                             }`}
@@ -370,21 +401,25 @@ export default function CheckoutPage() {
                                             <input
                                                 type="radio"
                                                 name="paymentMethod"
-                                                value="stripe"
-                                                checked={formData.paymentMethod === 'stripe'}
+                                                value="payfast"
+                                                checked={formData.paymentMethod === 'payfast'}
                                                 onChange={handleChange}
                                                 className="text-pink-600 focus:ring-pink-500"
                                             />
                                             <div>
-                                                <p className="font-medium">Credit / Debit Card</p>
-                                                <p className="text-sm text-gray-500">Secure payment via Stripe</p>
+                                                <p className="font-medium">Pay with PayFast</p>
+                                                <p className="text-sm text-gray-500">Credit/Debit Card, EFT, SnapScan, Mobicred & more</p>
                                             </div>
                                         </div>
-                                        <div className="flex gap-2">
-                                            <span className="text-2xl">💳</span>
-                                        </div>
+                                        <img
+                                            src="https://www.payfast.co.za/assets/images/logos/payfast_logo_colour.svg"
+                                            alt="PayFast"
+                                            className="h-8"
+                                            onError={(e) => { e.target.style.display = 'none'; }}
+                                        />
                                     </label>
 
+                                    {/* Cash on Delivery Option */}
                                     <label
                                         className={`flex items-center justify-between p-4 border rounded-lg cursor-pointer transition-colors ${formData.paymentMethod === 'cod'
                                             ? 'border-pink-500 bg-pink-50'
@@ -402,7 +437,7 @@ export default function CheckoutPage() {
                                             />
                                             <div>
                                                 <p className="font-medium">Cash on Delivery</p>
-                                                <p className="text-sm text-gray-500">Pay when you receive</p>
+                                                <p className="text-sm text-gray-500">Pay when you receive your order</p>
                                             </div>
                                         </div>
                                         <span className="text-2xl">💵</span>
@@ -443,7 +478,7 @@ export default function CheckoutPage() {
                                                 )}
                                                 <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
                                             </div>
-                                            <p className="font-medium text-sm">${(item.price * item.quantity).toFixed(2)}</p>
+                                            <p className="font-medium text-sm">R{(item.price * item.quantity).toFixed(2)}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -454,20 +489,20 @@ export default function CheckoutPage() {
                                 <div className="space-y-3 mb-6">
                                     <div className="flex justify-between text-sm">
                                         <span className="text-gray-600">Subtotal ({totalItems} items)</span>
-                                        <span>${subtotal.toFixed(2)}</span>
+                                        <span>R{subtotal.toFixed(2)}</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
                                         <span className="text-gray-600">Shipping</span>
-                                        <span>{shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}</span>
+                                        <span>{shipping === 0 ? 'FREE' : `R${shipping.toFixed(2)}`}</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-gray-600">Tax (8%)</span>
-                                        <span>${tax.toFixed(2)}</span>
+                                        <span className="text-gray-600">VAT (15%)</span>
+                                        <span>R{tax.toFixed(2)}</span>
                                     </div>
                                     <hr />
                                     <div className="flex justify-between text-lg font-bold">
                                         <span>Total</span>
-                                        <span>${total.toFixed(2)}</span>
+                                        <span>R{total.toFixed(2)}</span>
                                     </div>
                                 </div>
 
@@ -482,10 +517,15 @@ export default function CheckoutPage() {
                                             <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
                                             Processing...
                                         </>
+                                    ) : formData.paymentMethod === 'payfast' ? (
+                                        <>
+                                            <HiLockClosed className="w-5 h-5" />
+                                            Pay with PayFast - R{total.toFixed(2)}
+                                        </>
                                     ) : (
                                         <>
                                             <HiLockClosed className="w-5 h-5" />
-                                            Place Order - ${total.toFixed(2)}
+                                            Place Order - R{total.toFixed(2)}
                                         </>
                                     )}
                                 </button>
@@ -495,6 +535,15 @@ export default function CheckoutPage() {
                                     <HiCheck className="w-4 h-4 text-green-500" />
                                     <span>Secure checkout</span>
                                 </div>
+
+                                {/* PayFast Trust Badge */}
+                                {formData.paymentMethod === 'payfast' && (
+                                    <div className="mt-4 p-3 bg-gray-50 rounded-lg text-center">
+                                        <p className="text-xs text-gray-500">
+                                            You will be securely redirected to PayFast to complete your payment
+                                        </p>
+                                    </div>
+                                )}
 
                                 <Link
                                     href="/cart"

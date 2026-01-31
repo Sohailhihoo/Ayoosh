@@ -15,6 +15,7 @@ const authRoutes = require('./routes/auth');
 const productRoutes = require('./routes/products');
 const categoryRoutes = require('./routes/categories');
 const cartRoutes = require('./routes/cart');
+const payfastRoutes = require('./routes/payfast');
 const orderRoutes = require('./routes/orders');
 const paymentRoutes = require('./routes/payments');
 const userRoutes = require('./routes/users');
@@ -102,7 +103,6 @@ const allowedOrigins = [
     'http://localhost:5000'
   ] : [])
 ].filter(Boolean); // Remove empty values
-
 app.use(cors({
   origin: true, // Allow all origins
   credentials: true
@@ -126,6 +126,7 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/payfast', payfastRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/analytics', analyticsRoutes);
 

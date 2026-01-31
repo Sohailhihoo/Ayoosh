@@ -40,7 +40,11 @@ function ProductsContent() {
     fetchProducts();
   }, [filters]); // Re-fetch when URL params change
 
-  const productTypes = ['beauty', 'sunglasses', 'accessories'];
+  const productTypes = ['beauty', 'sunglasses'];
+  const categoryLabels = {
+    beauty: 'Skin Care',
+    sunglasses: 'Sunglasses'
+  };
   const sortOptions = [
     { value: '-createdAt', label: 'Newest' },
     { value: 'price', label: 'Price: Low to High' },
@@ -55,7 +59,7 @@ function ProductsContent() {
         <div className="container-custom py-8">
           <h1 className="text-3xl font-bold text-gray-900">
             {filters.productType
-              ? filters.productType.charAt(0).toUpperCase() + filters.productType.slice(1)
+              ? categoryLabels[filters.productType] || (filters.productType.charAt(0).toUpperCase() + filters.productType.slice(1))
               : 'All Products'}
           </h1>
           <p className="text-gray-600 mt-2">
@@ -110,7 +114,7 @@ function ProductsContent() {
                         onChange={() => setFilter('productType', type)}
                         className="text-pink-600 focus:ring-pink-500"
                       />
-                      <span className="capitalize">{type}</span>
+                      <span className="capitalize">{categoryLabels[type]}</span>
                     </label>
                   ))}
                 </div>
@@ -311,7 +315,7 @@ function ProductsContent() {
                       onChange={() => setFilter('productType', type)}
                       className="text-pink-600 focus:ring-pink-500"
                     />
-                    <span className="capitalize">{type}</span>
+                    <span className="capitalize">{categoryLabels[type]}</span>
                   </label>
                 ))}
               </div>

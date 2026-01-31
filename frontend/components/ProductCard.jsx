@@ -43,9 +43,17 @@ export default function ProductCard({ product }) {
         <div className={`relative aspect-square bg-gradient-to-br ${productColors[product.productType] || 'from-gray-100 to-gray-200'} rounded-lg overflow-hidden mb-4`}>
           {/* Product Visual */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className={`text-6xl transition-transform duration-300 ${isHovered ? 'scale-110' : ''}`}>
-              {productEmojis[product.productType] || '📦'}
-            </span>
+            {(product.images?.[0]?.url || product.image) ? (
+              <img
+                src={product.images?.[0]?.url || product.image}
+                alt={product.name}
+                className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500"
+              />
+            ) : (
+              <span className={`text-6xl transition-transform duration-300 ${isHovered ? 'scale-110' : ''}`}>
+                {productEmojis[product.productType] || '📦'}
+              </span>
+            )}
           </div>
 
           {/* Badges */}
@@ -57,9 +65,8 @@ export default function ProductCard({ product }) {
 
           {/* Quick Add Button */}
           <div
-            className={`absolute bottom-0 left-0 right-0 p-4 bg-white/95 transform transition-transform duration-300 ${
-              isHovered ? 'translate-y-0' : 'translate-y-full'
-            }`}
+            className={`absolute bottom-0 left-0 right-0 p-4 bg-white/95 transform transition-transform duration-300 ${isHovered ? 'translate-y-0' : 'translate-y-full'
+              }`}
           >
             <button
               onClick={handleAddToCart}
