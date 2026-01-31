@@ -297,8 +297,8 @@ export default function HomePage() {
                         <div className="text-3xl mb-4 text-gray-400 group-hover:text-black group-hover:scale-110 transition-all duration-500">
                             <FiZap />
                         </div>
-                        <h3 className="text-lg font-playfair font-medium text-gray-900 mb-2">Ayossh</h3>
-                        <p className="text-gray-500 text-sm font-light leading-relaxed mb-6">Experience the power of Sun-Cream treatments tailored to your skin type.</p>
+                        <h3 className="text-lg font-playfair font-medium text-gray-900 mb-2">Skin Booster</h3>
+                        <p className="text-gray-500 text-sm font-light leading-relaxed mb-6">Experience the power of skin-boosting treatments tailored to your skin type.</p>
                         <Link href="/products?category=skin-booster" className="inline-block border-b border-black pb-1 text-xs tracking-[0.2em] uppercase hover:text-gray-600 hover:border-gray-400 transition-all duration-300">
                             Shop Now
                         </Link>
@@ -332,7 +332,7 @@ export default function HomePage() {
                         <Link href="/about" className="inline-block border-b border-black pb-1 text-xs tracking-[0.2em] uppercase hover:text-gray-600 hover:border-gray-400 transition-all duration-300">
                             Learn More
                         </Link>
-                    </motion.div> 
+                    </motion.div>
 
                 </motion.div>
             </section>
