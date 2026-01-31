@@ -332,7 +332,7 @@ export default function HomePage() {
                         <Link href="/about" className="inline-block border-b border-black pb-1 text-xs tracking-[0.2em] uppercase hover:text-gray-600 hover:border-gray-400 transition-all duration-300">
                             Learn More
                         </Link>
-                    </motion.div>
+                    </motion.div> 
 
                 </motion.div>
             </section>
