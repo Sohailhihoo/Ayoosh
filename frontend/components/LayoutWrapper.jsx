@@ -21,9 +21,12 @@ export default function LayoutWrapper({ children }) {
     // Pages that should hide the global footer
     const hideFooter = pathname === '/beauty-center' || pathname === '/landing';
 
+    // Pages that handle their own loading animation
+    const hideLoadingScreen = false;
+
     return (
         <>
-            <LoadingScreen />
+            {!hideLoadingScreen && <LoadingScreen />}
             {!hideNavbar && <Navbar />}
             <main className="min-h-screen">
                 {children}
