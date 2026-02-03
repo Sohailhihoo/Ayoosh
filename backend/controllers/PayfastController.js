@@ -142,6 +142,16 @@ const initiatePayment = async (req, res) => {
             ? process.env.PAYFAST_SANDBOX_PASSPHRASE
             : process.env.PAYFAST_PASSPHRASE;
 
+        // CRITICAL VALIDATION
+        if (!paymentData.merchant_id || !paymentData.merchant_key) {
+            console.error('PayFast Config Error: Missing Merchant ID or Key', {
+                mode: process.env.PAYFAST_SANDBOX === 'true' ? 'SANDBOX' : 'LIVE',
+                hasId: !!paymentData.merchant_id,
+                hasKey: !!paymentData.merchant_key
+            });
+            throw new Error('PayFast configuration error: Missing Merchant Credentials');
+        }
+
         // Generate signature
         const signature = generateSignature(paymentData, passphrase);
         paymentData.signature = signature;
