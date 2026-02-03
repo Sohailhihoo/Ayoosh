@@ -11,25 +11,61 @@ const getPayFastUrl = () => {
 };
 
 // Generate MD5 signature for PayFast
+// Generate MD5 signature for PayFast
 const generateSignature = (data, passphrase = null) => {
     // Create parameter string - ORDER MATTERS for PayFast!
+    // Must be in alphabetical order
     let pfOutput = '';
-    for (let key in data) {
-        if (data.hasOwnProperty(key) && data[key] !== '' && data[key] !== null && data[key] !== undefined) {
-            pfOutput += `${key}=${encodeURIComponent(String(data[key]).trim()).replace(/%20/g, '+')}&`;
+
+    // Sort keys alphabetically
+    const sortedKeys = Object.keys(data).sort();
+
+    for (let key of sortedKeys) {
+        if (data[key] !== '' && data[key] !== null && data[key] !== undefined) {
+            // PayFast requires URL encoded values
+            // Spaces must be replaced with '+' instead of '%20'
+            const value = String(data[key]).trim();
+            const encodedValue = encodeURIComponent(value).replace(/%20/g, '+');
+
+            pfOutput += `${key}=${encodedValue}&`;
         }
     }
 
     // Remove last ampersand
     let getString = pfOutput.slice(0, -1);
 
-    // Add passphrase if provided
-    if (passphrase) {
-        getString += `&passphrase=${encodeURIComponent(passphrase.trim()).replace(/%20/g, '+')}`;
+    // Add passphrase if provided and not empty
+    if (passphrase && passphrase.trim() !== '') {
+        // Passphrase must also be URL encoded
+        const encodedPassphrase = encodeURIComponent(passphrase.trim()).replace(/%20/g, '+');
+        getString += `&passphrase=${encodedPassphrase}`;
     }
 
-    // Generate MD5 hash
-    return crypto.createHash('md5').update(getString).digest('hex');
+    // Debug log
+    console.log('==========================================');
+    console.log('SIGNATURE DEBUG START');
+    console.log('Passphrase used:', passphrase ? `"${passphrase}"` : 'NONE');
+    console.log('Raw Data Keys:', sortedKeys);
+
+    // Log each encoded pair to see exactly what's being added
+    let tempDebugString = '';
+    for (let key of sortedKeys) {
+        if (data[key] !== '' && data[key] !== null && data[key] !== undefined) {
+            const value = String(data[key]).trim();
+            const encodedValue = encodeURIComponent(value).replace(/%20/g, '+');
+            console.log(`Key: ${key}, Raw: "${value}", Encoded: "${encodedValue}"`);
+            tempDebugString += `${key}=${encodedValue}&`;
+        }
+    }
+
+    console.log('Pre-slice String:', tempDebugString);
+    console.log('Final Signature String:', getString);
+    console.log('==========================================');
+
+    // Generate MD5 hash (must be lowercase)
+    const hash = crypto.createHash('md5').update(getString).digest('hex');
+    console.log('Generated Hash:', hash);
+    return hash;
 };
 
 // @desc    Initiate PayFast payment
@@ -54,34 +90,61 @@ const initiatePayment = async (req, res) => {
         const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
         const backendUrl = process.env.BACKEND_URL || 'http://localhost:5000';
 
+        // Format phone number for PayFast (10 digits, SA format)
+        let cellNumber = '';
+        if (order.customerDetails?.phone) {
+            const digits = order.customerDetails.phone.replace(/\D/g, '');
+            // Handle different formats: +27821234567, 27821234567, 0821234567
+            if (digits.startsWith('27') && digits.length === 11) {
+                cellNumber = '0' + digits.substring(2); // Convert 27821234567 to 0821234567
+            } else if (digits.startsWith('0') && digits.length === 10) {
+                cellNumber = digits; // Already correct format
+            } else if (digits.length === 9) {
+                cellNumber = '0' + digits; // Add leading 0
+            }
+            // Only use if it's exactly 10 digits starting with 0
+            if (cellNumber.length !== 10 || !cellNumber.startsWith('0')) {
+                cellNumber = ''; // Invalid format, leave empty
+            }
+        }
+
         // PayFast payment data - ORDER IS CRITICAL!
         // Must follow PayFast's exact field order for signature to work
         const paymentData = {
             // Merchant details (required)
-            merchant_id: process.env.PAYFAST_MERCHANT_ID,
-            merchant_key: process.env.PAYFAST_MERCHANT_KEY,
+            // Merchant details
+            merchant_id: process.env.PAYFAST_SANDBOX === 'true'
+                ? process.env.PAYFAST_SANDBOX_MERCHANT_ID?.trim()
+                : process.env.PAYFAST_MERCHANT_ID?.trim(),
+            merchant_key: process.env.PAYFAST_SANDBOX === 'true'
+                ? process.env.PAYFAST_SANDBOX_MERCHANT_KEY?.trim()
+                : process.env.PAYFAST_MERCHANT_KEY?.trim(),
 
             // URLs
             return_url: `${baseUrl}/order-confirmation?orderId=${orderId}&status=success`,
             cancel_url: `${baseUrl}/checkout?cancelled=true&orderId=${orderId}`,
             notify_url: `${backendUrl}/api/payfast/notify`,
 
-            // Buyer details
+            // Buyer details (Simplified for debugging)
             name_first: order.customerDetails?.firstName || '',
             name_last: order.customerDetails?.lastName || '',
             email_address: order.customerDetails?.email || '',
-            cell_number: order.customerDetails?.phone?.replace(/\D/g, '') || '',
 
             // Transaction details
             m_payment_id: order._id.toString(),
             amount: order.total.toFixed(2),
             item_name: `Order ${order.orderNumber}`,
-            item_description: `${order.items?.length || 0} item(s) from Ayoosh Online`,
+            // item_description: `${order.items?.length || 0} item(s) from Ayoosh Online`, // Commented out for debug
 
-            // Custom data
-            custom_str1: order._id.toString(),
-            custom_str2: order.orderNumber || '',
+            // Custom data -- Commented out to simplify signature
+            // custom_str1: order._id.toString(),
+            // custom_str2: order.orderNumber || '',
         };
+
+        // Add optional cell_number if valid
+        if (cellNumber) {
+            paymentData.cell_number = cellNumber;
+        }
 
         // Remove empty values (PayFast doesn't like empty fields)
         Object.keys(paymentData).forEach(key => {
@@ -93,6 +156,13 @@ const initiatePayment = async (req, res) => {
         // Generate signature
         const signature = generateSignature(paymentData, process.env.PAYFAST_PASSPHRASE);
         paymentData.signature = signature;
+
+        // Debug: Log signature details
+        console.log('=== PayFast Signature Debug ===');
+        console.log('Fields (alphabetically):', Object.keys(paymentData).sort());
+        console.log('Passphrase:', process.env.PAYFAST_PASSPHRASE ? 'SET' : 'EMPTY');
+        console.log('Generated Signature:', signature);
+        console.log('===============================');
 
         // Update order with payment method
         order.paymentMethod = 'payfast';

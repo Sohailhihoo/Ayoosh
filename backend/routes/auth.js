@@ -22,8 +22,9 @@ const createSession = async (res, userId) => {
   res.cookie('sessionId', sessionId, {
     httpOnly: true,           // Prevents JavaScript access (XSS protection)
     secure: process.env.NODE_ENV === 'production',  // HTTPS only in production
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Allow cross-domain in production
-    maxAge: SESSION_EXPIRY * 1000  // Convert to milliseconds
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'lax' is better for localhost than 'none' unless https
+    maxAge: SESSION_EXPIRY * 1000,  // Convert to milliseconds
+    path: '/' // Explicitly set path to root
   });
 };
 

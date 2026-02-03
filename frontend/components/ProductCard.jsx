@@ -86,10 +86,10 @@ export default function ProductCard({ product }) {
             {product.name}
           </h3>
           <p className="text-sm text-gray-600">
-            ${product.price?.toFixed(2)}
+            R{product.price?.toFixed(2)}
             {product.compareAtPrice && product.compareAtPrice > product.price && (
               <span className="ml-2 text-gray-400 line-through">
-                ${product.compareAtPrice?.toFixed(2)}
+                R{product.compareAtPrice?.toFixed(2)}
               </span>
             )}
           </p>

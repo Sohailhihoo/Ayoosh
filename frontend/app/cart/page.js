@@ -90,7 +90,7 @@ export default function CartPage() {
                           </p>
                         )}
                         <p className="text-pink-600 font-medium mt-1">
-                          ${item.price?.toFixed(2)}
+                          R{item.price?.toFixed(2)}
                         </p>
                       </div>
 
@@ -122,7 +122,7 @@ export default function CartPage() {
                       </div>
 
                       <p className="font-semibold text-gray-900">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        R{(item.price * item.quantity).toFixed(2)}
                       </p>
                     </div>
                   </div>
@@ -139,34 +139,17 @@ export default function CartPage() {
               <div className="space-y-4 mb-6">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Subtotal</span>
-                  <span className="font-medium">${subtotal?.toFixed(2)}</span>
+                  <span className="font-medium">R{subtotal?.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Shipping</span>
-                  <span className="font-medium text-green-600">Free</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Tax</span>
-                  <span className="font-medium">${(subtotal * 0.08).toFixed(2)}</span>
+                  <span className="font-medium text-gray-500">Calculated at checkout</span>
                 </div>
                 <hr />
                 <div className="flex justify-between text-lg">
                   <span className="font-bold">Total</span>
-                  <span className="font-bold">${(subtotal + subtotal * 0.08).toFixed(2)}</span>
+                  <span className="font-bold">R{subtotal?.toFixed(2)}</span>
                 </div>
-              </div>
-
-              {/* Coupon Code */}
-              <div className="mb-6">
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="Coupon code"
-                    className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
-                  />
-                  <button className="btn-secondary">Apply</button>
-                </div>
-                <p className="text-xs text-gray-500 mt-2">Try: WELCOME10, SAVE20, BEAUTY15</p>
               </div>
 
               {/* Checkout Buttons */}

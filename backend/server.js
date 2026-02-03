@@ -41,7 +41,7 @@ app.use(helmet({
       mediaSrc: ["'self'", "blob:"],
       workerSrc: ["'self'", "blob:"],
       childSrc: ["'self'", "blob:"],
-      formAction: ["'self'"],
+      formAction: ["'self'", "https://sandbox.payfast.co.za", "https://www.payfast.co.za", "https://secure.paygate.co.za"],
       frameAncestors: ["'none'"],
       baseUri: ["'self'"],
       upgradeInsecureRequests: [],
@@ -94,17 +94,23 @@ const authLimiter = rateLimit({
 // Professional CORS Configuration
 // Professional CORS Configuration
 const allowedOrigins = [
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
   'https://ayoosh.online',
   'https://www.ayoosh.online',
-  process.env.FRONTEND_URL,
-  // Only allow localhost in development
-  ...(process.env.NODE_ENV !== 'production' ? [
-    'http://localhost:3000',
-    'http://localhost:5000'
-  ] : [])
-].filter(Boolean); // Remove empty values
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
 app.use(cors({
-  origin: true, // Allow all origins
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 

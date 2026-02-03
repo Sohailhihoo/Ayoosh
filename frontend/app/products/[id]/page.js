@@ -149,15 +149,15 @@ export default function ProductDetailPage() {
             {/* Price */}
             <div className="flex items-center gap-4 mb-6">
               <span className="text-3xl font-bold text-gray-900">
-                ${currentPrice.toFixed(2)}
+                R{currentPrice.toFixed(2)}
               </span>
               {hasDiscount && (
                 <>
                   <span className="text-xl text-gray-400 line-through">
-                    ${product.compareAtPrice.toFixed(2)}
+                    R{product.compareAtPrice.toFixed(2)}
                   </span>
                   <span className="bg-red-100 text-red-600 px-2 py-1 rounded text-sm font-medium">
-                    Save ${(product.compareAtPrice - product.price).toFixed(2)}
+                    Save R{(product.compareAtPrice - product.price).toFixed(2)}
                   </span>
                 </>
               )}

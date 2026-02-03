@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useCartStore } from '@/lib/store';
 import { verifyPayFastPayment } from '@/lib/payfast';
+import { verifyPayGatePayment } from '@/lib/paygate';
 import { HiCheck, HiX, HiClock, HiExclamation } from 'react-icons/hi';
 
 function OrderConfirmationContent() {
@@ -18,6 +19,7 @@ function OrderConfirmationContent() {
     const orderId = searchParams.get('orderId');
     const orderNumber = searchParams.get('orderNumber');
     const status = searchParams.get('status');
+    const paymentMethod = searchParams.get('paymentMethod');
 
     useEffect(() => {
         const verifyOrder = async () => {
@@ -36,13 +38,27 @@ function OrderConfirmationContent() {
             }
 
             try {
-                // Verify payment status with backend
-                const result = await verifyPayFastPayment(orderId);
+                let result;
+
+                // Verify payment based on payment method
+                // Try PayGate first if specified, otherwise try PayFast, then fallback to PayGate
+                if (paymentMethod === 'paygate') {
+                    result = await verifyPayGatePayment(orderId);
+                } else if (paymentMethod === 'payfast') {
+                    result = await verifyPayFastPayment(orderId);
+                } else {
+                    // Try PayFast first for backwards compatibility
+                    result = await verifyPayFastPayment(orderId);
+                    // If PayFast fails, try PayGate
+                    if (!result.success) {
+                        result = await verifyPayGatePayment(orderId);
+                    }
+                }
 
                 if (result.success) {
                     setOrder(result.data);
 
-                    // Clear cart if payment was successful or if returning from PayFast success
+                    // Clear cart if payment was successful or if returning from payment gateway with success
                     if (result.data.paymentStatus === 'paid' || status === 'success') {
                         clearCart();
                     }
@@ -70,7 +86,7 @@ function OrderConfirmationContent() {
         };
 
         verifyOrder();
-    }, [orderId, orderNumber, status, clearCart]);
+    }, [orderId, orderNumber, status, paymentMethod, clearCart]);
 
     if (loading) {
         return (

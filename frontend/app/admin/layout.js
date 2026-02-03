@@ -1,14 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { HiOutlineMenu } from 'react-icons/hi';
 import AdminSidebar from '@/components/admin/Sidebar';
+import { useAuthStore } from '@/lib/store';
 
 /**
  * AdminLayout Component
  * 
  * Layout wrapper for admin pages
  * Provides sidebar navigation and main content area
+ * Protected Route: Restricted to admin users
  * 
  * @param {Object} props
  * @param {React.ReactNode} props.children - Page content
@@ -16,6 +19,30 @@ import AdminSidebar from '@/components/admin/Sidebar';
  */
 export default function AdminLayout({ children }) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const { user, isAuthenticated, isLoading } = useAuthStore();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!isLoading) {
+            if (!isAuthenticated) {
+                router.push('/login');
+            } else if (user?.role !== 'admin') {
+                router.push('/');
+            }
+        }
+    }, [isAuthenticated, isLoading, user, router]);
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-100">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+            </div>
+        );
+    }
+
+    if (!isAuthenticated || user?.role !== 'admin') {
+        return null;
+    }
 
     return (
         <div className="min-h-screen bg-gray-100">
