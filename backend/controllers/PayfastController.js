@@ -125,6 +125,21 @@ const initiatePayment = async (req, res) => {
             // custom_str2: order.orderNumber || '',
         };
 
+        // SAFETY CHECK: Prevent Localhost URLs in Production/Live Mode
+        // PayFast CloudFront WAF blocks requests containing 'localhost'
+        if (process.env.PAYFAST_SANDBOX !== 'true') {
+            if (paymentData.return_url.includes('localhost') ||
+                paymentData.cancel_url.includes('localhost') ||
+                paymentData.notify_url.includes('localhost')) {
+
+                const msg = 'CONFIGURATION ERROR: PayFast Live requires a real domain name. ' +
+                    'You are sending "localhost". Please set FRONTEND_URL and BACKEND_URL variables in Railway.';
+
+                console.error(msg);
+                throw new Error(msg);
+            }
+        }
+
         // Add optional cell_number if valid
         if (cellNumber) {
             paymentData.cell_number = cellNumber;
