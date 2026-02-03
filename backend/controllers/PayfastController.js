@@ -11,58 +11,38 @@ const getPayFastUrl = () => {
 };
 
 // Generate MD5 signature for PayFast
-// Generate MD5 signature for PayFast
+// IMPORTANT: PayFast Live mode requires PLAIN values (no URL encoding)
+// The signature string must match exactly what PayFast calculates on their side
 const generateSignature = (data, passphrase = null) => {
-    // Create parameter string - ORDER MATTERS for PayFast!
-    // Must be in alphabetical order
     let pfOutput = '';
 
-    // Sort keys alphabetically
+    // Sort keys alphabetically (PayFast requirement)
     const sortedKeys = Object.keys(data).sort();
 
     for (let key of sortedKeys) {
         if (data[key] !== '' && data[key] !== null && data[key] !== undefined) {
-            // PayFast requires URL encoded values
-            // Spaces must be replaced with '+' instead of '%20'
+            // Use PLAIN values - NO URL encoding
             const value = String(data[key]).trim();
-            const encodedValue = encodeURIComponent(value).replace(/%20/g, '+');
-
-            pfOutput += `${key}=${encodedValue}&`;
+            pfOutput += `${key}=${value}&`;
         }
     }
 
     // Remove last ampersand
     let getString = pfOutput.slice(0, -1);
 
-    // Add passphrase if provided and not empty
+    // Add passphrase if provided (also plain, no encoding)
     if (passphrase && passphrase.trim() !== '') {
-        // Passphrase must also be URL encoded
-        const encodedPassphrase = encodeURIComponent(passphrase.trim()).replace(/%20/g, '+');
-        getString += `&passphrase=${encodedPassphrase}`;
+        getString += `&passphrase=${passphrase.trim()}`;
     }
 
     // Debug log
     console.log('==========================================');
-    console.log('SIGNATURE DEBUG START');
-    console.log('Passphrase used:', passphrase ? `"${passphrase}"` : 'NONE');
-    console.log('Raw Data Keys:', sortedKeys);
-
-    // Log each encoded pair to see exactly what's being added
-    let tempDebugString = '';
-    for (let key of sortedKeys) {
-        if (data[key] !== '' && data[key] !== null && data[key] !== undefined) {
-            const value = String(data[key]).trim();
-            const encodedValue = encodeURIComponent(value).replace(/%20/g, '+');
-            console.log(`Key: ${key}, Raw: "${value}", Encoded: "${encodedValue}"`);
-            tempDebugString += `${key}=${encodedValue}&`;
-        }
-    }
-
-    console.log('Pre-slice String:', tempDebugString);
-    console.log('Final Signature String:', getString);
+    console.log('SIGNATURE DEBUG (Plain Values Mode)');
+    console.log('Passphrase:', passphrase ? 'SET' : 'NONE');
+    console.log('Signature String:', getString);
     console.log('==========================================');
 
-    // Generate MD5 hash (must be lowercase)
+    // Generate MD5 hash (lowercase)
     const hash = crypto.createHash('md5').update(getString).digest('hex');
     console.log('Generated Hash:', hash);
     return hash;
