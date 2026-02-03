@@ -38,11 +38,13 @@ const generateSignature = (data, passphrase = null) => {
     }
 
     // Debug log
-    console.log('==========================================');
-    console.log('SIGNATURE DEBUG (URL Encoded Mode)');
-    console.log('Passphrase:', passphrase ? 'SET' : 'NONE');
-    console.log('Signature String:', getString);
-    console.log('==========================================');
+    if (process.env.NODE_ENV !== 'production') {
+        console.log('==========================================');
+        console.log('SIGNATURE DEBUG (URL Encoded Mode)');
+        console.log('Passphrase:', passphrase ? 'SET' : 'NONE');
+        console.log('Signature String:', getString);
+        console.log('==========================================');
+    }
 
     // Generate MD5 hash (lowercase)
     const hash = crypto.createHash('md5').update(getString).digest('hex');
@@ -145,12 +147,14 @@ const initiatePayment = async (req, res) => {
         paymentData.signature = signature;
 
         // Debug: Log signature details
-        console.log('=== PayFast Signature Debug ===');
-        console.log('Fields (alphabetically):', Object.keys(paymentData).sort());
-        console.log('Mode:', process.env.PAYFAST_SANDBOX === 'true' ? 'SANDBOX' : 'LIVE');
-        console.log('Passphrase used:', passphrase ? 'YES (Hidden)' : 'NO (Empty)');
-        console.log('Generated Signature:', signature);
-        console.log('===============================');
+        if (process.env.NODE_ENV !== 'production') {
+            console.log('=== PayFast Signature Debug ===');
+            console.log('Fields (alphabetically):', Object.keys(paymentData).sort());
+            console.log('Mode:', process.env.PAYFAST_SANDBOX === 'true' ? 'SANDBOX' : 'LIVE');
+            console.log('Passphrase used:', passphrase ? 'YES (Hidden)' : 'NO (Empty)');
+            console.log('Generated Signature:', signature);
+            console.log('===============================');
+        }
 
         // Update order with payment method
         order.paymentMethod = 'payfast';
@@ -184,7 +188,9 @@ const handleITN = async (req, res) => {
 
         console.log('==========================================');
         console.log('PayFast ITN Received:', new Date().toISOString());
-        console.log('ITN Data:', JSON.stringify(pfData, null, 2));
+        if (process.env.NODE_ENV !== 'production') {
+            console.log('ITN Data:', JSON.stringify(pfData, null, 2));
+        }
         console.log('==========================================');
 
         // Verify signature
