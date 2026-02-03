@@ -171,15 +171,16 @@ const initiatePayment = async (req, res) => {
         const signature = generateSignature(paymentData, passphrase);
         paymentData.signature = signature;
 
-        // Debug: Log signature details
-        if (process.env.NODE_ENV !== 'production') {
-            console.log('=== PayFast Signature Debug ===');
-            console.log('Fields (alphabetically):', Object.keys(paymentData).sort());
-            console.log('Mode:', process.env.PAYFAST_SANDBOX === 'true' ? 'SANDBOX' : 'LIVE');
-            console.log('Passphrase used:', passphrase ? 'YES (Hidden)' : 'NO (Empty)');
-            console.log('Generated Signature:', signature);
-            console.log('===============================');
-        }
+
+        // PRODUCTION DEBUG LOGGING (Safe Data Only)
+        // We need to see what URLs and ID are being sent to diagnose the 403 error
+        console.log('=== PAYFAST REQUEST DEBUG ===');
+        console.log('Merchant ID:', paymentData.merchant_id);
+        console.log('Return URL:', paymentData.return_url);
+        console.log('Notify URL:', paymentData.notify_url);
+        console.log('Amount:', paymentData.amount);
+        console.log('Mode:', process.env.PAYFAST_SANDBOX === 'true' ? 'SANDBOX' : 'LIVE');
+        console.log('=============================');
 
         // Update order with payment method
         order.paymentMethod = 'payfast';
