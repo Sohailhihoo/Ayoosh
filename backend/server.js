@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require('express'); // Trigger restart
 const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -165,12 +165,16 @@ const server = app.listen(PORT, () => {
 // Graceful Shutdown for Railway
 const gracefulShutdown = async () => {
   console.log('Received kill signal, shutting down gracefully');
-  server.close(() => {
+  server.close(async () => {
     console.log('Closed out remaining connections');
-    mongoose.connection.close(false, () => {
+    try {
+      await mongoose.connection.close();
       console.log('MongoDB connection closed');
       process.exit(0);
-    });
+    } catch (err) {
+      console.error('Error closing MongoDB connection:', err);
+      process.exit(1);
+    }
   });
 };
 

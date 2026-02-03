@@ -2,12 +2,10 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
-import { motion, useInView } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { FiDroplet, FiZap } from 'react-icons/fi';
 import { BsSunglasses } from 'react-icons/bs';
 import { FaHandHoldingHeart } from 'react-icons/fa';
-import NewsletterPopup from '@/components/NewsletterPopup';
-import { ASSETS } from '@/lib/cloudinary-assets';
 
 
 
@@ -43,31 +41,7 @@ const staggerContainer = {
 export default function HomePage() {
     const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
     const [isHoveringHero, setIsHoveringHero] = useState(false);
-    const [logoMoved, setLogoMoved] = useState(false);
-    const [stopRotation, setStopRotation] = useState(false);
-    const [showFinalLogo, setShowFinalLogo] = useState(false);
     const heroRef = useRef(null);
-
-    // Trigger logo animation sequence
-    useEffect(() => {
-        // Start movement after 4 seconds
-        const moveTimer = setTimeout(() => {
-            setLogoMoved(true);
-
-            // Stop rotation 0.5 seconds AFTER movement starts
-            setTimeout(() => {
-                setStopRotation(true);
-            }, 500);
-
-            // Change to logo3 when movement completes (2 seconds duration)
-            setTimeout(() => {
-                setShowFinalLogo(true);
-            }, 2000);
-
-        }, 5000);
-
-        return () => clearTimeout(moveTimer);
-    }, []);
 
     /**
      * Custom cursor tracking for hero section
@@ -122,53 +96,8 @@ export default function HomePage() {
         return () => window.removeEventListener('resize', checkMobileAndPlay);
     }, []);
 
-
-
     return (
         <div className="bg-white">
-            {/* Intro Logo Animation */}
-            {/* Phase 1: Rotating Loading Logo (0s - 4s) -> Moves (4s - 5.5s) */}
-            <div className={`fixed inset-0 z-[60] flex items-center justify-center pointer-events-none transition-opacity duration-500 ${showFinalLogo ? 'opacity-0' : 'opacity-100'}`}>
-                <motion.div
-                    initial={{ scale: 1, rotate: 0, x: 0, y: 0 }}
-                    animate={{
-                        rotate: 360, // Keep rotating effectively by just targeting 360 with infinite repeat
-                        x: logoMoved ? 'calc(min(-45vw, -600px) + 3px)' : 0, // Nudge 3px right
-                        y: logoMoved ? '-42vh' : 0, // Move Up slightly less/more depending on height
-                        scale: logoMoved ? 0.75 : 1, // Shrink slightly more (0.75)
-                    }}
-                    transition={{
-                        rotate: { duration: 2, ease: "linear", repeat: Infinity }, // Never stop rotating
-                        x: { duration: 1.5, ease: "easeInOut" },
-                        y: { duration: 1.5, ease: "easeInOut" },
-                        scale: { duration: 1.5, ease: "easeInOut" }
-                    }}
-                    className="relative w-[150px] h-[150px]"
-                >
-                    <img
-                        src={ASSETS.logos.loading}
-                        alt="Loading..."
-                        className="w-full h-full object-contain"
-                    />
-                </motion.div>
-            </div>
-
-            {/* Phase 2: Final Logo (Appears after move completes) */}
-            {/* This simulates the 'faded into permanent logo' effect at the destination position */}
-            <motion.div
-                className="fixed z-[55] w-32 h-32 md:w-48 md:h-48 pointer-events-none"
-                style={{ top: 'calc(1.5rem - 3px)', left: 'calc(1.5rem - 3px)' }} // precise 3px nudge
-                initial={{ opacity: 0 }}
-                animate={{ opacity: showFinalLogo ? 1 : 0 }}
-                transition={{ duration: 0.8 }}
-            >
-                <img
-                    src={ASSETS.logos.final}
-                    alt="Ayoosh"
-                    className="w-full h-full object-contain"
-                />
-            </motion.div>
-
             {/* Custom Cursor for Hero */}
             {isHoveringHero && (
                 <div

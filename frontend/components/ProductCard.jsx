@@ -22,12 +22,14 @@ export default function ProductCard({ product }) {
 
   const productColors = {
     beauty: 'from-[#f8e1e8] to-[#fce4ec]',
+    suncream: 'from-[#ffe082] to-[#ffcc80]', // Warm sun colors
     sunglasses: 'from-[#e0e0e0] to-[#f5f5f5]',
     accessories: 'from-[#e8d4c4] to-[#f5e6d8]',
   };
 
   const productEmojis = {
     beauty: '💄',
+    suncream: '☀️',
     sunglasses: '🕶️',
     accessories: '👜',
   };

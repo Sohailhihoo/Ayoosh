@@ -4,12 +4,13 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
 import { HiOutlineMenu, HiOutlineX, HiOutlineSearch, HiOutlineUser, HiOutlineShoppingBag } from 'react-icons/hi';
-import { useCartStore, useAuthStore } from '@/lib/store';
+import { useCartStore, useAuthStore, useUIStore } from '@/lib/store';
 import { ASSETS } from '@/lib/cloudinary-assets';
 
 // Navigation items configuration
 const NAV_ITEMS = [
-  { href: '/products', label: 'SHOP', ariaLabel: 'Shop products' },
+  { href: '/suncream', label: 'SUNCREAM', ariaLabel: 'Shop Suncream' },
+  { href: '/sunglasses', label: 'SUNGLASSES', ariaLabel: 'Shop Sunglasses' },
   { href: '/about', label: 'ABOUT', ariaLabel: 'About us' },
   { href: '/contact', label: 'CONTACT', ariaLabel: 'Contact us' },
 ];
@@ -19,16 +20,6 @@ const SCROLL_THRESHOLD = 50;
 
 /**
  * Navbar Component
- * 
- * Main navigation bar featuring:
- * - Announcement bar
- * - Responsive navigation menu
- * - Logo (centered)
- * - User authentication state
- * - Shopping cart with item count
- * - Mobile menu toggle
- * 
- * @returns {JSX.Element} The navigation component
  */
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -37,10 +28,11 @@ export default function Navbar() {
 
   const { totalItems, fetchCart } = useCartStore();
   const { isAuthenticated, user, logout, checkAuth, isLoading } = useAuthStore();
+  const { isHomeLoading } = useUIStore(); // Get loading state
   const pathname = usePathname();
 
   // Pages where navbar should be transparent (overlay)
-  const isTransparentPage = pathname === '/beauty' || pathname === '/sunglasses';
+  const isTransparentPage = ['/suncream', '/sunglasses', '/', '/home'].includes(pathname);
 
   // Determine navbar styles based on scroll state and current page
   const getNavClasses = () => {
@@ -84,16 +76,16 @@ export default function Navbar() {
         return ASSETS.logos.light;
       }
       // Stage 2 & 3: Use black logo on light/white background
-      return ASSETS.logos.main;
+      return ASSETS.logos.final;
     }
 
     // Beauty page and other transparent pages
     if (isTransparentPage) {
-      return isScrolled ? ASSETS.logos.main : ASSETS.logos.light;
+      return isScrolled ? ASSETS.logos.final : ASSETS.logos.light;
     }
 
     // Default pages - always use main (black) logo
-    return ASSETS.logos.main;
+    return ASSETS.logos.final;
   };
 
   // Determine logo size based on navbar state
@@ -197,7 +189,7 @@ export default function Navbar() {
             </div>
 
             {/* Center Section: Logo (Absolute Centered) */}
-            <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div className={`absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-opacity duration-700 ${isHomeLoading && isTransparentPage ? 'opacity-0' : 'opacity-100'}`}>
               <Link
                 href="/home"
                 className="block"

@@ -32,13 +32,13 @@ export default function sitemap() {
             priority: 0.9,
         },
         {
-            url: `${baseUrl}/beauty`,
+            url: `${baseUrl}/suncream`,
             lastModified: new Date(),
             changeFrequency: 'weekly',
             priority: 0.8,
         },
         {
-            url: `${baseUrl}/beauty-center`,
+            url: `${baseUrl}/suncream-center`,
             lastModified: new Date(),
             changeFrequency: 'weekly',
             priority: 0.8,

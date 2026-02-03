@@ -171,3 +171,12 @@ export const useAuthStore = create((set) => ({
     set({ user, isAuthenticated: true, isLoading: false });
   },
 }));
+
+/**
+ * UI Store
+ * Manages global UI states like loading screens and animations
+ */
+export const useUIStore = create((set) => ({
+  isHomeLoading: true, // Defaults to true on initial load
+  setHomeLoading: (loading) => set({ isHomeLoading: loading }),
+}));

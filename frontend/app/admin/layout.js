@@ -32,6 +32,11 @@ export default function AdminLayout({ children }) {
         }
     }, [isAuthenticated, isLoading, user, router]);
 
+    // Strict Security Check:
+    // 1. If loading, show spinner.
+    // 2. If not authenticated or not admin, show nothing (useEffect redirects).
+    // 3. Only render children if verified admin.
+
     if (isLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -41,7 +46,7 @@ export default function AdminLayout({ children }) {
     }
 
     if (!isAuthenticated || user?.role !== 'admin') {
-        return null;
+        return null; // Don't render anything while redirecting
     }
 
     return (

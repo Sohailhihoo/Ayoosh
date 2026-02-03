@@ -11,12 +11,15 @@
     "install:all": "npm install"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "@tailwindcss/postcss": "^4.1.18",
+    "concurrently": "^8.2.2",
+    "tailwindcss": "^4.1.18"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.20",
     "axios": "^1.13.3",
     "cloudinary": "^2.9.0",
+    "mongodb": "^7.0.0",
     "multer": "^2.0.2",
     "multer-storage-cloudinary": "^2.2.1",
     "react-hot-toast": "^2.6.0"

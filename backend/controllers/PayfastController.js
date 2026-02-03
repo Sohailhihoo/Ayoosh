@@ -21,8 +21,9 @@ const generateSignature = (data, passphrase = null) => {
 
     for (let key of sortedKeys) {
         if (data[key] !== '' && data[key] !== null && data[key] !== undefined) {
-            // Use PLAIN values - NO URL encoding
-            const value = String(data[key]).trim();
+            // URL Encode values and replace %20 with +
+            let value = String(data[key]).trim();
+            value = encodeURIComponent(value).replace(/%20/g, '+');
             pfOutput += `${key}=${value}&`;
         }
     }
@@ -30,14 +31,15 @@ const generateSignature = (data, passphrase = null) => {
     // Remove last ampersand
     let getString = pfOutput.slice(0, -1);
 
-    // Add passphrase if provided (also plain, no encoding)
+    // Add passphrase if provided (also encoded)
     if (passphrase && passphrase.trim() !== '') {
-        getString += `&passphrase=${passphrase.trim()}`;
+        let pfPass = encodeURIComponent(passphrase.trim()).replace(/%20/g, '+');
+        getString += `&passphrase=${pfPass}`;
     }
 
     // Debug log
     console.log('==========================================');
-    console.log('SIGNATURE DEBUG (Plain Values Mode)');
+    console.log('SIGNATURE DEBUG (URL Encoded Mode)');
     console.log('Passphrase:', passphrase ? 'SET' : 'NONE');
     console.log('Signature String:', getString);
     console.log('==========================================');
@@ -133,14 +135,20 @@ const initiatePayment = async (req, res) => {
             }
         });
 
+        // Determine Passphrase based on mode
+        const passphrase = process.env.PAYFAST_SANDBOX === 'true'
+            ? process.env.PAYFAST_SANDBOX_PASSPHRASE
+            : process.env.PAYFAST_PASSPHRASE;
+
         // Generate signature
-        const signature = generateSignature(paymentData, process.env.PAYFAST_PASSPHRASE);
+        const signature = generateSignature(paymentData, passphrase);
         paymentData.signature = signature;
 
         // Debug: Log signature details
         console.log('=== PayFast Signature Debug ===');
         console.log('Fields (alphabetically):', Object.keys(paymentData).sort());
-        console.log('Passphrase:', process.env.PAYFAST_PASSPHRASE ? 'SET' : 'EMPTY');
+        console.log('Mode:', process.env.PAYFAST_SANDBOX === 'true' ? 'SANDBOX' : 'LIVE');
+        console.log('Passphrase used:', passphrase ? 'YES (Hidden)' : 'NO (Empty)');
         console.log('Generated Signature:', signature);
         console.log('===============================');
 
@@ -184,13 +192,44 @@ const handleITN = async (req, res) => {
         const dataWithoutSignature = { ...pfData };
         delete dataWithoutSignature.signature;
 
-        const expectedSignature = generateSignature(dataWithoutSignature, process.env.PAYFAST_PASSPHRASE);
+        // Determine Passphrase based on mode
+        const passphrase = process.env.PAYFAST_SANDBOX === 'true'
+            ? (process.env.PAYFAST_SANDBOX_PASSPHRASE || process.env.PAYFAST_PASSPHRASE)
+            : process.env.PAYFAST_PASSPHRASE;
+
+        let expectedSignature = generateSignature(dataWithoutSignature, passphrase);
 
         if (receivedSignature !== expectedSignature) {
-            console.error('PayFast ITN: Signature mismatch');
-            console.error('Received:', receivedSignature);
-            console.error('Expected:', expectedSignature);
-            return res.status(400).send('Signature mismatch');
+            // Fallback: If Sandbox, try validating WITHOUT passphrase (common misconfiguration)
+            if (process.env.PAYFAST_SANDBOX === 'true') {
+                console.log('PayFast ITN: Signature mismatch with passphrase. Retrying without passphrase...');
+                const signatureNoPass = generateSignature(dataWithoutSignature, null);
+
+                if (receivedSignature === signatureNoPass) {
+                    console.log('PayFast ITN: Signature verified WITHOUT passphrase (Fallback) ✓');
+                    expectedSignature = receivedSignature; // Match found
+                } else {
+                    console.error('PayFast ITN: Signature mismatch (Both attempts failed)');
+                    console.error('Received:', receivedSignature);
+                    console.error('Expected (With Pass):', expectedSignature);
+                    console.error('Expected (No Pass):', signatureNoPass);
+
+                    logITNError('Signature Mismatch (Both attempts failed)', {
+                        received: receivedSignature,
+                        expectedWithPass: expectedSignature,
+                        expectedNoPass: signatureNoPass,
+                        dataWithoutSignature,
+                        passphraseUsed: passphrase
+                    });
+
+                    return res.status(400).send('Signature mismatch');
+                }
+            } else {
+                console.error('PayFast ITN: Signature mismatch');
+                console.error('Received:', receivedSignature);
+                console.error('Expected:', expectedSignature);
+                return res.status(400).send('Signature mismatch');
+            }
         }
 
         console.log('PayFast ITN: Signature verified ✓');
@@ -265,8 +304,20 @@ const handleITN = async (req, res) => {
         // PayFast expects a 200 response
         res.status(200).send('OK');
 
+        const fs = require('fs');
+        const path = require('path');
+
+        const logITNError = (message, data) => {
+            const logPath = path.join(__dirname, '../itn-error.log');
+            const timestamp = new Date().toISOString();
+            const logEntry = `[${timestamp}] ${message}\nData: ${JSON.stringify(data, null, 2)}\n\n`;
+            fs.appendFileSync(logPath, logEntry);
+        };
+
+        // ... inside catch or error blocks ...
     } catch (error) {
         console.error('PayFast ITN Error:', error);
+        logITNError('Server Error during ITN processing', { error: error.message, stack: error.stack });
         res.status(500).send('Server error');
     }
 };

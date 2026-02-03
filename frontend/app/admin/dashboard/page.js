@@ -101,7 +101,7 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <StatsCard
                     title="Total Revenue"
-                    value={`$${stats?.totalRevenue?.toLocaleString() || 0}`}
+                    value={`R${(stats?.totalRevenue || 0).toLocaleString()}`}
                     icon={HiOutlineCurrencyDollar}
                     trend={stats?.revenueTrend}
                     bgColor="bg-green-500"
@@ -190,7 +190,7 @@ export default function AdminDashboard() {
                                         {product.sales} units
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                                        ${product.revenue.toLocaleString()}
+                                        R{product.revenue.toLocaleString()}
                                     </td>
                                 </tr>
                             ))}

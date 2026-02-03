@@ -22,8 +22,12 @@ function OrderConfirmationContent() {
     const paymentMethod = searchParams.get('paymentMethod');
 
     useEffect(() => {
+        let attempts = 0;
+        const maxAttempts = 10;
+        let pollTimer;
+
         const verifyOrder = async () => {
-            // If we have orderNumber but no orderId (COD orders), just show success
+            // COD Logic: If no orderId, just show pending success
             if (orderNumber && !orderId) {
                 setOrder({ orderNumber, paymentStatus: 'pending', status: 'pending' });
                 clearCart();
@@ -39,53 +43,51 @@ function OrderConfirmationContent() {
 
             try {
                 let result;
-
-                // Verify payment based on payment method
-                // Try PayGate first if specified, otherwise try PayFast, then fallback to PayGate
-                if (paymentMethod === 'paygate') {
-                    result = await verifyPayGatePayment(orderId);
-                } else if (paymentMethod === 'payfast') {
-                    result = await verifyPayFastPayment(orderId);
-                } else {
-                    // Try PayFast first for backwards compatibility
-                    result = await verifyPayFastPayment(orderId);
-                    // If PayFast fails, try PayGate
-                    if (!result.success) {
-                        result = await verifyPayGatePayment(orderId);
-                    }
-                }
+                // Check status via backend
+                result = await verifyPayFastPayment(orderId);
 
                 if (result.success) {
                     setOrder(result.data);
 
-                    // Clear cart if payment was successful or if returning from payment gateway with success
-                    if (result.data.paymentStatus === 'paid' || status === 'success') {
+                    if (result.data.paymentStatus === 'paid') {
+                        // Payment confirmed!
                         clearCart();
+                        setLoading(false);
+                        return; // Stop polling
+                    } else if (result.data.paymentStatus === 'failed') {
+                        // Payment failed
+                        setLoading(false);
+                        return; // Stop polling
                     }
                 } else {
-                    // Even if verification fails, show basic info if we have status=success
                     if (status === 'success') {
                         setOrder({ orderId, paymentStatus: 'processing', status: 'pending' });
-                        clearCart();
                     } else {
                         setError(result.error || 'Failed to verify order');
                     }
                 }
             } catch (err) {
                 console.error('Verification Error:', err);
-                // Still show success page if we have success status
                 if (status === 'success') {
                     setOrder({ orderId, paymentStatus: 'processing', status: 'pending' });
-                    clearCart();
                 } else {
                     setError('Something went wrong');
                 }
             } finally {
                 setLoading(false);
             }
+
+            // Continue polling if pending and attempts remaining
+            attempts++;
+            if (attempts < maxAttempts) {
+                pollTimer = setTimeout(verifyOrder, 3000); // Poll every 3 seconds
+            }
         };
 
         verifyOrder();
+
+        // Cleanup timer on unmount
+        return () => clearTimeout(pollTimer);
     }, [orderId, orderNumber, status, paymentMethod, clearCart]);
 
     if (loading) {
@@ -192,8 +194,8 @@ function OrderConfirmationContent() {
                             <div className="flex justify-between">
                                 <span className="text-gray-600">Payment Status:</span>
                                 <span className={`font-medium px-2 py-1 rounded-full text-sm ${isPaid
-                                        ? 'bg-green-100 text-green-700'
-                                        : 'bg-yellow-100 text-yellow-700'
+                                    ? 'bg-green-100 text-green-700'
+                                    : 'bg-yellow-100 text-yellow-700'
                                     }`}>
                                     {isPaid ? 'Paid' : 'Pending'}
                                 </span>
