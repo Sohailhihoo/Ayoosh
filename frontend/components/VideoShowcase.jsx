@@ -8,35 +8,35 @@ export default function VideoShowcase({ videos: propVideos, bgColor = '#f4f2f0' 
     const isInView = useInView(sectionRef, { once: false, amount: 0.2 });
 
     /**
-     * Helper to inject Cloudinary transformations for performance.
-     * w_720: Resize to 720p (sufficient for grid)
-     * f_auto: Serve WebM/MP4 automatically
-     * q_auto: Optimize quality/bitrate
+     * Helper to optimize thumbnail URLs (images only)
+     * Don't apply transformations to video URLs - it can break playback
      */
-    const getOptimizedUrl = (url) => {
+    const getOptimizedThumbnail = (url) => {
         if (!url || !url.includes('cloudinary.com')) return url;
-        if (url.includes('f_auto,q_auto')) return url; // Already optimized
+        if (url.includes('f_auto,q_auto')) return url;
         return url.replace('/upload/', '/upload/w_720,f_auto,q_auto/');
     };
 
     // Default Video Data configuration (Beauty Page)
+    // For thumbnails: use .jpg extension on video path OR provide separate image
+    // For videos: use direct Cloudinary video URL without transformations
     const defaultVideos = [
         {
             id: 1,
-            thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769624525/sunglasses_16_9_oolw5o.jpg",
+            thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/so_0/v1769624525/sunglasses_16_9_oolw5o.jpg",
             videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769624525/sunglasses_16_9_oolw5o.mp4",
             alt: "Trendy Sunglasses"
         },
         {
             id: 2,
-            thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769625247/sunscreen_16_9_skay4t.jpg",
+            thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/so_0/v1769625247/sunscreen_16_9_skay4t.jpg",
             videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769625247/sunscreen_16_9_skay4t.mp4",
             featured: true,
             alt: "Premium Sunscreen"
         },
         {
             id: 3,
-            thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769624525/sunglasses_16_9_oolw5o.jpg",
+            thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/so_0/v1769624525/sunglasses_16_9_oolw5o.jpg",
             videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769624525/sunglasses_16_9_oolw5o.mp4",
             alt: "Style & Protection"
         }
@@ -45,11 +45,11 @@ export default function VideoShowcase({ videos: propVideos, bgColor = '#f4f2f0' 
     // Use passed videos or default
     const rawVideos = propVideos || defaultVideos;
 
-    // Map data to use optimized URLs
+    // Only optimize thumbnails, keep video URLs as-is
     const videos = rawVideos.map(video => ({
         ...video,
-        thumbnail: getOptimizedUrl(video.thumbnail),
-        videoUrl: getOptimizedUrl(video.videoUrl)
+        thumbnail: getOptimizedThumbnail(video.thumbnail),
+        videoUrl: video.videoUrl  // Don't modify video URLs
     }));
 
     return (
@@ -137,9 +137,14 @@ function VideoCard({ video, index, sectionInView }) {
                 loop
                 playsInline
                 preload="auto"
-                onLoadedData={() => setIsLoaded(true)}
+                crossOrigin="anonymous"
+                onLoadedData={() => {
+                    console.log('Video loaded:', video.alt);
+                    setIsLoaded(true);
+                }}
                 onPlay={() => setIsPlaying(true)}
                 onPause={() => setIsPlaying(false)}
+                onError={(e) => console.error('Video error:', video.alt, e.target.error)}
             />
 
             {/* 3. PLAY BUTTON LAYER */}
