@@ -1,4 +1,15 @@
-import { HiOutlineTrendingUp, HiOutlineTrendingDown } from 'react-icons/hi';
+// Inline SVG icons to avoid react-icons module issues
+const TrendingUpIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+  </svg>
+);
+
+const TrendingDownIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
+  </svg>
+);
 
 /**
  * StatsCard Component
@@ -28,13 +39,13 @@ export default function StatsCard({ title, value, icon: Icon, trend, bgColor = '
                         <div className="flex items-center mt-2">
                             {isPositive && (
                                 <>
-                                    <HiOutlineTrendingUp className="w-4 h-4 text-green-500 mr-1" />
+                                    <TrendingUpIcon className="w-4 h-4 text-green-500 mr-1" />
                                     <span className="text-sm text-green-500 font-medium">+{trend}%</span>
                                 </>
                             )}
                             {isNegative && (
                                 <>
-                                    <HiOutlineTrendingDown className="w-4 h-4 text-red-500 mr-1" />
+                                    <TrendingDownIcon className="w-4 h-4 text-red-500 mr-1" />
                                     <span className="text-sm text-red-500 font-medium">{trend}%</span>
                                 </>
                             )}

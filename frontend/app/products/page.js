@@ -5,7 +5,19 @@ import { productAPI } from '@/lib/api';
 import { useProductFilters } from '@/hooks/useProductFilters';
 import ProductCard from '@/components/ProductCard';
 import SearchInput from '@/components/SearchInput';
-import { HiOutlineAdjustments, HiOutlineX } from 'react-icons/hi';
+
+// Inline SVG icons to avoid react-icons module issues
+const AdjustmentsIcon = ({ className }) => (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+    </svg>
+);
+
+const XIcon = ({ className }) => (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+);
 
 function ProductsContent() {
   const [products, setProducts] = useState([]);
@@ -40,10 +52,11 @@ function ProductsContent() {
     fetchProducts();
   }, [filters]); // Re-fetch when URL params change
 
-  const productTypes = ['beauty', 'sunglasses'];
+  const productTypes = ['suncream', 'sunglasses', 'accessories'];
   const categoryLabels = {
-    beauty: 'Skin Care',
-    sunglasses: 'Sunglasses'
+    suncream: 'Sun Care',
+    sunglasses: 'Sunglasses',
+    accessories: 'Accessories'
   };
   const sortOptions = [
     { value: '-createdAt', label: 'Newest' },
@@ -164,7 +177,7 @@ function ProductsContent() {
                 onClick={() => setShowFilters(true)}
                 className="lg:hidden flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-sm"
               >
-                <HiOutlineAdjustments className="w-5 h-5" />
+                <AdjustmentsIcon className="w-5 h-5" />
                 Filters
                 {hasActiveFilters && (
                   <span className="bg-pink-600 text-white text-xs px-2 py-0.5 rounded-full">
@@ -282,7 +295,7 @@ function ProductsContent() {
             <div className="flex items-center justify-between mb-6">
               <h2 className="font-semibold text-lg">Filters</h2>
               <button onClick={() => setShowFilters(false)}>
-                <HiOutlineX className="w-6 h-6" />
+                <XIcon className="w-6 h-6" />
               </button>
             </div>
 

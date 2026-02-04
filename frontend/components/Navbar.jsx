@@ -3,16 +3,46 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
-import { HiOutlineMenu, HiOutlineX, HiOutlineSearch, HiOutlineUser, HiOutlineShoppingBag } from 'react-icons/hi';
 import { useCartStore, useAuthStore, useUIStore } from '@/lib/store';
 import { ASSETS } from '@/lib/cloudinary-assets';
+
+// Inline SVG icons to avoid react-icons module issues
+const MenuIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+  </svg>
+);
+
+const XIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+  </svg>
+);
+
+const SearchIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+  </svg>
+);
+
+const UserIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+  </svg>
+);
+
+const ShoppingBagIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+  </svg>
+);
 
 // Navigation items configuration
 const NAV_ITEMS = [
   { href: '/suncream', label: 'SUNCREAM', ariaLabel: 'Shop Suncream' },
   { href: '/sunglasses', label: 'SUNGLASSES', ariaLabel: 'Shop Sunglasses' },
   { href: '/about', label: 'ABOUT', ariaLabel: 'About us' },
-  { href: '/contact', label: 'CONTACT', ariaLabel: 'Contact us' },
+  { href: '/products', label: 'SHOP', ariaLabel: 'Shop products' },
 ];
 
 const SCROLL_THRESHOLD = 50;
@@ -168,9 +198,9 @@ export default function Navbar() {
                 aria-expanded={isMenuOpen}
               >
                 {isMenuOpen ? (
-                  <HiOutlineX className="w-6 h-6" aria-hidden="true" />
+                  <XIcon className="w-6 h-6" aria-hidden="true" />
                 ) : (
-                  <HiOutlineMenu className="w-6 h-6" aria-hidden="true" />
+                  <MenuIcon className="w-6 h-6" aria-hidden="true" />
                 )}
               </button>
 
@@ -211,7 +241,7 @@ export default function Navbar() {
                 className="hover:opacity-70 transition-opacity hidden md:block" // Removed text tracking classes
                 aria-label="Search products"
               >
-                <HiOutlineSearch className="w-6 h-6" />
+                <SearchIcon className="w-6 h-6" />
               </button>
 
               {isAuthenticated ? (
@@ -221,7 +251,7 @@ export default function Navbar() {
                     aria-label="Account menu"
                     aria-haspopup="true"
                   >
-                    <HiOutlineUser className="w-6 h-6" />
+                    <UserIcon className="w-6 h-6" />
                   </button>
                   <div
                     className="absolute right-0 mt-2 w-48 bg-white text-gray-800 rounded-lg shadow-lg py-2 hidden group-hover:block border border-gray-100"
@@ -254,7 +284,7 @@ export default function Navbar() {
                   className="hover:opacity-80 transition-opacity hidden md:block"
                   aria-label="Login to your account"
                 >
-                  <HiOutlineUser className="w-6 h-6" />
+                  <UserIcon className="w-6 h-6" />
                 </Link>
               )}
 
@@ -263,7 +293,7 @@ export default function Navbar() {
                 className="text-base tracking-widest hover:opacity-80 transition-opacity flex items-center"
                 aria-label={`Shopping cart with ${totalItems} item${totalItems !== 1 ? 's' : ''}`}
               >
-                <span className="hidden md:inline"><HiOutlineShoppingBag className="w-6 h-6" /></span>
+                <span className="hidden md:inline"><ShoppingBagIcon className="w-6 h-6" /></span>
                 <span className="ml-1" aria-live="polite">({totalItems})</span>
               </Link>
             </div>

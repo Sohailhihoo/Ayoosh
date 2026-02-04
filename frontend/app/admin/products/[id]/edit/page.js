@@ -4,8 +4,14 @@ import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { productAPI, adminAPI } from '@/lib/api';
 import toast from 'react-hot-toast';
-import { HiOutlineArrowLeft } from 'react-icons/hi';
 import Link from 'next/link';
+
+// Inline SVG icon to avoid react-icons module issues
+const ArrowLeftIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+  </svg>
+);
 
 /**
  * Edit Product Page
@@ -26,7 +32,7 @@ export default function EditProduct() {
         brand: '',
         price: '',
         description: '',
-        productType: 'beauty',
+        productType: 'suncream',
         stock: '',
         images: '',
         isFeatured: false,
@@ -49,7 +55,7 @@ export default function EditProduct() {
                 brand: product.brand || '',
                 price: product.price || '',
                 description: product.description || '',
-                productType: product.productType || 'beauty',
+                productType: product.productType || 'suncream',
                 stock: product.stock || '',
                 images: product.images?.join(', ') || '',
                 isFeatured: product.isFeatured || false,
@@ -112,7 +118,7 @@ export default function EditProduct() {
             {/* Header */}
             <div className="flex items-center space-x-4">
                 <Link href="/admin/products" className="p-2 hover:bg-gray-100 rounded">
-                    <HiOutlineArrowLeft className="w-6 h-6" />
+                    <ArrowLeftIcon className="w-6 h-6" />
                 </Link>
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900">Edit Product</h1>
@@ -193,7 +199,7 @@ export default function EditProduct() {
                                     onChange={handleChange}
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 >
-                                    <option value="beauty">Beauty</option>
+                                    <option value="suncream">Suncream</option>
                                     <option value="sunglasses">Sunglasses</option>
                                     <option value="accessories">Accessories</option>
                                 </select>

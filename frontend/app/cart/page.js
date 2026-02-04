@@ -3,8 +3,32 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { useCartStore, useAuthStore } from '@/lib/store';
-import { HiOutlineTrash, HiMinus, HiPlus, HiArrowRight } from 'react-icons/hi';
 import toast from 'react-hot-toast';
+
+// Inline SVG icons to avoid react-icons module issues
+const TrashIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+  </svg>
+);
+
+const MinusIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4" />
+  </svg>
+);
+
+const PlusIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+  </svg>
+);
+
+const ArrowRightIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+  </svg>
+);
 
 export default function CartPage() {
   const { items, subtotal, total, totalItems, loading, fetchCart, updateQuantity, removeItem } = useCartStore();
@@ -70,7 +94,7 @@ export default function CartPage() {
                   {/* Product Image */}
                   <div className="w-24 h-24 bg-gradient-to-br from-pink-100 to-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
                     <span className="text-3xl">
-                      {item.product?.productType === 'beauty' && '💄'}
+                      {item.product?.productType === 'suncream' && '☀️'}
                       {item.product?.productType === 'sunglasses' && '🕶️'}
                       {item.product?.productType === 'accessories' && '👜'}
                       {!item.product?.productType && '📦'}
@@ -98,7 +122,7 @@ export default function CartPage() {
                         onClick={() => handleRemoveItem(item._id)}
                         className="text-gray-400 hover:text-red-500 transition-colors"
                       >
-                        <HiOutlineTrash className="w-5 h-5" />
+                        <TrashIcon className="w-5 h-5" />
                       </button>
                     </div>
 
@@ -110,14 +134,14 @@ export default function CartPage() {
                           className="p-2 hover:bg-gray-100 transition-colors"
                           disabled={item.quantity <= 1}
                         >
-                          <HiMinus className="w-4 h-4" />
+                          <MinusIcon className="w-4 h-4" />
                         </button>
                         <span className="w-10 text-center font-medium">{item.quantity}</span>
                         <button
                           onClick={() => handleUpdateQuantity(item._id, item.quantity + 1)}
                           className="p-2 hover:bg-gray-100 transition-colors"
                         >
-                          <HiPlus className="w-4 h-4" />
+                          <PlusIcon className="w-4 h-4" />
                         </button>
                       </div>
 
@@ -158,7 +182,7 @@ export default function CartPage() {
                 className="w-full btn-primary flex items-center justify-center gap-2 py-4"
               >
                 Proceed to Checkout
-                <HiArrowRight className="w-5 h-5" />
+                <ArrowRightIcon className="w-5 h-5" />
               </Link>
 
               {!isAuthenticated && (

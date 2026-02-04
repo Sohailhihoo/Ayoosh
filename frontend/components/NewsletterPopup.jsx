@@ -1,7 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { HiX } from 'react-icons/hi';
+
+// Inline SVG icon to avoid react-icons module issues
+const XIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+  </svg>
+);
 
 /**
  * NewsletterPopup Component
@@ -69,7 +75,7 @@ export default function NewsletterPopup() {
                     className="absolute top-4 right-4 z-10 p-2 text-gray-400 hover:text-gray-600 transition-colors"
                     aria-label="Close popup"
                 >
-                    <HiX className="w-6 h-6" />
+                    <XIcon className="w-6 h-6" />
                 </button>
 
                 {/* Decorative Header */}

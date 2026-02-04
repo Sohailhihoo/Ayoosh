@@ -4,9 +4,27 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { adminAPI } from '@/lib/api';
 import toast from 'react-hot-toast';
-import { HiOutlineArrowLeft, HiOutlineCloudUpload, HiX } from 'react-icons/hi';
 import Link from 'next/link';
 import Image from 'next/image';
+
+// Inline SVG icons to avoid react-icons module issues
+const ArrowLeftIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+  </svg>
+);
+
+const CloudUploadIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+  </svg>
+);
+
+const XIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+  </svg>
+);
 
 /**
  * Add New Product Page
@@ -23,7 +41,7 @@ export default function NewProduct() {
         brand: '',
         price: '',
         description: '',
-        productType: 'beauty',
+        productType: 'suncream',
         stock: '',
         isFeatured: false,
     });
@@ -139,7 +157,7 @@ export default function NewProduct() {
                     href="/admin/products"
                     className="p-2 hover:bg-gray-100 rounded"
                 >
-                    <HiOutlineArrowLeft className="w-6 h-6" />
+                    <ArrowLeftIcon className="w-6 h-6" />
                 </Link>
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900">Add New Product</h1>
@@ -225,7 +243,7 @@ export default function NewProduct() {
                                     onChange={handleChange}
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 >
-                                    <option value="beauty">Beauty</option>
+                                    <option value="suncream">Suncream</option>
                                     <option value="sunglasses">Sunglasses</option>
                                     <option value="accessories">Accessories</option>
                                 </select>
@@ -282,7 +300,7 @@ export default function NewProduct() {
                                             onChange={handleGalleryChange}
                                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                         />
-                                        <HiOutlineCloudUpload className="w-8 h-8 text-gray-400" />
+                                        <CloudUploadIcon className="w-8 h-8 text-gray-400" />
                                         <span className="text-xs text-gray-500 mt-2">Upload Images</span>
                                     </div>
 
@@ -299,7 +317,7 @@ export default function NewProduct() {
                                                 onClick={() => removeGalleryItem(index)}
                                                 className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                                             >
-                                                <HiX className="w-4 h-4" />
+                                                <XIcon className="w-4 h-4" />
                                             </button>
                                         </div>
                                     ))}
@@ -319,7 +337,7 @@ export default function NewProduct() {
                                             onChange={handleVideoChange}
                                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                         />
-                                        <HiOutlineCloudUpload className="w-8 h-8 text-gray-400" />
+                                        <CloudUploadIcon className="w-8 h-8 text-gray-400" />
                                         <span className="text-sm text-gray-500 mt-2">Click to upload video (MP4, MOV)</span>
                                     </div>
                                 ) : (
@@ -330,7 +348,7 @@ export default function NewProduct() {
                                             onClick={removeVideo}
                                             className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
                                         >
-                                            <HiX className="w-5 h-5" />
+                                            <XIcon className="w-5 h-5" />
                                         </button>
                                     </div>
                                 )}

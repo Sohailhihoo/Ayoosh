@@ -3,24 +3,57 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import {
-    HiOutlineHome,
-    HiOutlineShoppingBag,
-    HiOutlineShoppingCart,
-    HiOutlineUsers,
-    HiOutlineChartBar,
-    HiOutlineMenu,
-    HiOutlineX,
-    HiOutlineLogout,
-} from 'react-icons/hi';
 import { ASSETS } from '@/lib/cloudinary-assets';
 
+// Inline SVG icons to avoid react-icons module issues
+const HomeIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+  </svg>
+);
+
+const ShoppingBagIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+  </svg>
+);
+
+const ShoppingCartIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+  </svg>
+);
+
+const UsersIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+  </svg>
+);
+
+const ChartBarIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+  </svg>
+);
+
+const XIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+  </svg>
+);
+
+const LogoutIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+  </svg>
+);
+
 const NAV_ITEMS = [
-    { href: '/admin/dashboard', label: 'Dashboard', icon: HiOutlineHome },
-    { href: '/admin/products', label: 'Products', icon: HiOutlineShoppingBag },
-    { href: '/admin/orders', label: 'Orders', icon: HiOutlineShoppingCart },
-    { href: '/admin/customers', label: 'Customers', icon: HiOutlineUsers },
-    { href: '/admin/analytics', label: 'Analytics', icon: HiOutlineChartBar },
+    { href: '/admin/dashboard', label: 'Dashboard', icon: HomeIcon },
+    { href: '/admin/products', label: 'Products', icon: ShoppingBagIcon },
+    { href: '/admin/orders', label: 'Orders', icon: ShoppingCartIcon },
+    { href: '/admin/customers', label: 'Customers', icon: UsersIcon },
+    { href: '/admin/analytics', label: 'Analytics', icon: ChartBarIcon },
 ];
 
 /**
@@ -67,7 +100,7 @@ export default function AdminSidebar({ isOpen, onClose }) {
                         className="lg:hidden p-2 hover:bg-gray-700 rounded"
                         aria-label="Close menu"
                     >
-                        <HiOutlineX className="w-5 h-5" />
+                        <XIcon className="w-5 h-5" />
                     </button>
                 </div>
 
@@ -100,7 +133,7 @@ export default function AdminSidebar({ isOpen, onClose }) {
                         href="/"
                         className="flex items-center space-x-3 px-4 py-3 text-gray-300 hover:bg-[#374151] hover:text-white rounded-lg transition-colors"
                     >
-                        <HiOutlineLogout className="w-5 h-5" />
+                        <LogoutIcon className="w-5 h-5" />
                         <span className="font-medium">Back to Store</span>
                     </Link>
                 </div>

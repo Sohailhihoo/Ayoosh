@@ -24,7 +24,7 @@ const heroTitleStyle = {
 
 // Hero buttons configuration
 const heroButtons = [
-    { href: '/products?productType=beauty', label: 'Shop Now', variant: 'primary' },
+    { href: '/products?productType=suncream', label: 'Shop Now', variant: 'primary' },
 
 ];
 

@@ -2,9 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { HiOutlineMenu } from 'react-icons/hi';
 import AdminSidebar from '@/components/admin/Sidebar';
 import { useAuthStore } from '@/lib/store';
+
+// Inline SVG icon to avoid react-icons module issues
+const MenuIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+  </svg>
+);
 
 /**
  * AdminLayout Component
@@ -67,7 +73,7 @@ export default function AdminLayout({ children }) {
                             className="lg:hidden p-2 hover:bg-gray-100 rounded"
                             aria-label="Open menu"
                         >
-                            <HiOutlineMenu className="w-6 h-6" />
+                            <MenuIcon className="w-6 h-6" />
                         </button>
                         <div className="flex items-center space-x-4 ml-auto">
                             <span className="text-sm text-gray-600">Welcome, Admin</span>

@@ -3,9 +3,32 @@
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { FiDroplet, FiZap } from 'react-icons/fi';
-import { BsSunglasses } from 'react-icons/bs';
-import { FaHandHoldingHeart } from 'react-icons/fa';
+
+// Inline SVG icons to avoid react-icons module issues
+const DropletIcon = () => (
+    <svg className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 21.5c-3.5 0-6.5-2.5-6.5-6.5 0-4.5 6.5-12 6.5-12s6.5 7.5 6.5 12c0 4-3 6.5-6.5 6.5z" />
+    </svg>
+);
+
+const ZapIcon = () => (
+    <svg className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+    </svg>
+);
+
+const SunglassesIcon = () => (
+    <svg className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M2 10h2M20 10h2M6 10h12M6 10a4 4 0 104 4M18 10a4 4 0 11-4 4M10 14h4" />
+    </svg>
+);
+
+const HeartHandIcon = () => (
+    <svg className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 21v-6m-4 2h8" />
+    </svg>
+);
 
 
 
@@ -122,9 +145,9 @@ export default function HomePage() {
                 className="relative h-screen min-h-[600px] flex flex-col md:flex-row"
                 aria-label="Hero section"
             >
-                {/* Left Panel - Skincare */}
+                {/* Left Panel - Suncream */}
                 <Link
-                    href="/beauty"
+                    href="/suncream"
                     className="relative w-full md:w-1/2 h-1/2 md:h-full overflow-hidden group cursor-none block"
                     aria-label="Shop skincare collection"
                     onMouseEnter={() => handleMouseEnter(leftVideoRef)}
@@ -139,7 +162,7 @@ export default function HomePage() {
                         className="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110 brightness-[0.3] group-hover:brightness-110 grayscale group-hover:grayscale-0"
                         aria-label="Skincare collection video"
                     >
-                        <source src="/videos/homepage/1.mp4" type="video/mp4" />
+                        <source src="https://res.cloudinary.com/dpdg462fb/video/upload/v1770179502/1_pdu3jc.mp4" type="video/mp4" />
                         Your browser does not support the video tag.
                     </video>
 
@@ -174,7 +197,7 @@ export default function HomePage() {
                         className="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110 brightness-[0.3] group-hover:brightness-110 grayscale group-hover:grayscale-0"
                         aria-label="SkinBooster collection video"
                     >
-                        <source src="/videos/homepage/2.mp4" type="video/mp4" />
+                        <source src="https://res.cloudinary.com/dpdg462fb/video/upload/v1770179502/2_m0puzp.mp4" type="video/mp4" />
                         Your browser does not support the video tag.
                     </video>
 
@@ -209,7 +232,7 @@ export default function HomePage() {
                         variants={scaleIn}
                     >
                         <div className="text-3xl mb-4 text-gray-400 group-hover:text-black group-hover:scale-110 transition-all duration-500">
-                            <FiDroplet />
+                            <DropletIcon />
                         </div>
                         <h3 className="text-lg font-playfair font-medium text-gray-900 mb-2">Skincare</h3>
                         <p className="text-gray-500 text-sm font-light leading-relaxed mb-6">Discover our carefully curated collection of premium skincare products, designed to nourish and protect your skin.</p>
@@ -224,11 +247,11 @@ export default function HomePage() {
                         variants={scaleIn}
                     >
                         <div className="text-3xl mb-4 text-gray-400 group-hover:text-black group-hover:scale-110 transition-all duration-500">
-                            <FiZap />
+                            <ZapIcon />
                         </div>
-                        <h3 className="text-lg font-playfair font-medium text-gray-900 mb-2">Skin Booster</h3>
+                        <h3 className="text-lg font-playfair font-medium text-gray-900 mb-2">Sunglasses</h3>
                         <p className="text-gray-500 text-sm font-light leading-relaxed mb-6">Experience the power of skin-boosting treatments tailored to your skin type.</p>
-                        <Link href="/products?category=skin-booster" className="inline-block border-b border-black pb-1 text-xs tracking-[0.2em] uppercase hover:text-gray-600 hover:border-gray-400 transition-all duration-300">
+                        <Link href="/products?category=sunglasses" className="inline-block border-b border-black pb-1 text-xs tracking-[0.2em] uppercase hover:text-gray-600 hover:border-gray-400 transition-all duration-300">
                             Shop Now
                         </Link>
                     </motion.div>
@@ -239,11 +262,11 @@ export default function HomePage() {
                         variants={scaleIn}
                     >
                         <div className="text-3xl mb-4 text-gray-400 group-hover:text-black group-hover:scale-110 transition-all duration-500">
-                            <BsSunglasses />
+                            <SunglassesIcon />
                         </div>
-                        <h3 className="text-lg font-playfair font-medium text-gray-900 mb-2">Sunglasses</h3>
-                        <p className="text-gray-500 text-sm font-light leading-relaxed mb-6">Protect your eyes with our premium collection of designer sunglasses.</p>
-                        <Link href="/products?category=sunglasses" className="inline-block border-b border-black pb-1 text-xs tracking-[0.2em] uppercase hover:text-gray-600 hover:border-gray-400 transition-all duration-300">
+                        <h3 className="text-lg font-playfair font-medium text-gray-900 mb-2">Authentically Ayoosh</h3>
+                        <p className="text-gray-500 text-sm font-light leading-relaxed mb-6">Discover our premium collection of authentic Ayoosh products.</p>
+                        <Link href="/products?category=authentic" className="inline-block border-b border-black pb-1 text-xs tracking-[0.2em] uppercase hover:text-gray-600 hover:border-gray-400 transition-all duration-300">
                             Shop Now
                         </Link>
                     </motion.div>
@@ -254,7 +277,7 @@ export default function HomePage() {
                         variants={scaleIn}
                     >
                         <div className="text-3xl mb-4 text-gray-400 group-hover:text-black group-hover:scale-110 transition-all duration-500">
-                            <FaHandHoldingHeart />
+                            <HeartHandIcon />
                         </div>
                         <h3 className="text-lg font-playfair font-medium text-gray-900 mb-2">Ayoosh Foundation</h3>
                         <p className="text-gray-500 text-sm font-light leading-relaxed mb-6">Supporting community initiatives and empowering women through beauty.</p>

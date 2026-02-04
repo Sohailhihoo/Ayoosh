@@ -7,7 +7,25 @@ import { useCartStore, useAuthStore } from '@/lib/store';
 import { orderAPI } from '@/lib/api';
 import { initiatePayFastPayment } from '@/lib/payfast';
 import toast from 'react-hot-toast';
-import { HiArrowLeft, HiLockClosed, HiCheck } from 'react-icons/hi';
+
+// Inline SVG icons to avoid react-icons module issues
+const ArrowLeftIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+  </svg>
+);
+
+const LockClosedIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+  </svg>
+);
+
+const CheckIcon = ({ className }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+  </svg>
+);
 
 export default function CheckoutForm() {
     const router = useRouter();
@@ -183,7 +201,7 @@ export default function CheckoutForm() {
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-8">
                     <Link href="/cart" className="text-gray-600 hover:text-pink-600 transition-colors">
-                        <HiArrowLeft className="w-6 h-6" />
+                        <ArrowLeftIcon className="w-6 h-6" />
                     </Link>
                     <h1 className="text-3xl font-bold">Checkout</h1>
                     {!isAuthenticated && (
@@ -437,7 +455,7 @@ export default function CheckoutForm() {
                                         </>
                                     ) : (
                                         <>
-                                            <HiLockClosed className="w-5 h-5" />
+                                            <LockClosedIcon className="w-5 h-5" />
                                             Pay with PayFast - R{total.toFixed(2)}
                                         </>
                                     )}
@@ -445,7 +463,7 @@ export default function CheckoutForm() {
 
                                 {/* Security Badge */}
                                 <div className="mt-4 flex items-center justify-center gap-2 text-sm text-gray-500">
-                                    <HiCheck className="w-4 h-4 text-green-500" />
+                                    <CheckIcon className="w-4 h-4 text-green-500" />
                                     <span>Secure checkout</span>
                                 </div>
 
