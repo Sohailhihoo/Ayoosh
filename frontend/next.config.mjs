@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+// Force Rebuild: 2026-02-04-v2 (Cache Buster)
 const nextConfig = {
   output: 'standalone',
   allowedDevOrigins: ['192.168.1.18', 'localhost', '127.0.0.1'],
