@@ -10,18 +10,59 @@ const getPayFastUrl = () => {
     return process.env.PAYFAST_SANDBOX === 'true' ? PAYFAST_SANDBOX_URL : PAYFAST_LIVE_URL;
 };
 
-// Generate MD5 signature for PayFast
-// IMPORTANT: PayFast Live mode requires PLAIN values (no URL encoding)
-// The signature string must match exactly what PayFast calculates on their side
+// PayFast REQUIRED field order for signature generation
+// DO NOT change this order - it must match PayFast's exact specification
+// Includes both outgoing payment fields AND ITN response fields
+const PAYFAST_FIELD_ORDER = [
+    // Merchant details
+    'merchant_id',
+    'merchant_key',
+    // URLs
+    'return_url',
+    'cancel_url',
+    'notify_url',
+    // Buyer details
+    'name_first',
+    'name_last',
+    'email_address',
+    'cell_number',
+    // Transaction details (outgoing)
+    'm_payment_id',
+    'amount',
+    'item_name',
+    'item_description',
+    // ITN-specific fields (PayFast adds these in response)
+    'pf_payment_id',
+    'payment_status',
+    'amount_gross',
+    'amount_fee',
+    'amount_net',
+    // Custom fields
+    'custom_int1',
+    'custom_int2',
+    'custom_int3',
+    'custom_int4',
+    'custom_int5',
+    'custom_str1',
+    'custom_str2',
+    'custom_str3',
+    'custom_str4',
+    'custom_str5',
+    // Additional options
+    'email_confirmation',
+    'confirmation_address',
+    'payment_method',
+];
+
+// Generate MD5 signature for OUTGOING PayFast payments
+// CRITICAL: Fields MUST be in PayFast's specific order, NOT alphabetical
 const generateSignature = (data, passphrase = null) => {
     let pfOutput = '';
 
-    // Sort keys alphabetically (PayFast requirement)
-    const sortedKeys = Object.keys(data).sort();
-
-    for (let key of sortedKeys) {
-        if (data[key] !== '' && data[key] !== null && data[key] !== undefined) {
-            // URL Encode values and replace %20 with +
+    // Iterate through fields in PayFast's EXACT required order
+    for (const key of PAYFAST_FIELD_ORDER) {
+        if (data.hasOwnProperty(key) && data[key] !== '' && data[key] !== null && data[key] !== undefined) {
+            // Trim value and URL encode, replace %20 with +
             let value = String(data[key]).trim();
             value = encodeURIComponent(value).replace(/%20/g, '+');
             pfOutput += `${key}=${value}&`;
@@ -31,24 +72,61 @@ const generateSignature = (data, passphrase = null) => {
     // Remove last ampersand
     let getString = pfOutput.slice(0, -1);
 
-    // Add passphrase if provided (also encoded)
+    // Add passphrase if provided (also encoded, trim whitespace)
     if (passphrase && passphrase.trim() !== '') {
-        let pfPass = encodeURIComponent(passphrase.trim()).replace(/%20/g, '+');
+        const pfPass = encodeURIComponent(passphrase.trim()).replace(/%20/g, '+');
         getString += `&passphrase=${pfPass}`;
     }
 
     // Debug log
-    if (process.env.NODE_ENV !== 'production') {
-        console.log('==========================================');
-        console.log('SIGNATURE DEBUG (URL Encoded Mode)');
-        console.log('Passphrase:', passphrase ? 'SET' : 'NONE');
-        console.log('Signature String:', getString);
-        console.log('==========================================');
-    }
+    console.log('==========================================');
+    console.log('SIGNATURE DEBUG (Outgoing Payment)');
+    console.log('Passphrase:', passphrase ? 'SET (' + passphrase.length + ' chars)' : 'NONE');
+    console.log('Signature String:', getString);
+    console.log('==========================================');
 
     // Generate MD5 hash (lowercase)
     const hash = crypto.createHash('md5').update(getString).digest('hex');
     console.log('Generated Hash:', hash);
+    return hash;
+};
+
+// Generate MD5 signature for ITN verification (INCOMING from PayFast)
+// Uses ALPHABETICAL order as per PayFast's ITN documentation
+const generateITNSignature = (data, passphrase = null) => {
+    let pfOutput = '';
+
+    // Sort keys alphabetically (PayFast ITN uses alphabetical order)
+    const sortedKeys = Object.keys(data).sort();
+
+    for (const key of sortedKeys) {
+        if (data[key] !== '' && data[key] !== null && data[key] !== undefined) {
+            // Trim value and URL encode, replace %20 with +
+            let value = String(data[key]).trim();
+            value = encodeURIComponent(value).replace(/%20/g, '+');
+            pfOutput += `${key}=${value}&`;
+        }
+    }
+
+    // Remove last ampersand
+    let getString = pfOutput.slice(0, -1);
+
+    // Add passphrase if provided (also encoded, trim whitespace)
+    if (passphrase && passphrase.trim() !== '') {
+        const pfPass = encodeURIComponent(passphrase.trim()).replace(/%20/g, '+');
+        getString += `&passphrase=${pfPass}`;
+    }
+
+    // Debug log
+    console.log('==========================================');
+    console.log('ITN SIGNATURE DEBUG (Alphabetical)');
+    console.log('Passphrase:', passphrase ? 'SET (' + passphrase.length + ' chars)' : 'NONE');
+    console.log('Signature String:', getString);
+    console.log('==========================================');
+
+    // Generate MD5 hash (lowercase)
+    const hash = crypto.createHash('md5').update(getString).digest('hex');
+    console.log('Generated ITN Hash:', hash);
     return hash;
 };
 
@@ -127,38 +205,36 @@ const initiatePayment = async (req, res) => {
         }
 
         // ============================================================
-        // STEP 2: BUILD PAYMENT DATA OBJECT
-        // Only include fields with actual values
+        // STEP 2: BUILD PAYMENT DATA OBJECT IN PAYFAST'S EXACT ORDER
+        // CRITICAL: The field order MUST match PayFast's specification
         // ============================================================
-        const paymentData = {
-            // Merchant details (required)
-            merchant_id: process.env.PAYFAST_SANDBOX === 'true'
-                ? process.env.PAYFAST_SANDBOX_MERCHANT_ID?.trim()
-                : process.env.PAYFAST_MERCHANT_ID?.trim(),
-            merchant_key: process.env.PAYFAST_SANDBOX === 'true'
-                ? process.env.PAYFAST_SANDBOX_MERCHANT_KEY?.trim()
-                : process.env.PAYFAST_MERCHANT_KEY?.trim(),
+        const paymentData = {};
 
-            // URLs
-            return_url: `${baseUrl}/order-confirmation?orderId=${orderId}&status=success`,
-            cancel_url: `${baseUrl}/checkout?cancelled=true&orderId=${orderId}`,
-            notify_url: `${backendUrl}/api/payfast/notify`,
+        // 1. Merchant details (required)
+        paymentData.merchant_id = process.env.PAYFAST_SANDBOX === 'true'
+            ? process.env.PAYFAST_SANDBOX_MERCHANT_ID?.trim()
+            : process.env.PAYFAST_MERCHANT_ID?.trim();
+        paymentData.merchant_key = process.env.PAYFAST_SANDBOX === 'true'
+            ? process.env.PAYFAST_SANDBOX_MERCHANT_KEY?.trim()
+            : process.env.PAYFAST_MERCHANT_KEY?.trim();
 
-            // Buyer details (standardized from Step 1)
-            name_first: firstName,
-            name_last: lastName,
-            email_address: email,
+        // 2. URLs
+        paymentData.return_url = `${baseUrl}/order-confirmation?orderId=${orderId}&status=success`;
+        paymentData.cancel_url = `${baseUrl}/checkout?cancelled=true&orderId=${orderId}`;
+        paymentData.notify_url = `${backendUrl}/api/payfast/notify`;
 
-            // Transaction details
-            m_payment_id: order._id.toString(),
-            amount: order.total.toFixed(2),
-            item_name: `Order ${order.orderNumber}`,
-        };
-
-        // Add optional cell_number only if valid
+        // 3. Buyer details (IN CORRECT ORDER: name_first, name_last, email_address, cell_number)
+        paymentData.name_first = firstName;
+        paymentData.name_last = lastName;
+        paymentData.email_address = email;
         if (cellNumber) {
-            paymentData.cell_number = cellNumber;
+            paymentData.cell_number = cellNumber;  // Only add if valid (in correct position)
         }
+
+        // 4. Transaction details
+        paymentData.m_payment_id = order._id.toString();
+        paymentData.amount = order.total.toFixed(2);
+        paymentData.item_name = `Order ${order.orderNumber}`;
 
         // SAFETY CHECK: Prevent Localhost URLs in Production/Live Mode
         // PayFast CloudFront WAF blocks requests containing 'localhost'
@@ -258,7 +334,7 @@ const handleITN = async (req, res) => {
         }
         console.log('==========================================');
 
-        // Verify signature
+        // Verify signature using ITN-specific function (alphabetical order)
         const receivedSignature = pfData.signature;
         const dataWithoutSignature = { ...pfData };
         delete dataWithoutSignature.signature;
@@ -268,13 +344,14 @@ const handleITN = async (req, res) => {
             ? (process.env.PAYFAST_SANDBOX_PASSPHRASE || process.env.PAYFAST_PASSPHRASE)
             : process.env.PAYFAST_PASSPHRASE;
 
-        let expectedSignature = generateSignature(dataWithoutSignature, passphrase);
+        // Use ITN-specific signature function (alphabetical order)
+        let expectedSignature = generateITNSignature(dataWithoutSignature, passphrase);
 
         if (receivedSignature !== expectedSignature) {
             // Fallback: If Sandbox, try validating WITHOUT passphrase (common misconfiguration)
             if (process.env.PAYFAST_SANDBOX === 'true') {
                 console.log('PayFast ITN: Signature mismatch with passphrase. Retrying without passphrase...');
-                const signatureNoPass = generateSignature(dataWithoutSignature, null);
+                const signatureNoPass = generateITNSignature(dataWithoutSignature, null);
 
                 if (receivedSignature === signatureNoPass) {
                     console.log('PayFast ITN: Signature verified WITHOUT passphrase (Fallback) ✓');
