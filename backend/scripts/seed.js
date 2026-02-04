@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+// const bcrypt = require('bcryptjs'); // Not needed, handled by model
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../.env') }); // Load env config
 
@@ -29,11 +29,12 @@ const seedData = async () => {
 
         // 2. Create Admin User
         console.log('👤 Creating Admin User...');
-        const hashedPassword = await bcrypt.hash('admin123', 10);
+        // Password hashing is handled by User model pre-save hook
         const adminUser = await User.create({
-            name: 'Admin User',
+            firstName: 'Admin',
+            lastName: 'User',
             email: 'admin@beautystore.com',
-            password: hashedPassword,
+            password: 'admin123',
             role: 'admin'
         });
         console.log('✅ Admin created: admin@beautystore.com / admin123');
@@ -97,7 +98,7 @@ const seedData = async () => {
         console.log('🎉 Seeding Complete!');
         process.exit(0);
     } catch (error) {
-        console.error('❌ Seeding failed:', error);
+        console.error('❌ Seeding failed:', JSON.stringify(error, null, 2));
         process.exit(1);
     }
 };
