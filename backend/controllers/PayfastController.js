@@ -59,8 +59,8 @@ const initiatePayment = async (req, res) => {
     try {
         const { orderId } = req.body;
 
-        // Find the order
-        const order = await Order.findById(orderId);
+        // Find the order (populate user if exists for logged-in customers)
+        const order = await Order.findById(orderId).populate('user', 'email firstName lastName phone');
         if (!order) {
             return res.status(404).json({ success: false, message: 'Order not found' });
         }
@@ -70,14 +70,48 @@ const initiatePayment = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Order is already paid' });
         }
 
+        // ============================================================
+        // STEP 1: STANDARDIZE CUSTOMER DATA (Source of Truth)
+        // Fallback logic: shippingAddress -> customerDetails -> user -> placeholder
+        // ============================================================
+
+        // Get first name (priority: shippingAddress > customerDetails > user > placeholder)
+        const firstName =
+            order.shippingAddress?.firstName?.trim() ||
+            order.customerDetails?.firstName?.trim() ||
+            order.user?.firstName?.trim() ||
+            'Guest';
+
+        // Get last name (priority: shippingAddress > customerDetails > user > placeholder)
+        const lastName =
+            order.shippingAddress?.lastName?.trim() ||
+            order.customerDetails?.lastName?.trim() ||
+            order.user?.lastName?.trim() ||
+            'Customer';
+
+        // Get email (priority: customerDetails > user) - REQUIRED by PayFast
+        const email =
+            order.customerDetails?.email?.trim() ||
+            order.user?.email?.trim();
+
+        // Email is REQUIRED - fail if missing
+        if (!email) {
+            console.error('PayFast Error: No email found for order', orderId);
+            return res.status(400).json({
+                success: false,
+                message: 'Customer email is required for PayFast payment'
+            });
+        }
+
         // Get URLs from environment
         const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
         const backendUrl = process.env.BACKEND_URL || 'http://localhost:5000';
 
         // Format phone number for PayFast (10 digits, SA format)
         let cellNumber = '';
-        if (order.customerDetails?.phone) {
-            const digits = order.customerDetails.phone.replace(/\D/g, '');
+        const rawPhone = order.customerDetails?.phone || order.shippingAddress?.phone || order.user?.phone;
+        if (rawPhone) {
+            const digits = rawPhone.replace(/\D/g, '');
             // Handle different formats: +27821234567, 27821234567, 0821234567
             if (digits.startsWith('27') && digits.length === 11) {
                 cellNumber = '0' + digits.substring(2); // Convert 27821234567 to 0821234567
@@ -92,11 +126,12 @@ const initiatePayment = async (req, res) => {
             }
         }
 
-        // PayFast payment data - ORDER IS CRITICAL!
-        // Must follow PayFast's exact field order for signature to work
+        // ============================================================
+        // STEP 2: BUILD PAYMENT DATA OBJECT
+        // Only include fields with actual values
+        // ============================================================
         const paymentData = {
             // Merchant details (required)
-            // Merchant details
             merchant_id: process.env.PAYFAST_SANDBOX === 'true'
                 ? process.env.PAYFAST_SANDBOX_MERCHANT_ID?.trim()
                 : process.env.PAYFAST_MERCHANT_ID?.trim(),
@@ -109,21 +144,21 @@ const initiatePayment = async (req, res) => {
             cancel_url: `${baseUrl}/checkout?cancelled=true&orderId=${orderId}`,
             notify_url: `${backendUrl}/api/payfast/notify`,
 
-            // Buyer details (Simplified for debugging)
-            name_first: order.customerDetails?.firstName || '',
-            name_last: order.customerDetails?.lastName || '',
-            email_address: order.customerDetails?.email || '',
+            // Buyer details (standardized from Step 1)
+            name_first: firstName,
+            name_last: lastName,
+            email_address: email,
 
             // Transaction details
             m_payment_id: order._id.toString(),
             amount: order.total.toFixed(2),
             item_name: `Order ${order.orderNumber}`,
-            // item_description: `${order.items?.length || 0} item(s) from Ayoosh Online`, // Commented out for debug
-
-            // Custom data -- Commented out to simplify signature
-            // custom_str1: order._id.toString(),
-            // custom_str2: order.orderNumber || '',
         };
+
+        // Add optional cell_number only if valid
+        if (cellNumber) {
+            paymentData.cell_number = cellNumber;
+        }
 
         // SAFETY CHECK: Prevent Localhost URLs in Production/Live Mode
         // PayFast CloudFront WAF blocks requests containing 'localhost'
@@ -140,14 +175,13 @@ const initiatePayment = async (req, res) => {
             }
         }
 
-        // Add optional cell_number if valid
-        if (cellNumber) {
-            paymentData.cell_number = cellNumber;
-        }
-
-        // Remove empty values (PayFast doesn't like empty fields)
+        // ============================================================
+        // STEP 2b: SANITIZE - Remove any empty/null/undefined keys
+        // This ensures signature matches exactly what PayFast calculates
+        // ============================================================
         Object.keys(paymentData).forEach(key => {
-            if (paymentData[key] === '' || paymentData[key] === null || paymentData[key] === undefined) {
+            const value = paymentData[key];
+            if (value === '' || value === null || value === undefined) {
                 delete paymentData[key];
             }
         });
@@ -167,19 +201,20 @@ const initiatePayment = async (req, res) => {
             throw new Error('PayFast configuration error: Missing Merchant Credentials');
         }
 
-        // Generate signature
+        // ============================================================
+        // STEP 3: GENERATE SIGNATURE ON CLEAN DATA
+        // The signature is generated from the sanitized object only
+        // ============================================================
         const signature = generateSignature(paymentData, passphrase);
         paymentData.signature = signature;
 
-
-        // PRODUCTION DEBUG LOGGING (Safe Data Only)
-        // We need to see what URLs and ID are being sent to diagnose the 403 error
+        // Debug logging (safe data only)
         console.log('=== PAYFAST REQUEST DEBUG ===');
-        console.log('Merchant ID:', paymentData.merchant_id);
-        console.log('Return URL:', paymentData.return_url);
-        console.log('Notify URL:', paymentData.notify_url);
-        console.log('Amount:', paymentData.amount);
         console.log('Mode:', process.env.PAYFAST_SANDBOX === 'true' ? 'SANDBOX' : 'LIVE');
+        console.log('Merchant ID:', paymentData.merchant_id);
+        console.log('Customer:', `${paymentData.name_first} ${paymentData.name_last} <${paymentData.email_address}>`);
+        console.log('Amount:', paymentData.amount);
+        console.log('Fields in payload:', Object.keys(paymentData).join(', '));
         console.log('=============================');
 
         // Update order with payment method
@@ -189,9 +224,13 @@ const initiatePayment = async (req, res) => {
 
         console.log('PayFast payment initiated for order:', order.orderNumber);
 
+        // ============================================================
+        // STEP 4: SEND EXACT CLEANED OBJECT TO FRONTEND
+        // The frontend will loop through these exact keys to build the form
+        // ============================================================
         res.status(200).json({
             success: true,
-            paymentData,
+            paymentData,  // Contains only keys with values + signature
             payfastUrl: getPayFastUrl(),
         });
 
