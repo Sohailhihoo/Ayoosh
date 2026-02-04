@@ -178,7 +178,7 @@ orderSchema.methods.calculateTotals = function () {
 };
 
 // Index for searching orders
-orderSchema.index({ orderNumber: 1 });
+// orderSchema.index({ orderNumber: 1 }); // Removed: Already indexed by unique: true
 orderSchema.index({ user: 1, createdAt: -1 });
 orderSchema.index({ status: 1 });
 

@@ -69,6 +69,6 @@ categorySchema.virtual('productCount', {
 // Indexes for performance
 categorySchema.index({ isActive: 1, displayOrder: 1 });  // Active categories sorted
 categorySchema.index({ parent: 1 });                      // Subcategory lookups
-categorySchema.index({ slug: 1 });                        // Slug lookups
+// categorySchema.index({ slug: 1 }); // Removed: Already indexed by unique: true                        // Slug lookups
 
 module.exports = mongoose.model('Category', categorySchema);
