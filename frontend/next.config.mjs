@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-// Force Rebuild: 2026-02-04-v3 - CSP fix for PayFast checkout
+// Force Rebuild: 2026-02-04-v4 - CSP without form-action for PayFast checkout
 const nextConfig = {
   output: 'standalone',
   allowedDevOrigins: ['192.168.1.18', 'localhost', '127.0.0.1'],
