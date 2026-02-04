@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-// const bcrypt = require('bcryptjs'); // Not needed, handled by model
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../.env') }); // Load env config
 
@@ -15,6 +14,170 @@ if (!MONGODB_URI) {
     process.exit(1);
 }
 
+// RAW USER DATA
+const rawCategories = [
+    {
+        "_id": { "$oid": "69825d6c7515d48eea90e1d7" },
+        "name": "Suncream",
+        "slug": "suncream",
+        "description": "Premium sun protection for all skin types",
+        "image": "https://images.unsplash.com/photo-1526947425960-947c6e685839?auto=format&fit=crop&q=80",
+        "isActive": true,
+        "displayOrder": 1,
+        "createdAt": { "$date": "2026-02-03T20:41:16.641Z" },
+        "updatedAt": { "$date": "2026-02-03T20:41:16.641Z" }
+    },
+    {
+        "_id": { "$oid": "69825d6c7515d48eea90e1da" },
+        "name": "Sunglasses",
+        "slug": "sunglasses",
+        "description": "Stylish protection for your eyes",
+        "image": "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&q=80",
+        "isActive": true,
+        "displayOrder": 2,
+        "createdAt": { "$date": "2026-02-03T20:41:16.707Z" },
+        "updatedAt": { "$date": "2026-02-03T20:41:16.707Z" }
+    }
+];
+
+const rawProducts = [
+    {
+        "_id": { "$oid": "69825dab2d01b1efb4370176" },
+        "name": "Radiant Glow Face Oil",
+        "description": "A luxurious blend of oils to give your skin a natural, healthy radiance. Perfect for all skin types.",
+        "brand": "LuxeSkin",
+        "category": { "$oid": "69825d6c7515d48eea90e1d7" },
+        "price": 55,
+        "compareAtPrice": 75,
+        "productType": "beauty",
+        "images": [{ "url": "https://res.cloudinary.com/dpdg462fb/image/upload/v1769748802/Pouch_and_Sachet_bjidrn.png", "alt": "Radiant Glow Face Oil", "isPrimary": false, "_id": { "$oid": "69825dab2d01b1efb4370177" } }],
+        "sku": "BEAUTY-TREND-001",
+        "stock": 50,
+        "trackInventory": true,
+        "status": "active",
+        "isFeatured": true,
+        "isBestseller": true,
+        "slug": "radiant-glow-face-oil",
+        "createdAt": { "$date": "2026-02-03T20:42:19.246Z" },
+        "updatedAt": { "$date": "2026-02-03T20:42:19.246Z" }
+    },
+    {
+        "_id": { "$oid": "69825dab2d01b1efb437017c" },
+        "name": "Hydra-Boost Gel Cream",
+        "description": "Ultra-lightweight gel moisturizer that locks in moisture for 24 hours. Oil-free and refreshing.",
+        "brand": "AquaPure",
+        "category": { "$oid": "69825d6c7515d48eea90e1d7" },
+        "price": 42,
+        "productType": "beauty",
+        "images": [{ "url": "https://res.cloudinary.com/dpdg462fb/image/upload/v1769715388/Sun_Tube_cmxezs.png", "alt": "Hydra-Boost Gel Cream", "isPrimary": false, "_id": { "$oid": "69825dab2d01b1efb437017d" } }],
+        "sku": "BEAUTY-TREND-002",
+        "stock": 80,
+        "trackInventory": true,
+        "status": "active",
+        "isFeatured": true,
+        "isNewArrival": true,
+        "slug": "hydra-boost-gel-cream",
+        "createdAt": { "$date": "2026-02-03T20:42:19.390Z" },
+        "updatedAt": { "$date": "2026-02-03T20:42:19.390Z" }
+    },
+    {
+        "_id": { "$oid": "69825dab2d01b1efb4370181" },
+        "name": "Midnight Aviator",
+        "description": "Sleek black metal frame with dark polarized lenses. A modern twist on a classic.",
+        "brand": "ShadeMaster",
+        "category": { "$oid": "69825d6c7515d48eea90e1da" },
+        "price": 110,
+        "productType": "sunglasses",
+        "images": [{ "url": "https://res.cloudinary.com/dpdg462fb/image/upload/v1769767397/Yellow-Glasses_faznsr.png", "alt": "Midnight Aviator", "isPrimary": false, "_id": { "$oid": "69825dab2d01b1efb4370182" } }],
+        "sku": "SUN-NEW-001",
+        "stock": 30,
+        "trackInventory": true,
+        "status": "active",
+        "slug": "midnight-aviator",
+        "createdAt": { "$date": "2026-02-03T20:42:19.526Z" },
+        "updatedAt": { "$date": "2026-02-03T20:42:19.526Z" }
+    },
+    {
+        "_id": { "$oid": "69825dab2d01b1efb4370187" },
+        "name": "Retro Round Gold",
+        "description": "Vintage-inspired round sunglasses with gold frames and tea-dipped lenses.",
+        "brand": "RetroVibe",
+        "category": { "$oid": "69825d6c7515d48eea90e1da" },
+        "price": 85,
+        "productType": "sunglasses",
+        "images": [{ "url": "https://res.cloudinary.com/dpdg462fb/image/upload/v1769767395/Brown-Glasses_u6obla.png", "alt": "Retro Round Gold", "isPrimary": false, "_id": { "$oid": "69825dab2d01b1efb4370188" } }],
+        "sku": "SUN-NEW-002",
+        "stock": 45,
+        "trackInventory": true,
+        "status": "active",
+        "slug": "retro-round-gold",
+        "createdAt": { "$date": "2026-02-03T20:42:19.665Z" },
+        "updatedAt": { "$date": "2026-02-03T20:42:19.665Z" }
+    },
+    {
+        "_id": { "$oid": "69825dab2d01b1efb437018d" },
+        "name": "Cat-Eye Chic",
+        "description": "Bold oversized cat-eye sunglasses for a dramatic, glamorous look.",
+        "brand": "VogueVision",
+        "category": { "$oid": "69825d6c7515d48eea90e1da" },
+        "price": 95,
+        "productType": "sunglasses",
+        "images": [{
+            "url": "https://res.cloudinary.com/dpdg462fb/image/upload/v1769767393/Blue-Glasses_fky8v9.png", "alt": "Cat-Eye Chic",
+            "isPrimary": false, "_id": { "$oid": "69825dab2d01b1efb437018e" }
+        }],
+        "sku": "SUN-NEW-003",
+        "stock": 25,
+        "trackInventory": true,
+        "status": "active",
+        "slug": "cat-eye-chic",
+        "createdAt": { "$date": "2026-02-03T20:42:19.804Z" },
+        "updatedAt": { "$date": "2026-02-03T20:42:19.804Z" }
+    },
+    {
+        "_id": { "$oid": "69825dab2d01b1efb4370192" },
+        "name": "Sport Performance X",
+        "description": "Aerodynamic design with wrap-around protection, perfect for outdoor sports.",
+        "brand": "ActiveGear",
+        "category": { "$oid": "69825d6c7515d48eea90e1da" },
+        "price": 120,
+        "productType": "sunglasses",
+        "images": [{
+            "url": "https://res.cloudinary.com/dpdg462fb/image/upload/v1769767392/Pink-Glasses_o5hxf2.png", "alt": "Sport Performance X",
+            "isPrimary": false, "_id": { "$oid": "69825dab2d01b1efb4370193" }
+        }],
+        "sku": "SUN-NEW-004",
+        "stock": 51,
+        "trackInventory": true,
+        "status": "active",
+        "slug": "sport-performance-x",
+        "createdAt": { "$date": "2026-02-03T20:42:19.940Z" },
+        "updatedAt": { "$date": "2026-02-03T20:42:19.940Z" }
+    }
+];
+
+// Helper to clean MongoDB dump format
+const cleanData = (data) => {
+    return data.map(item => {
+        const newItem = { ...item };
+        if (newItem._id && newItem._id.$oid) newItem._id = newItem._id.$oid;
+        if (newItem.category && newItem.category.$oid) newItem.category = newItem.category.$oid;
+        if (newItem.createdAt && newItem.createdAt.$date) newItem.createdAt = new Date(newItem.createdAt.$date);
+        if (newItem.updatedAt && newItem.updatedAt.$date) newItem.updatedAt = new Date(newItem.updatedAt.$date);
+
+        // Clean images array
+        if (newItem.images && Array.isArray(newItem.images)) {
+            newItem.images = newItem.images.map(img => {
+                const newImg = { ...img };
+                if (newImg._id && newImg._id.$oid) newImg._id = newImg._id.$oid;
+                return newImg;
+            });
+        }
+        delete newItem.__v;
+        return newItem;
+    });
+};
+
 const seedData = async () => {
     try {
         console.log('📡 Connecting to MongoDB...');
@@ -29,7 +192,6 @@ const seedData = async () => {
 
         // 2. Create Admin User
         console.log('👤 Creating Admin User...');
-        // Password hashing is handled by User model pre-save hook
         const adminUser = await User.create({
             firstName: 'Admin',
             lastName: 'User',
@@ -41,58 +203,14 @@ const seedData = async () => {
 
         // 3. Create Categories
         console.log('📂 Creating Categories...');
-        const categories = await Category.insertMany([
-            { name: 'Perfumes', description: 'Luxury fragrances', slug: 'perfumes' },
-            { name: 'Skincare', description: 'Glow with the best', slug: 'skincare' },
-            { name: 'Makeup', description: 'Enhance your beauty', slug: 'makeup' },
-            { name: 'Sunglasses', description: 'Stylish eyewear', slug: 'sunglasses' }
-        ]);
+        const categories = cleanData(rawCategories);
+        await Category.insertMany(categories);
         console.log(`✅ Created ${categories.length} categories.`);
-
-        // Map categories for product assignment
-        const perfumesCat = categories.find(c => c.slug === 'perfumes');
-        const skincareCat = categories.find(c => c.slug === 'skincare');
 
         // 4. Create Products
         console.log('📦 Creating Products...');
-        const products = await Product.insertMany([
-            {
-                name: 'Chanel No. 5',
-                slug: 'chanel-no-5',
-                description: 'The essence of femininity. A powdery floral bouquet.',
-                price: 150,
-                category: perfumesCat._id,
-                productType: 'beauty',
-                brand: 'Chanel',
-                stock: 50,
-                sku: 'PERF-001',
-                images: [{ url: 'https://via.placeholder.com/300?text=Chanel+No+5', alt: 'Chanel No 5', isPrimary: true }]
-            },
-            {
-                name: 'Dior Sauvage',
-                slug: 'dior-sauvage',
-                description: 'A radically fresh composition, dictated by a name that has the ring of a manifesto.',
-                price: 120,
-                category: perfumesCat._id,
-                productType: 'beauty',
-                brand: 'Dior',
-                stock: 45,
-                sku: 'PERF-002',
-                images: [{ url: 'https://via.placeholder.com/300?text=Dior+Sauvage', alt: 'Dior Sauvage', isPrimary: true }]
-            },
-            {
-                name: 'Advanced Night Repair',
-                slug: 'advanced-night-repair',
-                description: 'Serum for radiant, youthful-looking skin.',
-                price: 85,
-                category: skincareCat._id,
-                productType: 'beauty',
-                brand: 'Estee Lauder',
-                stock: 100,
-                sku: 'SKIN-001',
-                images: [{ url: 'https://via.placeholder.com/300?text=Advanced+Night+Repair', alt: 'Serum', isPrimary: true }]
-            }
-        ]);
+        const products = cleanData(rawProducts);
+        await Product.insertMany(products);
         console.log(`✅ Created ${products.length} products.`);
 
         console.log('🎉 Seeding Complete!');
