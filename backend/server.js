@@ -1,4 +1,4 @@
-const express = require('express'); // Trigger restart
+const express = require('express'); // v2 - CORS fix deployed
 const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');

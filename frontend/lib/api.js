@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+// v2 - Force rebuild for CORS fix
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000/api';
 
 console.log('🔌 API URL Configured as:', API_URL);
