@@ -1,4 +1,4 @@
-const express = require('express'); // v2 - CORS fix deployed
+const express = require('express'); // v3 - CORS + CSP + PayFast fixes
 const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');

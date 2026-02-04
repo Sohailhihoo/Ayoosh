@@ -1,3 +1,4 @@
+// PayFast Controller - v3 (Signature fix + Guest checkout)
 const crypto = require('crypto');
 const Order = require('../models/Order');
 

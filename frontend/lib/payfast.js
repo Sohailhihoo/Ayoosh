@@ -1,4 +1,4 @@
-// PayFast Service for Frontend
+// PayFast Service for Frontend - v3
 // Handles communication with backend and redirecting to PayFast
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
