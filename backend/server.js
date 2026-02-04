@@ -92,26 +92,42 @@ const authLimiter = rateLimit({
 // app.use(generalLimiter);
 
 // Professional CORS Configuration
-// Professional CORS Configuration
 const allowedOrigins = [
+  // Development
   'http://localhost:3000',
   'http://127.0.0.1:3000',
+  'http://localhost:5000',
+  // Production domains (all variations)
+  'https://ayoosh.online',
+  'https://www.ayoosh.online',
   'https://ayooshonline.com',
   'https://www.ayooshonline.com',
+  // Environment variable (Railway/Vercel deployment)
   process.env.FRONTEND_URL
 ].filter(Boolean);
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl requests)
+    // Allow requests with no origin (like mobile apps, curl, or server-to-server)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+
+    // Check if origin is in allowed list
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else if (process.env.NODE_ENV !== 'production') {
+      // Allow all origins in development
+      console.log(`CORS: Allowing non-listed origin in dev mode: ${origin}`);
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      // Log blocked origin for debugging
+      console.error(`CORS blocked origin: ${origin}`);
+      console.error(`Allowed origins: ${allowedOrigins.join(', ')}`);
+      callback(new Error('The CORS policy for this site does not allow access from the specified Origin.'));
     }
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Session-ID', 'X-Requested-With']
 }));
 
 app.use(morgan('dev'));
