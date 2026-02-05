@@ -52,16 +52,16 @@ export default function ProductScroller() {
     return (
         <section
             ref={containerRef}
-            className="relative bg-[#f4f2f0] md:h-[300vh]"
+            className="relative bg-[#f4f2f0] lg:h-[300vh]"
         >
-            {/* ==================== MOBILE VIEW (Visible < 768px) ==================== */}
-            <div className="md:hidden py-16 px-4">
+            {/* ==================== MOBILE VIEW (Visible < 1024px) ==================== */}
+            <div className="lg:hidden py-12 px-4">
                 {/* Product Image */}
                 <div className="flex justify-center mb-8">
                     <img
                         src="https://res.cloudinary.com/dpdg462fb/image/upload/v1769715388/Sun_Tube_cmxezs.png"
                         alt="Ayoosh Sun Cream"
-                        className="w-auto h-[280px] object-contain"
+                        className="w-auto h-[220px] sm:h-[280px] object-contain"
                         style={{
                             filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.25))'
                         }}
@@ -69,23 +69,23 @@ export default function ProductScroller() {
                 </div>
 
                 {/* Specs Grid */}
-                <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-md mx-auto">
                     {specs.slice(0, 8).map((spec, index) => {
                         const isYellow = index % 2 === 0;
                         return (
                             <div
                                 key={spec.id}
                                 className={`
-                                    rounded-lg px-3 py-3 text-center
+                                    rounded-lg px-4 py-4 text-center
                                     ${isYellow
                                         ? 'bg-[#f9cb19] text-black'
                                         : 'bg-white text-gray-900 shadow-sm'}
                                 `}
                             >
-                                <p className={`text-[9px] uppercase tracking-wide font-medium mb-1 ${isYellow ? 'text-black/60' : 'text-gray-500'}`}>
+                                <p className={`text-[10px] sm:text-xs uppercase tracking-wide font-medium mb-1.5 ${isYellow ? 'text-black/60' : 'text-gray-500'}`}>
                                     {spec.label}
                                 </p>
-                                <p className="text-sm font-semibold">
+                                <p className="text-sm sm:text-base font-semibold">
                                     {spec.value}
                                 </p>
                             </div>
@@ -94,8 +94,8 @@ export default function ProductScroller() {
                 </div>
             </div>
 
-            {/* ==================== DESKTOP VIEW (Visible >= 768px) ==================== */}
-            <div className="hidden md:flex sticky top-0 h-screen w-full overflow-hidden flex-col justify-center items-center">
+            {/* ==================== DESKTOP VIEW (Visible >= 1024px) ==================== */}
+            <div className="hidden lg:flex sticky top-0 h-screen w-full overflow-hidden flex-col justify-center items-center">
 
                 {/* Background Ambience */}
                 <div className="absolute inset-0 pointer-events-none">

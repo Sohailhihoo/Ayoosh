@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import HeroLogoAnimation from '@/components/HeroLogoAnimation';
 
 // Inline SVG icons to avoid react-icons module issues
 const DropletIcon = () => (
@@ -64,6 +65,7 @@ const staggerContainer = {
 export default function HomePage() {
     const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
     const [isHoveringHero, setIsHoveringHero] = useState(false);
+    const [showLogoAnimation, setShowLogoAnimation] = useState(false);
     const heroRef = useRef(null);
 
     /**
@@ -119,8 +121,31 @@ export default function HomePage() {
         return () => window.removeEventListener('resize', checkMobileAndPlay);
     }, []);
 
+    // Show logo animation component on homepage
+    // The component itself handles whether to show animation or white logo
+    useEffect(() => {
+        const hasSeenAnimation = sessionStorage.getItem('logoAnimationComplete');
+
+        if (!hasSeenAnimation) {
+            // First visit: Wait for loading screen (3s) then show component
+            const timer = setTimeout(() => {
+                setShowLogoAnimation(true);
+            }, 3000);
+
+            return () => clearTimeout(timer);
+        } else {
+            // Returning visitor: Show component immediately (will display white logo)
+            setShowLogoAnimation(true);
+        }
+    }, []);
+
     return (
         <div className="bg-white">
+            {/* Hero Logo Animation (shows after loading screen on first visit) */}
+            {showLogoAnimation && (
+                <HeroLogoAnimation />
+            )}
+
             {/* Custom Cursor for Hero */}
             {isHoveringHero && (
                 <div
@@ -176,6 +201,13 @@ export default function HomePage() {
 
                     {/* Border Glow Effect */}
                     <div className="absolute inset-0 border border-white/0 group-hover:border-white/20 transition-all duration-500"></div>
+
+                    {/* Transparent Button */}
+                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 pointer-events-auto">
+                        <button className="h-12 px-8 bg-transparent border border-white/50 text-white text-sm tracking-[0.2em] uppercase font-light hover:bg-white/10 hover:border-white transition-all duration-300 flex items-center justify-center" style={{ opacity: 0.5 }}>
+                            Shop Now
+                        </button>
+                    </div>
                 </Link>
 
 
@@ -211,15 +243,22 @@ export default function HomePage() {
 
                     {/* Border Glow Effect */}
                     <div className="absolute inset-0 border border-white/0 group-hover:border-white/20 transition-all duration-500"></div>
+
+                    {/* Transparent Button */}
+                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 pointer-events-auto">
+                        <button className="h-12 px-8 bg-transparent border border-white/50 text-white text-sm tracking-[0.2em] uppercase font-light hover:bg-white/10 hover:border-white transition-all duration-300 flex items-center justify-center" style={{ opacity: 0.5 }}>
+                            Shop Now
+                        </button>
+                    </div>
                 </Link>
             </section>
 
 
 
             {/* New Section - 4 Boxes (Features/Values) */}
-            <section className="bg-white py-20 px-6 md:px-12 border-t border-gray-100 mt-20">
+            <section className="py-20 px-6 md:px-12 border-t border-gray-100 mt-8" style={{ backgroundColor: '#f4f3ef' }}>
                 <motion.div
-                    className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+                    className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8"
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: false, amount: 0.2 }}
@@ -231,12 +270,12 @@ export default function HomePage() {
                         className="group p-8 border border-gray-100 hover:border-black transition-all duration-500 hover:shadow-lg text-center flex flex-col items-center"
                         variants={scaleIn}
                     >
-                        <div className="text-3xl mb-4 text-gray-400 group-hover:text-black group-hover:scale-110 transition-all duration-500">
-                            <DropletIcon />
+                        <div className="w-16 h-16 mb-4 mx-auto group-hover:scale-110 transition-all duration-500">
+                            <img src="https://res.cloudinary.com/dpdg462fb/image/upload/v1770184422/Group_70_vhucel.png" alt="Skincare Icon" className="w-full h-full object-contain" />
                         </div>
-                        <h3 className="text-lg font-playfair font-medium text-gray-900 mb-2">Skincare</h3>
+                        <h3 className="text-lg font-playfair font-bold text-gray-900 mb-2">Skincare</h3>
                         <p className="text-gray-500 text-sm font-light leading-relaxed mb-6">Discover our carefully curated collection of premium skincare products, designed to nourish and protect your skin.</p>
-                        <Link href="/products?category=skincare" className="inline-block border-b border-black pb-1 text-xs tracking-[0.2em] uppercase hover:text-gray-600 hover:border-gray-400 transition-all duration-300">
+                        <Link href="/products?category=skincare" className="inline-block border-b border-black pb-1 text-xs tracking-[0.2em] uppercase font-semibold hover:text-gray-600 hover:border-gray-400 transition-all duration-300">
                             Shop Now
                         </Link>
                     </motion.div>
@@ -246,42 +285,29 @@ export default function HomePage() {
                         className="group p-8 border border-gray-100 hover:border-black transition-all duration-500 hover:shadow-lg text-center flex flex-col items-center"
                         variants={scaleIn}
                     >
-                        <div className="text-3xl mb-4 text-gray-400 group-hover:text-black group-hover:scale-110 transition-all duration-500">
-                            <ZapIcon />
+                        <div className="w-16 h-16 mb-4 mx-auto group-hover:scale-110 transition-all duration-500">
+                            <img src="https://res.cloudinary.com/dpdg462fb/image/upload/v1770184424/Group_69_n3ezsx.png" alt="Sunglasses Icon" className="w-full h-full object-contain" />
                         </div>
-                        <h3 className="text-lg font-playfair font-medium text-gray-900 mb-2">Sunglasses</h3>
-                        <p className="text-gray-500 text-sm font-light leading-relaxed mb-6">Experience the power of skin-boosting treatments tailored to your skin type.</p>
-                        <Link href="/products?category=sunglasses" className="inline-block border-b border-black pb-1 text-xs tracking-[0.2em] uppercase hover:text-gray-600 hover:border-gray-400 transition-all duration-300">
+                        <h3 className="text-lg font-playfair font-bold text-gray-900 mb-2">Sunglasses</h3>
+                        <p className="text-gray-500 text-sm font-light leading-relaxed mb-6">Experience the power of Ayoosh Sunglasses.</p>
+                        <Link href="/products?category=sunglasses" className="inline-block border-b border-black pb-1 text-xs tracking-[0.2em] uppercase font-semibold hover:text-gray-600 hover:border-gray-400 transition-all duration-300">
                             Shop Now
                         </Link>
                     </motion.div>
+
+
 
                     {/* Box 3 */}
                     <motion.div
                         className="group p-8 border border-gray-100 hover:border-black transition-all duration-500 hover:shadow-lg text-center flex flex-col items-center"
                         variants={scaleIn}
                     >
-                        <div className="text-3xl mb-4 text-gray-400 group-hover:text-black group-hover:scale-110 transition-all duration-500">
-                            <SunglassesIcon />
+                        <div className="w-16 h-16 mb-4 mx-auto group-hover:scale-110 transition-all duration-500">
+                            <img src="https://res.cloudinary.com/dpdg462fb/image/upload/v1770184357/Group_71_csjhfp.png" alt="Foundation Icon" className="w-full h-full object-contain" />
                         </div>
-                        <h3 className="text-lg font-playfair font-medium text-gray-900 mb-2">Authentically Ayoosh</h3>
-                        <p className="text-gray-500 text-sm font-light leading-relaxed mb-6">Discover our premium collection of authentic Ayoosh products.</p>
-                        <Link href="/products?category=authentic" className="inline-block border-b border-black pb-1 text-xs tracking-[0.2em] uppercase hover:text-gray-600 hover:border-gray-400 transition-all duration-300">
-                            Shop Now
-                        </Link>
-                    </motion.div>
-
-                    {/* Box 4 */}
-                    <motion.div
-                        className="group p-8 border border-gray-100 hover:border-black transition-all duration-500 hover:shadow-lg text-center flex flex-col items-center"
-                        variants={scaleIn}
-                    >
-                        <div className="text-3xl mb-4 text-gray-400 group-hover:text-black group-hover:scale-110 transition-all duration-500">
-                            <HeartHandIcon />
-                        </div>
-                        <h3 className="text-lg font-playfair font-medium text-gray-900 mb-2">Ayoosh Foundation</h3>
+                        <h3 className="text-lg font-playfair font-bold text-gray-900 mb-2">Ayoosh Foundation</h3>
                         <p className="text-gray-500 text-sm font-light leading-relaxed mb-6">Supporting community initiatives and empowering women through beauty.</p>
-                        <Link href="/about" className="inline-block border-b border-black pb-1 text-xs tracking-[0.2em] uppercase hover:text-gray-600 hover:border-gray-400 transition-all duration-300">
+                        <Link href="/about" className="inline-block border-b border-black pb-1 text-xs tracking-[0.2em] uppercase font-semibold hover:text-gray-600 hover:border-gray-400 transition-all duration-300">
                             Learn More
                         </Link>
                     </motion.div>

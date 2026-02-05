@@ -27,11 +27,11 @@ export default function LoadingScreen() {
 
         if (isFirstMount.current) {
             isFirstMount.current = false;
-            // Initial load - use 4.5s duration
+            // Initial load - use 3s duration
             const timer = setTimeout(() => {
                 setIsVisible(false);
                 sessionStorage.setItem('siteLoaded', 'true');
-            }, 4500);
+            }, 3000);
             return () => clearTimeout(timer);
         }
 

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import HeroSection from '@/components/HeroSection';
 import SunglassesCircle from '@/components/SunglassesCircle';
 import BrandLogos from '@/components/BrandLogos';
-import TestimonialSection from '@/components/TestimonialSection';
+import ReviewForm from '@/components/ReviewForm';
 import PromoBar from '@/components/PromoBar';
 import VideoShowcase from '@/components/VideoShowcase';
 
@@ -19,27 +19,27 @@ const heroTitleStyle = {
 };
 
 const heroButtons = [
-    { href: '/products?productType=sunglasses', label: 'Shop Now', variant: 'primary', color: '#0077b6' },
+    { href: '/products?productType=sunglasses', label: 'Pre Order', variant: 'primary', color: '#0077b6' },
 ];
 
 const sunglassesVideos = [
     {
         id: 1,
-        thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769624525/sunglasses_16_9_oolw5o.jpg",
-        videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769624525/sunglasses_16_9_oolw5o.mp4",
+        thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/so_0/v1770308098/1_bexn7a.jpg",
+        videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1770308098/1_bexn7a.mov",
         alt: "Summer Vibes"
     },
     {
         id: 2,
-        thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769624525/sunglasses_16_9_oolw5o.jpg",
-        videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769624525/sunglasses_16_9_oolw5o.mp4",
+        thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/so_0/v1770308099/2_victgs.jpg",
+        videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1770308099/2_victgs.mp4",
         featured: true,
         alt: "The Perfect Fit"
     },
     {
         id: 3,
-        thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769624525/sunglasses_16_9_oolw5o.jpg",
-        videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769624525/sunglasses_16_9_oolw5o.mp4",
+        thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/so_0/v1770308086/3_xzzogy.jpg",
+        videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1770308086/3_xzzogy.mp4",
         alt: "Chic & Bold"
     }
 ];
@@ -73,8 +73,8 @@ export default function SunglassesPage() {
             {/* Brand Logos */}
             <BrandLogos bgColor="#d9d9d9" />
 
-            {/* Testimonials */}
-            <TestimonialSection bgColor="#d9d9d9" />
+            {/* Review Form */}
+            <ReviewForm />
         </div>
     );
 }

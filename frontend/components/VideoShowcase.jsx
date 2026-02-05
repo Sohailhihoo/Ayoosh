@@ -23,21 +23,21 @@ export default function VideoShowcase({ videos: propVideos, bgColor = '#f4f2f0' 
     const defaultVideos = [
         {
             id: 1,
-            thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/so_0/v1769624525/sunglasses_16_9_oolw5o.jpg",
-            videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769624525/sunglasses_16_9_oolw5o.mp4",
+            thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/so_0/v1770308098/1_bexn7a.jpg",
+            videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1770308098/1_bexn7a.mov",
             alt: "Trendy Sunglasses"
         },
         {
             id: 2,
-            thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/so_0/v1769625247/sunscreen_16_9_skay4t.jpg",
-            videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769625247/sunscreen_16_9_skay4t.mp4",
+            thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/so_0/v1770308099/2_victgs.jpg",
+            videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1770308099/2_victgs.mp4",
             featured: true,
             alt: "Premium Sunscreen"
         },
         {
             id: 3,
-            thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/so_0/v1769624525/sunglasses_16_9_oolw5o.jpg",
-            videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1769624525/sunglasses_16_9_oolw5o.mp4",
+            thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/so_0/v1770308086/3_xzzogy.jpg",
+            videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1770308086/3_xzzogy.mp4",
             alt: "Style & Protection"
         }
     ];

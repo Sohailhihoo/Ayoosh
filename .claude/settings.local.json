@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfix\\(payfast\\): improve frontend form submission and validation\n\n- Add validation for payfastUrl and paymentData before submission\n- Use requestAnimationFrame instead of setTimeout for DOM sync\n- Add form.isConnected check to verify DOM attachment\n- Add accept-charset UTF-8 to form\n- Use setAttribute for proper DOM attribute setting\n- Add detailed console logging for debugging\n- Add error cleanup on submission failure\n- Validate signature exists in payment data\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push)",
+      "Bash(git commit:*)"
+    ]
+  }
+}

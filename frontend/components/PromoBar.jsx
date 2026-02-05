@@ -5,30 +5,30 @@ import Link from 'next/link';
 
 // Inline SVG icons to avoid react-icons module issues
 const GiftIcon = ({ className }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" />
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v8m-4-4h8M20 12V8h-4m4 0l-4 4M4 12v4h4m-4 0l4-4" />
-  </svg>
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v8m-4-4h8M20 12V8h-4m4 0l-4 4M4 12v4h4m-4 0l4-4" />
+    </svg>
 );
 
 const GiftBoxIcon = ({ className }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v18m0-18c-1.5 0-4-1.5-4-3h8c0 1.5-2.5 3-4 3zM3 9h18v12H3V9zm0 0h18M12 9v12" />
-    <rect x="3" y="9" width="18" height="12" rx="1" strokeLinecap="round" strokeLinejoin="round" />
-    <path strokeLinecap="round" strokeLinejoin="round" d="M3 9h18M12 9v12M7.5 9V6a4.5 4.5 0 019 0v3" />
-  </svg>
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v18m0-18c-1.5 0-4-1.5-4-3h8c0 1.5-2.5 3-4 3zM3 9h18v12H3V9zm0 0h18M12 9v12" />
+        <rect x="3" y="9" width="18" height="12" rx="1" strokeLinecap="round" strokeLinejoin="round" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3 9h18M12 9v12M7.5 9V6a4.5 4.5 0 019 0v3" />
+    </svg>
 );
 
 const HeartIcon = ({ className }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
-  </svg>
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+    </svg>
 );
 
 const StarIcon = ({ className }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-  </svg>
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+    </svg>
 );
 
 /**
@@ -57,10 +57,10 @@ export default function PromoBar({ bgColor = '#f8cb19', hoverTextColor = '#f8cb1
         {
             id: 3,
             icon: StarIcon,
-            subtitle: 'Treat yourself to good skincare',
-            title: 'with Ayoosh Treatments',
-            buttonText: 'Try Our Treatments',
-            href: '/treatments'
+            subtitle: 'Good skincare for happy skin',
+            title: 'with Ayoosh products',
+            buttonText: 'Shop Now',
+            href: '/products'
         }
     ];
 

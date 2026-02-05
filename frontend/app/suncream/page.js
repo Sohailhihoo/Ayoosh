@@ -9,8 +9,7 @@ import SplitFeatureSection from '@/components/SplitFeatureSection';
 import FeaturedProducts from '@/components/FeaturedProducts';
 import VideoShowcase from '@/components/VideoShowcase';
 import BrandLogos from '@/components/BrandLogos';
-import TestimonialSection from '@/components/TestimonialSection';
-import JournalGrid from '@/components/JournalGrid';
+import ReviewForm from '@/components/ReviewForm';
 import PromoBar from '@/components/PromoBar';
 
 // Title style for hero section
@@ -112,11 +111,8 @@ export default function BeautyPage() {
             {/* Brand Logos (Partners) */}
             <BrandLogos />
 
-            {/* Testimonials */}
-            <TestimonialSection />
-
-            {/* Journal Grid */}
-            <JournalGrid />
+            {/* Review Form */}
+            <ReviewForm />
         </div>
     );
 }

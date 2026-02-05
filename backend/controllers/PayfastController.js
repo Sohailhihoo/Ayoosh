@@ -316,7 +316,8 @@ const initiatePayment = async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Failed to initiate payment',
-            error: error.message
+            error: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
         });
     }
 };
