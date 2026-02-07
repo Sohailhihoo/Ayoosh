@@ -1,4 +1,4 @@
-import { Inter, Playfair_Display } from 'next/font/google';
+import { Inter, Playfair_Display, Montserrat } from 'next/font/google';
 import './globals.css';
 import LayoutWrapper from '@/components/LayoutWrapper';
 import QueryProvider from '@/components/QueryProvider';
@@ -15,6 +15,12 @@ const playfair = Playfair_Display({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-playfair',
+});
+
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-montserrat',
 });
 
 /**
@@ -99,7 +105,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.className} ${playfair.variable}`}
+        className={`${inter.className} ${playfair.variable} ${montserrat.variable}`}
         suppressHydrationWarning={true}
       >
         <QueryProvider>
