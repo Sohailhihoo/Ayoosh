@@ -65,7 +65,7 @@ const productSchema = new mongoose.Schema({
   // Product type specific fields
   productType: {
     type: String,
-    enum: ['beauty', 'sunglasses', 'accessories'],
+    enum: ['beauty', 'suncream', 'sunglasses', 'accessories'],
     required: true
   },
 

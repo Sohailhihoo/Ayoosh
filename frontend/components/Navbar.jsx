@@ -219,7 +219,7 @@ export default function Navbar() {
             </div>
 
             {/* Center Section: Logo (Absolute Centered) */}
-            <div className={`absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-opacity duration-700 ${isHomeLoading && isTransparentPage ? 'opacity-0' : 'opacity-100'}`}>
+            <div className={`absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-opacity duration-700 ${isHomeLoading && (pathname === '/' || pathname === '/home') ? 'opacity-0' : 'opacity-100'}`}>
               <Link
                 href="/home"
                 className="block"

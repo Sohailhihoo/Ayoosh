@@ -12,7 +12,7 @@ export const ASSETS = {
     logos: {
         main: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769784376/Black-color-Logo_zxn3hh.png',
         loading: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769514667/ayoosh-beauty/brand/logos/loading.png',
-        final: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769514668/ayoosh-beauty/brand/logos/final.png',
+        final: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769784376/Black-color-Logo_zxn3hh.png',
         alt: `${CLOUDINARY_BASE}/v1/ayoosh-beauty/brand/logos/alt`,
         light: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769783995/White-color-Logo_tre0tf.png',
         yellow: `${CLOUDINARY_BASE}/v1/ayoosh-beauty/brand/logos/yellow`,

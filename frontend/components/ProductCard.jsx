@@ -56,12 +56,7 @@ export default function ProductCard({ product }) {
             )}
           </div>
 
-          {/* Badges */}
-          {product.isNewArrival && (
-            <span className="absolute top-4 left-4 bg-white/90 text-xs tracking-wider px-3 py-1 rounded-full">
-              NEW
-            </span>
-          )}
+          {/* Badges removed */}
 
           {/* Quick Add Button */}
           <div
@@ -79,19 +74,9 @@ export default function ProductCard({ product }) {
 
         {/* Product Info */}
         <div className="text-center">
-          <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">
-            {product.brand}
-          </p>
-          <h3 className="text-sm font-light text-gray-800 mb-2 group-hover:text-gray-600 transition-colors">
-            {product.name}
-          </h3>
+          {/* Title removed as requested */}
           <p className="text-sm text-gray-600">
             R{product.price?.toFixed(2)}
-            {product.compareAtPrice && product.compareAtPrice > product.price && (
-              <span className="ml-2 text-gray-400 line-through">
-                R{product.compareAtPrice?.toFixed(2)}
-              </span>
-            )}
           </p>
         </div>
       </div>

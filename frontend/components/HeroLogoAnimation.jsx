@@ -179,8 +179,7 @@ export default function HeroLogoAnimation() {
                             <img
                                 src="https://res.cloudinary.com/dpdg462fb/image/upload/v1769783995/White-color-Logo_tre0tf.png"
                                 alt="Ayoosh"
-                                className="object-contain"
-                                style={{ width: '200px', height: '200px' }}
+                                className="object-contain w-20 h-20 md:w-[200px] md:h-[200px]"
                             />
                         </motion.div>
                     </>
@@ -197,8 +196,7 @@ export default function HeroLogoAnimation() {
                         <img
                             src="https://res.cloudinary.com/dpdg462fb/image/upload/v1769783995/White-color-Logo_tre0tf.png"
                             alt="Ayoosh"
-                            className="object-contain"
-                            style={{ width: '200px', height: '200px' }}
+                            className="object-contain w-20 h-20 md:w-[200px] md:h-[200px]"
                         />
                     </motion.div>
                 )}

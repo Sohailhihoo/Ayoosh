@@ -52,21 +52,19 @@ export default function BeautyPage() {
     // Sample featured products with Cloudinary image
     const featuredProducts = [
         {
-            _id: 'featured-1',
+            _id: '69825dab2d01b1efb437017c',
             name: 'SUN CREAM',
             variant: '50ml Tube',
             price: 20,
             image: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769715388/Sun_Tube_cmxezs.png',
-            onSale: true,
             rating: 5.0
         },
         {
-            _id: 'featured-2',
+            _id: '69825dab2d01b1efb4370176',
             name: 'SUN CREAM POUCH',
             variant: '10 x 5ml Sachet',
             price: 20,
             image: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769748802/Pouch_and_Sachet_bjidrn.png',
-            onSale: true,
             rating: 5.0,
             imageScale: 1.4
         }
