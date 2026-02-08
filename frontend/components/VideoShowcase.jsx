@@ -25,20 +25,20 @@ export default function VideoShowcase({ videos: propVideos, bgColor = '#f4f2f0' 
             id: 1,
             thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/so_0/v1770308098/1_bexn7a.jpg",
             videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1770308098/1_bexn7a.mov",
-            alt: "Trendy Sunglasses"
+            
         },
         {
             id: 2,
             thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/so_0/v1770308099/2_victgs.jpg",
             videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1770308099/2_victgs.mp4",
             featured: true,
-            alt: "Premium Sunscreen"
+            
         },
         {
             id: 3,
             thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/so_0/v1770308086/3_xzzogy.jpg",
             videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1770308086/3_xzzogy.mp4",
-            alt: "Style & Protection"
+            
         }
     ];
 

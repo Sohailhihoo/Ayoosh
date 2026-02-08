@@ -20,6 +20,8 @@ const orderRoutes = require('./routes/orders');
 const paymentRoutes = require('./routes/payments');
 const userRoutes = require('./routes/users');
 const analyticsRoutes = require('./routes/analytics');
+const couponRoutes = require('./routes/coupons');
+const reviewRoutes = require('./routes/reviews');
 
 const app = express();
 
@@ -151,6 +153,8 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/payfast', payfastRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/coupons', couponRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

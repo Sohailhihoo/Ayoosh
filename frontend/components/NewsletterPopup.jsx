@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react';
 
 // Inline SVG icon to avoid react-icons module issues
 const XIcon = ({ className }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-  </svg>
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+    </svg>
 );
 
 /**
@@ -44,17 +44,42 @@ export default function NewsletterPopup() {
         e.preventDefault();
         setIsSubmitting(true);
 
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/newsletter/subscribe`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email }),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                setIsSubmitted(true);
+                sessionStorage.setItem('newsletterPopupSeen', 'true');
+                // Could store coupon in state to display it
+            } else {
+                // Handle error (maybe show toast or inline error)
+                console.error('Subscription failed:', data.message);
+                // For now, still close/show success to not block user, or show alert
+                alert(data.message || 'Something went wrong');
+                setIsSubmitting(false); // Re-enable button on error
+                return;
+            }
+        } catch (error) {
+            console.error('Error subscribing:', error);
+            alert('Failed to subscribe. Please try again.');
+            setIsSubmitting(false);
+            return;
+        }
 
         setIsSubmitting(false);
-        setIsSubmitted(true);
-        sessionStorage.setItem('newsletterPopupSeen', 'true');
 
         // Close popup after showing success message
         setTimeout(() => {
             setIsVisible(false);
-        }, 2000);
+        }, 3000);
     };
 
     if (!isVisible) return null;
@@ -83,11 +108,11 @@ export default function NewsletterPopup() {
                     <span className="inline-block px-4 py-1 bg-white/20 rounded-full text-white text-sm tracking-widest mb-3">
                         EXCLUSIVE OFFER
                     </span>
-                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-2">
-                        20% OFF
+                    <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
+                        FREE DELIVERY
                     </h2>
                     <p className="text-white/90 text-lg">
-                        Your First Order
+                        For the First 50 Customers
                     </p>
                 </div>
 
@@ -96,9 +121,9 @@ export default function NewsletterPopup() {
                     {!isSubmitted ? (
                         <>
                             <p className="text-gray-600 text-center mb-6 leading-relaxed">
-                                Join our beauty community and unlock exclusive access to new arrivals,
-                                insider tips, and members-only promotions. Your journey to radiant
-                                beauty starts here.
+                                Get free delivery for the first 50 customers by applying code{' '}
+                                <span className="font-bold text-[#4a4a4a]">AYOOSH50</span> at checkout.
+                                Subscribe to be the first to know!
                             </p>
 
                             <form onSubmit={handleSubmit} className="space-y-4">
@@ -118,7 +143,7 @@ export default function NewsletterPopup() {
                                     disabled={isSubmitting}
                                     className="w-full py-4 bg-[#4a4a4a] text-white font-medium tracking-widest rounded-lg hover:bg-[#333] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    {isSubmitting ? 'SUBSCRIBING...' : 'GET MY 20% OFF'}
+                                    {isSubmitting ? 'SUBSCRIBING...' : 'SUBSCRIBE'}
                                 </button>
                             </form>
 
@@ -136,8 +161,8 @@ export default function NewsletterPopup() {
                             <h3 className="text-xl font-semibold text-gray-800 mb-2">
                                 Welcome to the Family!
                             </h3>
-                            <p className="text-gray-600">
-                                Check your inbox for your exclusive discount code.
+                            <p className="text-gray-600 mb-2">
+                                Use code <span className="font-bold text-[#4a4a4a]">AYOOSH50</span> at checkout for free delivery.
                             </p>
                         </div>
                     )}

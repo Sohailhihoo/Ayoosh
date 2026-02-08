@@ -67,19 +67,27 @@ export default function ProductCard({ product }) {
               onClick={handleAddToCart}
               className="w-full py-3 bg-[#4a4a4a] text-white text-sm tracking-widest hover:bg-[#333] transition-colors"
             >
-              ADD TO CART
+              {product.productType === 'sunglasses' ? 'PRE-ORDER' : 'ADD TO CART'}
             </button>
           </div>
         </div>
 
         {/* Product Info */}
         <div className="text-center">
-          {/* Title removed as requested */}
+          <h3 className="font-medium text-gray-900 mb-1">{product.name}</h3>
           <p className="text-sm text-gray-600">
             R{product.price?.toFixed(2)}
           </p>
         </div>
       </div>
+
+      {/* Add to Cart Button - visible only on tablet/mobile */}
+      <button
+        onClick={handleAddToCart}
+        className="w-full mt-2 py-3 bg-[#4a4a4a] text-white text-sm tracking-widest hover:bg-[#333] transition-colors rounded-lg md:hidden"
+      >
+        {product.productType === 'sunglasses' ? 'PRE-ORDER' : 'ADD TO CART'}
+      </button>
     </Link>
   );
 }

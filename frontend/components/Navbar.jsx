@@ -64,6 +64,9 @@ export default function Navbar() {
   // Pages where navbar should be transparent (overlay)
   const isTransparentPage = ['/suncream', '/sunglasses', '/', '/home'].includes(pathname);
 
+  // Check if on homepage
+  const isHomePage = pathname === '/' || pathname === '/home';
+
   // Determine navbar styles based on scroll state and current page
   const getNavClasses = () => {
     // Special detailed logic for Sunglasses page (3 Stages)
@@ -83,6 +86,14 @@ export default function Navbar() {
       else {
         return 'fixed top-0 w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md text-black shadow-lg';
       }
+    }
+
+    // Homepage: transparent at top, fully hidden when scrolled
+    if (isHomePage) {
+      if (isScrolled) {
+        return 'fixed top-0 w-full z-50 bg-transparent text-white border-none opacity-0 pointer-events-none transition-opacity duration-500';
+      }
+      return 'fixed top-0 w-full z-50 bg-transparent text-white border-none opacity-100 transition-opacity duration-500';
     }
 
     if (isTransparentPage) {
@@ -109,7 +120,12 @@ export default function Navbar() {
       return ASSETS.logos.final;
     }
 
-    // Beauty page and other transparent pages
+    // Homepage: always use white logo
+    if (isHomePage) {
+      return ASSETS.logos.light;
+    }
+
+    // Other transparent pages (suncream, etc.)
     if (isTransparentPage) {
       return isScrolled ? ASSETS.logos.final : ASSETS.logos.light;
     }
@@ -120,6 +136,11 @@ export default function Navbar() {
 
   // Determine logo size based on navbar state
   const getLogoSize = () => {
+    // Homepage: logo stays the same size always
+    if (isHomePage) {
+      return 'h-20 md:h-28';
+    }
+
     if (pathname === '/sunglasses') {
       const vh = typeof window !== 'undefined' ? window.innerHeight : 1000;
       if (scrollPos < vh - 100) {
@@ -186,7 +207,7 @@ export default function Navbar() {
         aria-label="Main navigation"
       >
         <div className="max-w-[1800px] mx-auto px-6 md:px-12 lg:px-24 relative">
-          <div className={`flex items-center justify-between transition-all duration-300 ${isScrolled || !isTransparentPage ? 'h-24' : 'h-32'}`}>
+          <div className={`flex items-center justify-between transition-all duration-300 ${isHomePage ? 'h-32' : (isScrolled || !isTransparentPage ? 'h-24' : 'h-32')}`}>
 
             {/* Left Section: Mobile Menu & Desktop Nav */}
             <div className="flex items-center">
@@ -219,7 +240,7 @@ export default function Navbar() {
             </div>
 
             {/* Center Section: Logo (Absolute Centered) */}
-            <div className={`absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-opacity duration-700 ${isHomeLoading && (pathname === '/' || pathname === '/home') ? 'opacity-0' : 'opacity-100'}`}>
+            <div className={`absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-opacity duration-700 ${(isHomeLoading && isHomePage) || (isHomePage && isScrolled) ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
               <Link
                 href="/home"
                 className="block"

@@ -52,7 +52,7 @@ export default function Footer() {
             <h3 className="text-sm font-semibold tracking-wider mb-4 md:mb-6">Products</h3>
             <ul className="space-y-2 md:space-y-3">
               <li>
-                <Link href="/beauty" className="text-sm text-gray-400 hover:text-white transition-colors">
+                <Link href="/suncream" className="text-sm text-gray-400 hover:text-white transition-colors">
                   Ayoosh Skincare
                 </Link>
               </li>

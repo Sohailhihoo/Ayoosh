@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Product = require('../models/Product');
+const Category = require('../models/Category');
 const { protect, authorize, optionalAuth } = require('../middleware/auth');
 const { cacheProducts, cacheFeatured, cacheNewArrivals, cacheBestsellers } = require('../lib/cache');
 const { upload } = require('../lib/cloudinary');
@@ -30,7 +31,28 @@ router.get('/', cacheProducts, async (req, res) => {
     // Build query
     const query = { status: 'active' };
 
-    if (category) query.category = category;
+    // Handle Category Filter (Slug or ID)
+    if (category) {
+      if (category.match(/^[0-9a-fA-F]{24}$/)) {
+        // It's an ObjectId
+        query.category = category;
+      } else {
+        // It's a slug, find the category first
+        const categoryDoc = await Category.findOne({
+          $or: [{ slug: category }, { name: category }]
+        });
+
+        if (categoryDoc) {
+          query.category = categoryDoc._id;
+        } else {
+          // Category not found, return no products
+          return res.json({
+            success: true,
+            data: { products: [], pagination: { page: 1, limit: Number(limit), total: 0, pages: 0 } }
+          });
+        }
+      }
+    }
     if (productType) query.productType = productType;
     if (brand) query.brand = { $regex: brand, $options: 'i' };
     if (minPrice || maxPrice) {
@@ -53,6 +75,9 @@ router.get('/', cacheProducts, async (req, res) => {
     // Select only essential fields for list view (performance optimization)
     const listFields = 'name slug price compareAtPrice images brand productType stock isFeatured isNewArrival averageRating reviewCount';
 
+    // Custom sort: show suncream first, then sunglasses, then others
+    const productTypeOrder = { suncream: 0, sunglasses: 1, accessories: 2 };
+
     const [products, total] = await Promise.all([
       Product.find(query)
         .select(listFields)
@@ -63,6 +88,15 @@ router.get('/', cacheProducts, async (req, res) => {
         .lean(),
       Product.countDocuments(query)
     ]);
+
+    // Sort by product type order when showing all products (no productType filter)
+    if (!productType) {
+      products.sort((a, b) => {
+        const orderA = productTypeOrder[a.productType] ?? 99;
+        const orderB = productTypeOrder[b.productType] ?? 99;
+        return orderA - orderB;
+      });
+    }
 
     res.json({
       success: true,

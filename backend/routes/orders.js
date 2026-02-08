@@ -246,6 +246,38 @@ router.post('/', optionalAuth, async (req, res) => {
       phone: req.user.phone
     } : customerDetails;
 
+    // Validate Coupon if present
+    let discountAmount = 0;
+    let couponCode = cart.couponCode;
+
+    if (couponCode) {
+      const Coupon = require('../models/Coupon');
+      const coupon = await Coupon.findOne({ code: couponCode, isActive: true });
+
+      if (coupon && coupon.isValid()) {
+        if (coupon.discountType === 'free_shipping') {
+          discountAmount = shippingCost;
+        } else if (coupon.discountType === 'fixed') {
+          discountAmount = coupon.amount;
+        } else if (coupon.discountType === 'percentage') {
+          discountAmount = (cart.subtotal * coupon.amount) / 100;
+        }
+
+        // Ensure discount doesn't exceed total (subtotal + shipping + tax)
+        const grossTotal = cart.subtotal + shippingCost + tax;
+        if (discountAmount > grossTotal) {
+          discountAmount = grossTotal;
+        }
+
+        // Increment usage
+        await Coupon.findByIdAndUpdate(coupon._id, { $inc: { usedCount: 1 } });
+      } else {
+        // Invalid/Expired coupon - remove it
+        couponCode = null;
+        discountAmount = 0;
+      }
+    }
+
     // All stock updates succeeded → Create order within same transaction
     const order = await Order.create([{
       user: userId || null,
@@ -257,9 +289,9 @@ router.post('/', optionalAuth, async (req, res) => {
       subtotal: cart.subtotal,
       shippingCost,
       tax,
-      discount: cart.discountAmount || 0,
-      couponCode: cart.couponCode,
-      total: cart.subtotal + shippingCost + tax - (cart.discountAmount || 0),
+      discount: discountAmount,
+      couponCode: couponCode,
+      total: cart.subtotal + shippingCost + tax - discountAmount,
       paymentMethod,
       shippingMethod,
       customerNote,

@@ -33,7 +33,7 @@ export default function AboutPage() {
 
                     {/* Our Story */}
                     <section>
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Our Story</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Our Story or Who We Are</h2>
                         <div className="space-y-4">
                             <p>AYOOSH is a name shaped by heart, heritage, and intention. Inspired by our founder, Aisha Joosub, it&rsquo;s a personal adaptation that carries warmth, familiarity, and a deep sense of connection. The name itself reflects what the brand stands for, community, individuality, and the belief that beauty and well-being are deeply personal experiences.</p>
                             <p>AYOOSH has never been intended to be a trendy skincare brand or a label. It was designed as a place where individuality and self-expression are celebrated without any pressure. AYOOSH is rooted in the joy of well-being and embraces the notion that confidence increases when people are comfortable in their skin.</p>

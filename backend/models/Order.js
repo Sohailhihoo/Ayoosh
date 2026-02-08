@@ -63,11 +63,6 @@ const orderSchema = new mongoose.Schema({
     country: String
   },
 
-  // Pricing
-  subtotal: {
-    type: Number,
-    required: true
-  },
   shippingCost: {
     type: Number,
     default: 0

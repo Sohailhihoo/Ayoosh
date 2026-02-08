@@ -4,44 +4,41 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useCartStore, useAuthStore } from '@/lib/store';
-import { orderAPI } from '@/lib/api';
+import { orderAPI, couponAPI } from '@/lib/api';
 import { initiatePayFastPayment } from '@/lib/payfast';
 import toast from 'react-hot-toast';
 
 // Inline SVG icons to avoid react-icons module issues
 const ArrowLeftIcon = ({ className }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-  </svg>
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+    </svg>
 );
 
 const LockClosedIcon = ({ className }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-  </svg>
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+    </svg>
 );
 
 const CheckIcon = ({ className }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-  </svg>
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+    </svg>
 );
 
 export default function CheckoutForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { items, subtotal, totalItems, fetchCart, clearCart } = useCartStore();
+    const { items, subtotal, totalItems, fetchCart, clearCart, coupon, applyCoupon, removeCoupon } = useCartStore();
     const { user, isAuthenticated } = useAuthStore();
 
     const [loading, setLoading] = useState(false);
     const [pageLoading, setPageLoading] = useState(true);
 
-    // Check if returning from cancelled PayFast payment
-    useEffect(() => {
-        if (searchParams.get('cancelled') === 'true') {
-            toast.error('Payment was cancelled. Please try again.');
-        }
-    }, [searchParams]);
+    // Coupon State
+    const [couponInput, setCouponInput] = useState('');
+    const [validatingCoupon, setValidatingCoupon] = useState(false);
 
     // Form state
     const [formData, setFormData] = useState({
@@ -64,10 +61,12 @@ export default function CheckoutForm() {
         sameAsBilling: true
     });
 
-    const shippingCosts = {
-        standard: 10.00,
-        express: 12.00
-    };
+    // Check if returning from cancelled PayFast payment
+    useEffect(() => {
+        if (searchParams.get('cancelled') === 'true') {
+            toast.error('Payment was cancelled. Please try again.');
+        }
+    }, [searchParams]);
 
     useEffect(() => {
         const loadCart = async () => {
@@ -89,6 +88,58 @@ export default function CheckoutForm() {
             }));
         }
     }, [user]);
+
+    // Calculate shipping cost based on method
+    const shippingCosts = {
+        standard: 10.00,
+        express: 12.00
+    };
+
+    // Calculate dynamic values
+    const currentShippingCost = shippingCosts[formData.shippingMethod] || 10.00;
+
+    const calculateDiscount = () => {
+        if (!coupon) return 0;
+
+        if (coupon.discountType === 'free_shipping') {
+            return currentShippingCost;
+        } else if (coupon.discountType === 'fixed') {
+            return coupon.amount;
+        } else if (coupon.discountType === 'percentage') {
+            return (subtotal * coupon.amount) / 100;
+        }
+        return 0;
+    };
+
+    const calculateTotal = () => {
+        const shipping = coupon?.discountType === 'free_shipping' ? 0 : currentShippingCost;
+        let total = subtotal + shipping;
+
+        if (coupon && coupon.discountType !== 'free_shipping') {
+            total -= calculateDiscount();
+        }
+
+        return Math.max(0, total); // Ensure no negative total
+    };
+
+    const handleApplyCoupon = async () => {
+        if (!couponInput.trim()) return;
+
+        setValidatingCoupon(true);
+        try {
+            const { data } = await couponAPI.validate(couponInput, subtotal);
+            if (data.success) {
+                applyCoupon(data.data);
+                toast.success('Coupon applied successfully!');
+            }
+        } catch (error) {
+            console.error('Coupon error:', error);
+            toast.error(error.response?.data?.message || 'Invalid coupon code');
+            removeCoupon();
+        } finally {
+            setValidatingCoupon(false);
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -146,7 +197,10 @@ export default function CheckoutForm() {
                 },
                 paymentMethod: formData.paymentMethod,
                 shippingMethod: formData.shippingMethod,
-                customerNote: formData.customerNote
+                customerNote: formData.customerNote,
+                // Coupon Data
+                couponCode: coupon?.code,
+                discountAmount: calculateDiscount()
             };
 
             const response = await orderAPI.create(orderData);
@@ -426,61 +480,112 @@ export default function CheckoutForm() {
                                 <hr className="mb-4" />
 
                                 {/* Totals */}
-                                <div className="space-y-3 mb-6">
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-gray-600">Subtotal ({totalItems} items)</span>
-                                        <span>R{subtotal.toFixed(2)}</span>
-                                    </div>
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-gray-600">Shipping</span>
-                                        <span>{shipping === 0 ? 'FREE' : `R${shipping.toFixed(2)}`}</span>
-                                    </div>
-                                    <hr />
-                                    <div className="flex justify-between text-lg font-bold">
-                                        <span>Total</span>
-                                        <span>R{total.toFixed(2)}</span>
-                                    </div>
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-gray-600">Subtotal ({totalItems} items)</span>
+                                    <span>R{subtotal.toFixed(2)}</span>
+                                </div>
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-gray-600">Shipping</span>
+                                    <span>
+                                        {coupon?.discountType === 'free_shipping' ? (
+                                            <span className="text-green-600 font-medium">FREE (Coupon)</span>
+                                        ) : (
+                                            shipping === 0 ? 'FREE' : `R${shipping.toFixed(2)}`
+                                        )}
+                                    </span>
                                 </div>
 
-                                {/* Submit Button */}
-                                <button
-                                    type="submit"
-                                    disabled={loading}
-                                    className="w-full btn-primary py-4 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    {loading ? (
-                                        <>
-                                            <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-                                            Processing...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <LockClosedIcon className="w-5 h-5" />
-                                            Pay with PayFast - R{total.toFixed(2)}
-                                        </>
-                                    )}
-                                </button>
+                                {/* Discount Row */}
+                                {coupon && (
+                                    <div className="flex justify-between text-sm text-green-600">
+                                        <span>Discount ({coupon.code})</span>
+                                        <span>-R{calculateDiscount().toFixed(2)}</span>
+                                    </div>
+                                )}
 
-                                {/* Security Badge */}
-                                <div className="mt-4 flex items-center justify-center gap-2 text-sm text-gray-500">
-                                    <CheckIcon className="w-4 h-4 text-green-500" />
-                                    <span>Secure checkout</span>
+                                {/* Coupon Input */}
+                                {!coupon ? (
+                                    <div className="flex gap-2 mt-4">
+                                        <input
+                                            type="text"
+                                            value={couponInput}
+                                            onChange={(e) => setCouponInput(e.target.value)}
+                                            placeholder="Coupon Code"
+                                            className="flex-1 px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-pink-500 uppercase"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={handleApplyCoupon}
+                                            disabled={validatingCoupon || !couponInput.trim()}
+                                            className="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg hover:bg-gray-800 disabled:opacity-50"
+                                        >
+                                            {validatingCoupon ? '...' : 'Apply'}
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center justify-between bg-green-50 p-2 rounded-lg mt-4 border border-green-100">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-green-600 text-sm font-medium">✓ {coupon.code} applied</span>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                removeCoupon();
+                                                setCouponInput('');
+                                                toast.success('Coupon removed');
+                                            }}
+                                            className="text-xs text-red-500 hover:text-red-700 font-medium px-2"
+                                        >
+                                            Remove
+                                        </button>
+                                    </div>
+                                )}
+
+                                <hr />
+                                <div className="flex justify-between text-lg font-bold">
+                                    <span>Total</span>
+                                    <span>R{calculateTotal().toFixed(2)}</span>
                                 </div>
-
-                                {/* PayFast Trust Badge */}
-                                <div className="mt-4 p-3 bg-gray-50 rounded-lg text-center">
-                                    <p className="text-xs text-gray-500">
-                                        You will be securely redirected to PayFast to complete your payment
-                                    </p>
-                                </div>
-
-                                <Link
-                                    href="/cart"
-                                    className="block text-center text-pink-600 hover:underline mt-4 text-sm"
-                                >
-                                    ← Return to Cart
-                                </Link>
                             </div>
+
+                            {/* Submit Button */}
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="w-full btn-primary py-4 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {loading ? (
+                                    <>
+                                        <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                                        Processing...
+                                    </>
+                                ) : (
+                                    <>
+                                        <LockClosedIcon className="w-5 h-5" />
+                                        Pay with PayFast - R{calculateTotal().toFixed(2)}
+                                    </>
+                                )}
+                            </button>
+
+                            {/* Security Badge */}
+                            <div className="mt-4 flex items-center justify-center gap-2 text-sm text-gray-500">
+                                <CheckIcon className="w-4 h-4 text-green-500" />
+                                <span>Secure checkout</span>
+                            </div>
+
+                            {/* PayFast Trust Badge */}
+                            <div className="mt-4 p-3 bg-gray-50 rounded-lg text-center">
+                                <p className="text-xs text-gray-500">
+                                    You will be securely redirected to PayFast to complete your payment
+                                </p>
+                            </div>
+
+                            <Link
+                                href="/cart"
+                                className="block text-center text-pink-600 hover:underline mt-4 text-sm"
+                            >
+                                ← Return to Cart
+                            </Link>
                         </div>
                     </div>
                 </form>

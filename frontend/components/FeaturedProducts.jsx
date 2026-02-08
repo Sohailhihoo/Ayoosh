@@ -158,6 +158,14 @@ function FeaturedProductCard({ product, index }) {
                     </div>
                 </div>
             </Link>
+
+            {/* Add to Cart Button - visible only on tablet/mobile */}
+            <button
+                onClick={handleAddToCart}
+                className="w-full mt-3 py-3 bg-[#4a4a4a] text-white text-sm tracking-widest hover:bg-[#333] transition-colors rounded-lg md:hidden"
+            >
+                ADD TO CART
+            </button>
         </motion.div>
     );
 }

@@ -19,16 +19,26 @@ export default function HeroLogoAnimation() {
     });
     const [scrollY, setScrollY] = useState(0);
 
+    // Track scroll position for all phases (needed to hide logo on scroll)
     useEffect(() => {
-        // If starting in complete phase (returning visitor), don't set up scroll/timer
-        if (phase === 'complete') return;
-
-        // Track scroll position
         const handleScroll = () => {
             setScrollY(window.scrollY);
         };
 
         window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    // Hide the logo when user scrolls past the hero
+    const isHidden = scrollY > 50;
+
+    useEffect(() => {
+        // If starting in complete phase (returning visitor), don't set up timer
+        if (phase === 'complete') return;
+
+        // Track scroll position for animation trigger is handled above
+
+        // No additional scroll listener needed here
 
         // Auto-transition after 3 seconds if user hasn't scrolled
         const autoTransitionTimer = setTimeout(() => {
@@ -38,7 +48,6 @@ export default function HeroLogoAnimation() {
         }, 3000);
 
         return () => {
-            window.removeEventListener('scroll', handleScroll);
             clearTimeout(autoTransitionTimer);
         };
     }, [phase]);
@@ -80,7 +89,7 @@ export default function HeroLogoAnimation() {
     }, [phase]);
 
     return (
-        <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 45 }}>
+        <div className={`fixed inset-0 pointer-events-none transition-opacity duration-500 ${isHidden ? 'opacity-0' : 'opacity-100'}`} style={{ zIndex: 45 }}>
             <AnimatePresence>
                 {/* Rotating Logo Phase - only on first visit */}
                 {phase === 'rotating' && (

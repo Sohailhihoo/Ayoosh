@@ -4,6 +4,7 @@
 import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
 import { Montserrat } from 'next/font/google';
+import Link from 'next/link';
 
 const montserrat = Montserrat({
     subsets: ['latin'],
@@ -16,6 +17,7 @@ const montserrat = Montserrat({
 const sunglasses = [
     {
         id: 1,
+        productId: '69825dab2d01b1efb4370181',
         name: 'The Confidence',
         price: 'R 2,450.00',
         tagline: 'Confidence',
@@ -26,6 +28,7 @@ const sunglasses = [
     },
     {
         id: 2,
+        productId: '69825dab2d01b1efb4370187',
         name: 'The Focus',
         price: 'R 2,550.00',
         tagline: 'Focus',
@@ -36,6 +39,7 @@ const sunglasses = [
     },
     {
         id: 3,
+        productId: '69825dab2d01b1efb437018d',
         name: 'The Leadership',
         price: 'R 2,350.00',
         tagline: 'Leadership',
@@ -46,12 +50,13 @@ const sunglasses = [
     },
     {
         id: 4,
+        productId: '69825dab2d01b1efb4370192',
         name: 'The Roseview',
         price: 'R 2,650.00',
         tagline: 'RoseView',
         description: "The Roseview in pink is soft power. A warm pink frame rooted in self-love. Gentle yet strong. Romantic. Healing. Feminine. It flatters the skin and softens every look. Made for those who lead with grace and glow without effort.See the world through rose-colored glasses. A feminine touch with a modern edge for the bold spirit.",
         specs: ['Pink Tint', 'Gold Frame', 'Adjustable'],
-        image: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769767392/Pink-Glasses_o5hxf2.png',
+        image: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1770582888/Pink-Glasses_1_egtenl.png',
         color: '#D47E9C'
     }
 ];
@@ -103,12 +108,13 @@ export default function SunglassesCircle() {
                                 {activeProduct.description}
                             </p>
 
-                            <button
-                                className="pointer-events-auto text-white px-8 py-3 rounded-full text-sm font-bold tracking-wide uppercase transition-all hover:scale-105 shadow-xl hover:opacity-90"
+                            <Link
+                                href={`/products/${activeProduct.productId}`}
+                                className="pointer-events-auto text-white px-8 py-3 rounded-full text-sm font-bold tracking-wide uppercase transition-all hover:scale-105 shadow-xl hover:opacity-90 inline-block"
                                 style={{ backgroundColor: activeProduct.color }}
                             >
                                 Pre Order
-                            </button>
+                            </Link>
                         </motion.div>
                     </AnimatePresence>
                 </div>
@@ -137,7 +143,7 @@ export default function SunglassesCircle() {
                                     rotate: useTransform(smoothRotate, (r) => -r)
                                 }}
                             >
-                                <div className={`transition-all duration-500 ease-out transform ${isActive
+                                <Link href={`/products/${product.productId}`} className={`block transition-all duration-500 ease-out transform ${isActive
                                     ? 'scale-[1.6] z-50 filter-none opacity-100 drop-shadow-2xl'
                                     : 'scale-90 z-0 grayscale opacity-60'
                                     }`}>
@@ -146,7 +152,7 @@ export default function SunglassesCircle() {
                                         alt={product.name}
                                         className="w-full h-full object-contain"
                                     />
-                                </div>
+                                </Link>
                             </motion.div>
                         );
                     })}

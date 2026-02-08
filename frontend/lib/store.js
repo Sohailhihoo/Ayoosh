@@ -12,6 +12,10 @@ export const useCartStore = create((set, get) => ({
   totalItems: 0,
   loading: false,
 
+  // Coupon State
+  coupon: null, // { code, discountType, amount }
+  discountAmount: 0,
+
   fetchCart: async () => {
     try {
       set({ loading: true });
@@ -27,6 +31,30 @@ export const useCartStore = create((set, get) => ({
       set({ loading: false });
       console.error('Error fetching cart:', error);
     }
+  },
+
+  applyCoupon: (couponData) => {
+    set((state) => {
+      let discount = 0;
+      if (couponData.discountType === 'fixed') {
+        discount = couponData.amount;
+      } else if (couponData.discountType === 'percentage') {
+        discount = (state.subtotal * couponData.amount) / 100;
+      } else if (couponData.discountType === 'free_shipping') {
+        // Placeholder: Shipping is calculated in checkout
+        // We set a flag or handle logic in CheckoutForm
+        discount = 0;
+      }
+
+      return {
+        coupon: couponData,
+        discountAmount: discount
+      };
+    });
+  },
+
+  removeCoupon: () => {
+    set({ coupon: null, discountAmount: 0 });
   },
 
   addToCart: async (productId, quantity = 1, variant = null, price) => {
@@ -66,7 +94,7 @@ export const useCartStore = create((set, get) => ({
     try {
       set({ loading: true });
       await api.delete('/cart');
-      set({ items: [], subtotal: 0, total: 0, totalItems: 0, loading: false });
+      set({ items: [], subtotal: 0, total: 0, totalItems: 0, loading: false, coupon: null, discountAmount: 0 });
     } catch (error) {
       set({ loading: false });
       throw error;

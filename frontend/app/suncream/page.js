@@ -33,7 +33,7 @@ const splitSectionConfig = {
         subtitle: 'THE AYOOSH DIFFERENCE',
         title: 'Why Choose',
         titleHighlight: 'Us?',
-        description: 'Being the best sun cream brand, we know that your skin deserves care, not just SPF. Ayoosh sun range is built to fit real South African life, not just skincare routines.',
+        description: 'Your skin deserves more than just SPF. Ayoosh sun care blends advanced Korean skincare with everyday protection to care for your skin while shielding it from the sun. Lightweight, breathable, and made to feel comfortable all day, it protects without the white cast, heaviness, or greasy finish, so your skin feels as good as it looks.',
         tags: [
             'SPF 50+ PA+++ Lightweight',
             'Natural Glow, No White Cast',
@@ -53,7 +53,7 @@ export default function BeautyPage() {
     const featuredProducts = [
         {
             _id: '69825dab2d01b1efb437017c',
-            name: 'SUN CREAM',
+            name: 'Centella Cica Glow Sun Cream',
             variant: '50ml Tube',
             price: 20,
             image: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769715388/Sun_Tube_cmxezs.png',
@@ -61,7 +61,7 @@ export default function BeautyPage() {
         },
         {
             _id: '69825dab2d01b1efb4370176',
-            name: 'SUN CREAM POUCH',
+            name: 'Centella Cica Glow Sun Cream',
             variant: '10 x 5ml Sachet',
             price: 20,
             image: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769748802/Pouch_and_Sachet_bjidrn.png',

@@ -274,8 +274,10 @@ export default function HomePage() {
                             <img src="https://res.cloudinary.com/dpdg462fb/image/upload/v1770184422/Group_70_vhucel.png" alt="Skincare Icon" className="w-full h-full object-contain" />
                         </div>
                         <h3 className="text-lg font-playfair font-bold text-gray-900 mb-2">Skincare</h3>
-                        <p className="text-gray-500 text-sm font-light leading-relaxed mb-6">Discover our carefully curated collection of premium skincare products, designed to nourish and protect your skin.</p>
-                        <Link href="/products?category=skincare" className="inline-block border-b border-black pb-1 text-xs tracking-[0.2em] uppercase font-semibold hover:text-gray-600 hover:border-gray-400 transition-all duration-300">
+                        <p className="text-gray-500 text-sm font-light leading-relaxed mb-6">Discover our Korean skincare rituals, crafted to help you glow with intention, feel 
+confident in your own skin, and choose a little more care, a little more softness, and a 
+little more you every day. </p>
+                        <Link href="/products?productType=suncream" className="inline-block border-b border-black pb-1 text-xs tracking-[0.2em] uppercase font-semibold hover:text-gray-600 hover:border-gray-400 transition-all duration-300">
                             Shop Now
                         </Link>
                     </motion.div>
@@ -289,9 +291,10 @@ export default function HomePage() {
                             <img src="https://res.cloudinary.com/dpdg462fb/image/upload/v1770184424/Group_69_n3ezsx.png" alt="Sunglasses Icon" className="w-full h-full object-contain" />
                         </div>
                         <h3 className="text-lg font-playfair font-bold text-gray-900 mb-2">Sunglasses</h3>
-                        <p className="text-gray-500 text-sm font-light leading-relaxed mb-6">Experience the power of Ayoosh Sunglasses.</p>
-                        <Link href="/products?category=sunglasses" className="inline-block border-b border-black pb-1 text-xs tracking-[0.2em] uppercase font-semibold hover:text-gray-600 hover:border-gray-400 transition-all duration-300">
-                            Shop Now
+                        <p className="text-gray-500 text-sm font-light leading-relaxed mb-6">Discover our statement sunglasses, designed to elevate your look, sharpen your 
+presence, and help you see the world with confidence, clarity, and Ayoosh energy. </p>
+                        <Link href="/products?productType=sunglasses" className="inline-block border-b border-black pb-1 text-xs tracking-[0.2em] uppercase font-semibold hover:text-gray-600 hover:border-gray-400 transition-all duration-300">
+                            PRE-ORDER NOW
                         </Link>
                     </motion.div>
 
@@ -306,7 +309,8 @@ export default function HomePage() {
                             <img src="https://res.cloudinary.com/dpdg462fb/image/upload/v1770184357/Group_71_csjhfp.png" alt="Foundation Icon" className="w-full h-full object-contain" />
                         </div>
                         <h3 className="text-lg font-playfair font-bold text-gray-900 mb-2">Ayoosh Foundation</h3>
-                        <p className="text-gray-500 text-sm font-light leading-relaxed mb-6">Supporting community initiatives and empowering women through beauty.</p>
+                        <p className="text-gray-500 text-sm font-light leading-relaxed mb-6">This is where Ayoosh becomes more than a brand, where we turn looking good, feeling 
+good, and doing good into real impact for communities who need it most.</p>
                         <Link href="/about" className="inline-block border-b border-black pb-1 text-xs tracking-[0.2em] uppercase font-semibold hover:text-gray-600 hover:border-gray-400 transition-all duration-300">
                             Learn More
                         </Link>

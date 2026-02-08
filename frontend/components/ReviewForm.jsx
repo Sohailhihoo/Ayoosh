@@ -2,11 +2,12 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { reviewAPI } from '@/lib/api';
 
 /**
  * ReviewForm - Component for users to submit their reviews
  */
-export default function ReviewForm() {
+export default function ReviewForm({ page = 'general' }) {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -28,18 +29,21 @@ export default function ReviewForm() {
         e.preventDefault();
         setIsSubmitting(true);
 
-        // Simulate API call
-        setTimeout(() => {
-            console.log('Review submitted:', formData);
+        try {
+            await reviewAPI.submit({ ...formData, page });
             setSubmitSuccess(true);
-            setIsSubmitting(false);
 
             // Reset form after 2 seconds
             setTimeout(() => {
                 setFormData({ name: '', email: '', rating: 5, review: '' });
                 setSubmitSuccess(false);
             }, 2000);
-        }, 1000);
+        } catch (error) {
+            console.error('Review submission failed:', error);
+            alert('Failed to submit review. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (

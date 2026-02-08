@@ -60,14 +60,11 @@ router.post('/register', async (req, res) => {
       success: true,
       message: 'Registration successful',
       data: {
-        user: {
-          id: user._id,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          role: user.role
-        }
-        // No token - session is in HttpOnly cookie
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role
       }
     });
   } catch (error) {

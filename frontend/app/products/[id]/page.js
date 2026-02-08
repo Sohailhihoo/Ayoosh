@@ -277,7 +277,7 @@ export default function ProductDetailPage() {
                 className="flex-1 btn-primary flex items-center justify-center gap-2 py-4 disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
                 <ShoppingBagIcon className="w-5 h-5" />
-                Add to Cart
+                {product.productType === 'sunglasses' ? 'Pre-Order' : 'Add to Cart'}
               </button>
               <button className="p-4 border-2 border-gray-200 rounded-lg hover:border-pink-300 transition-colors">
                 <HeartIcon className="w-6 h-6" />
@@ -315,8 +315,15 @@ export default function ProductDetailPage() {
           <div className="py-8">
             {activeTab === 'description' && (
               <div className="prose max-w-none">
-                <p className="text-gray-600">{product.description}</p>
-                
+                {product.description && product.description.includes('<') ? (
+                  <div
+                    className="product-description text-gray-600"
+                    dangerouslySetInnerHTML={{ __html: product.description }}
+                  />
+                ) : (
+                  <div className="text-gray-600 whitespace-pre-line">{product.description}</div>
+                )}
+
                 {product.ingredients?.length > 0 && (
                   <div className="mt-6">
                     <h3 className="font-semibold text-lg mb-2">Ingredients</h3>

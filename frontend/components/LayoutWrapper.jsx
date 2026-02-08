@@ -16,10 +16,10 @@ export default function LayoutWrapper({ children }) {
     const pathname = usePathname();
 
     // Pages that should hide the global navbar
-    const hideNavbar = pathname === '/beauty-center' || pathname === '/home' || pathname === '/landing';
+    const hideNavbar = pathname === '/home';
 
     // Pages that should hide the global footer
-    const hideFooter = pathname === '/beauty-center' || pathname === '/landing';
+    const hideFooter = false;
 
     // Pages that handle their own loading animation
     const hideLoadingScreen = false;

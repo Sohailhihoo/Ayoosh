@@ -66,6 +66,11 @@ export const cartAPI = {
   applyCoupon: (code) => api.post('/cart/coupon', { code }),
 };
 
+// Coupon APIs
+export const couponAPI = {
+  validate: (code, cartTotal) => api.post('/coupons/validate', { code, cartTotal }),
+};
+
 // Order APIs
 export const orderAPI = {
   create: (data) => api.post('/orders', data),
@@ -78,6 +83,12 @@ export const orderAPI = {
 export const paymentAPI = {
   createIntent: (orderId) => api.post('/payments/create-intent', { orderId }),
   confirm: (orderId, paymentIntentId) => api.post('/payments/confirm', { orderId, paymentIntentId }),
+};
+
+// Review APIs
+export const reviewAPI = {
+  submit: (data) => api.post('/reviews', data),
+  getApproved: (page) => api.get('/reviews', { params: { page } }),
 };
 
 // Admin APIs
