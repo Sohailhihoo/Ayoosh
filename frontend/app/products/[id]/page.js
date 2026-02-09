@@ -58,12 +58,12 @@ export default function ProductDetailPage() {
       setLoading(true);
       const { data } = await productAPI.getOne(id);
       setProduct(data.data);
-      
+
       // Fetch related products
       try {
-        const relatedRes = await productAPI.getAll({ 
+        const relatedRes = await productAPI.getAll({
           productType: data.data.productType,
-          limit: 4 
+          limit: 4
         });
         setRelatedProducts(
           relatedRes.data.data.products.filter(p => p._id !== id).slice(0, 4)
@@ -186,11 +186,10 @@ export default function ProductDetailPage() {
                     <StarIcon
                       key={i}
                       filled={i < Math.round(product.averageRating)}
-                      className={`w-5 h-5 ${
-                        i < Math.round(product.averageRating)
+                      className={`w-5 h-5 ${i < Math.round(product.averageRating)
                           ? 'text-yellow-400'
                           : 'text-gray-300'
-                      }`}
+                        }`}
                     />
                   ))}
                 </div>
@@ -203,7 +202,7 @@ export default function ProductDetailPage() {
             {/* Price */}
             <div className="flex items-center gap-4 mb-6">
               <span className="text-3xl font-bold text-gray-900">
-                R{currentPrice.toFixed(2)}
+                R{currentPrice.toFixed(2)} (Excl VAT)
               </span>
               {hasDiscount && (
                 <>
@@ -223,7 +222,7 @@ export default function ProductDetailPage() {
             {product.hasVariants && product.variants?.length > 0 && (
               <div className="mb-6">
                 <h3 className="font-medium mb-3">
-                  {product.variants[0].name}: 
+                  {product.variants[0].name}:
                   <span className="text-pink-600 ml-2">{selectedVariant?.value || 'Select'}</span>
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -231,11 +230,10 @@ export default function ProductDetailPage() {
                     <button
                       key={i}
                       onClick={() => setSelectedVariant(variant)}
-                      className={`px-4 py-2 border-2 rounded-lg transition-colors ${
-                        selectedVariant?.value === variant.value
+                      className={`px-4 py-2 border-2 rounded-lg transition-colors ${selectedVariant?.value === variant.value
                           ? 'border-pink-600 bg-pink-50 text-pink-600'
                           : 'border-gray-200 hover:border-pink-300'
-                      }`}
+                        }`}
                     >
                       {variant.value}
                     </button>
@@ -300,11 +298,10 @@ export default function ProductDetailPage() {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`pb-4 font-medium capitalize transition-colors ${
-                    activeTab === tab
+                  className={`pb-4 font-medium capitalize transition-colors ${activeTab === tab
                       ? 'text-pink-600 border-b-2 border-pink-600'
                       : 'text-gray-500 hover:text-gray-700'
-                  }`}
+                    }`}
                 >
                   {tab}
                 </button>

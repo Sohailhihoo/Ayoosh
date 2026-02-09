@@ -150,7 +150,7 @@ function FeaturedProductCard({ product, index }) {
                             )}
                         </h3>
                         <p className="text-xl font-semibold text-yellow-500 mt-1">
-                            R{product.price?.toFixed(2) || '0.00'}
+                            R{product.price?.toFixed(2) || '0.00'} (Excl VAT)
                         </p>
                     </div>
                     <div className="flex-shrink-0">

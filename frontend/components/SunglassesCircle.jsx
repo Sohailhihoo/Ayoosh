@@ -19,7 +19,7 @@ const sunglasses = [
         id: 1,
         productId: '69825dab2d01b1efb4370181',
         name: 'The Confidence',
-        price: 'R 2,450.00',
+        price: 'R 3,479.99 (Excl VAT)',
         tagline: 'Confidence',
         description: 'The Confidence frame is joy, worn boldly. A bright yellow sunglass full of warmth and energy. Fearless. Radiant. Alive. It turns heads and lifts moods. Feels like sunshine and movement. For women who enter fully, choose happiness, and let their presence speak first.',
         specs: ['Yellow Tint', 'UV400', 'Lightweight'],
@@ -30,7 +30,7 @@ const sunglasses = [
         id: 2,
         productId: '69825dab2d01b1efb4370187',
         name: 'The Focus',
-        price: 'R 2,550.00',
+        price: 'R 3,479.99 (Excl VAT)',
         tagline: 'Focus',
         description: 'The Focus is a grounded perspective. A rich coffee-brown frame with quiet strength. Calm. Stable. Effortless. Designed to feel present without overpowering. It anchors your look and sharpens your style. An everyday essential that adds depth, warmth, and polish.',
         specs: ['Brown Lens', 'Acetate', 'Anti-Glare'],
@@ -41,7 +41,7 @@ const sunglasses = [
         id: 3,
         productId: '69825dab2d01b1efb437018d',
         name: 'The Leadership',
-        price: 'R 2,350.00',
+        price: 'R 3,479.99 (Excl VAT)',
         tagline: 'Leadership',
         description: 'The Leadership is clarity from a motion perspective. A deep blue frame for focused minds. Thoughtful. Intelligent. Forward. It speaks without volume. Strong without force. Made for those who choose direction, trust their vision, and lead on their own terms.',
         specs: ['Blue Gradient', 'Polarized', 'Impact Resistant'],
@@ -52,7 +52,7 @@ const sunglasses = [
         id: 4,
         productId: '69825dab2d01b1efb4370192',
         name: 'The Roseview',
-        price: 'R 2,650.00',
+        price: 'R 3,479.99 (Excl VAT)',
         tagline: 'RoseView',
         description: "The Roseview in pink is soft power. A warm pink frame rooted in self-love. Gentle yet strong. Romantic. Healing. Feminine. It flatters the skin and softens every look. Made for those who lead with grace and glow without effort.See the world through rose-colored glasses. A feminine touch with a modern edge for the bold spirit.",
         specs: ['Pink Tint', 'Gold Frame', 'Adjustable'],
@@ -101,9 +101,12 @@ export default function SunglassesCircle() {
                             transition={{ duration: 0.2 }}
                             className="flex flex-col items-center"
                         >
-                            <h2 className="text-3xl md:text-4xl text-gray-900 mb-4" style={{ fontFamily: "'Tan Pearl', serif" }}>
+                            <h2 className="text-3xl md:text-4xl text-gray-900 mb-2" style={{ fontFamily: "'Tan Pearl', serif" }}>
                                 {activeProduct.name}
                             </h2>
+                            <p className="text-xl font-medium text-gray-900 mb-4">
+                                {activeProduct.price}
+                            </p>
                             <p className={`${montserrat.className} text-gray-600 text-base leading-[2] mb-8 font-normal max-w-sm`}>
                                 {activeProduct.description}
                             </p>
