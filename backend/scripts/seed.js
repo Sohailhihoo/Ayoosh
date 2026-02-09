@@ -195,11 +195,11 @@ const seedData = async () => {
         const adminUser = await User.create({
             firstName: 'Admin',
             lastName: 'User',
-            email: 'admin@beautystore.com',
+            email: 'admin@ayooshonline.com',
             password: 'admin123',
             role: 'admin'
         });
-        console.log('✅ Admin created: admin@beautystore.com / admin123');
+        console.log('✅ Admin created: admin@ayooshonline.com / admin123');
 
         // 3. Create Categories
         console.log('📂 Creating Categories...');

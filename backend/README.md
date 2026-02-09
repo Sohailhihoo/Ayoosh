@@ -62,7 +62,7 @@ npm run seed
 ```
 
 This creates:
-- Admin user: `admin@beautystore.com` / `admin123`
+- Admin user: `admin@ayooshonline.com` / `admin123`
 - Sample categories and products
 
 ### 5. Run the Server
