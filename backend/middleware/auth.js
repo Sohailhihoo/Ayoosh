@@ -11,11 +11,17 @@ exports.protect = async (req, res, next) => {
 
     // Check if cookie exists
     console.log('[Auth] Headers Cookie:', req.headers.cookie);
+    console.log('[Auth] Headers Authorization:', req.headers.authorization);
+
     if (req.cookies && req.cookies.sessionId) {
       sessionId = req.cookies.sessionId;
       console.log('[Auth] Found session cookie:', sessionId.substring(0, 6) + '...');
+    } else if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+      // Fallback: Check for Bearer token
+      sessionId = req.headers.authorization.split(' ')[1];
+      console.log('[Auth] Found Bearer token:', sessionId.substring(0, 6) + '...');
     } else {
-      console.log('[Auth] No session cookie found in req.cookies');
+      console.log('[Auth] No session cookie or Bearer token found');
     }
 
     // If no session ID found in cookies

@@ -31,6 +31,8 @@ const createSession = async (res, userId) => {
     maxAge: SESSION_EXPIRY * 1000,  // Convert to milliseconds
     path: '/' // Explicitly set path to root
   });
+
+  return sessionId; // Return token for fallback usage
 };
 
 // @route   POST /api/auth/register
@@ -59,11 +61,12 @@ router.post('/register', async (req, res) => {
     });
 
     // Create session and set cookie
-    await createSession(res, user._id);
+    const token = await createSession(res, user._id);
 
     res.status(201).json({
       success: true,
       message: 'Registration successful',
+      token, // Send token to client
       data: {
         id: user._id,
         firstName: user.firstName,
@@ -113,12 +116,13 @@ router.post('/login', async (req, res) => {
 
     // 4. Create Session (Redis + Cookie)
     // This calls your helper function to set the cookie and redis key
-    await createSession(res, user._id);
+    const token = await createSession(res, user._id);
 
     // 5. Response (Don't send password or internal fields)
     res.json({
       success: true,
       message: 'Login successful',
+      token, // Send token to client
       data: {
         id: user._id,
         firstName: user.firstName,

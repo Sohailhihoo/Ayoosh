@@ -28,6 +28,12 @@ api.interceptors.request.use((config) => {
       localStorage.setItem('guestSessionId', guestSessionId);
     }
     config.headers['X-Session-ID'] = guestSessionId;
+
+    // Fallback Auth Token (for when cookies fail)
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
   }
   return config;
 });

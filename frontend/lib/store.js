@@ -128,6 +128,11 @@ export const useAuthStore = create((set) => ({
       const { data } = await api.post('/auth/login', { email, password });
 
       if (data.success) {
+        // Fallback: Save token to localStorage for environments where cookies fail
+        if (typeof window !== 'undefined' && data.token) {
+          localStorage.setItem('authToken', data.token);
+        }
+
         set({
           user: data.data,
           isAuthenticated: true,
@@ -150,6 +155,11 @@ export const useAuthStore = create((set) => ({
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
+      // Clear token
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('authToken');
+      }
+
       // Always clear state, even if API call fails
       set({
         user: null,
