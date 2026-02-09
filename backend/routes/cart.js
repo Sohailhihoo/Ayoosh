@@ -274,8 +274,8 @@ router.post('/coupon', optionalAuth, async (req, res) => {
     }
 
     cart.couponCode = code.toUpperCase();
-    cart.discount = coupon.discount;
-    cart.discountType = coupon.type;
+    cart.discount = coupon.amount;
+    cart.discountType = coupon.discountType;
     await cart.save();
 
     res.json({

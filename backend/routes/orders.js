@@ -142,7 +142,8 @@ router.post('/', optionalAuth, async (req, res) => {
     billingAddress,
     paymentMethod,
     shippingMethod = 'standard',
-    customerNote
+    customerNote,
+    couponCode: bodyCouponCode
   } = req.body;
 
   const userId = req.user?._id;
@@ -244,9 +245,9 @@ router.post('/', optionalAuth, async (req, res) => {
       phone: req.user.phone
     } : customerDetails;
 
-    // Validate Coupon if present
+    // Validate Coupon if present (check cart first, fallback to request body)
     let discountAmount = 0;
-    let couponCode = cart.couponCode;
+    let couponCode = cart.couponCode || bodyCouponCode;
 
     if (couponCode) {
       const Coupon = require('../models/Coupon');
