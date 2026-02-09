@@ -91,11 +91,11 @@ export default function CheckoutForm() {
 
     // Calculate shipping cost based on method
     const shippingCosts = {
-        standard: 75.00
+        standard: 0.00
     };
 
     // Calculate dynamic values
-    const currentShippingCost = shippingCosts[formData.shippingMethod] || 75.00;
+    const currentShippingCost = 0.00;
 
     const calculateDiscount = () => {
         if (!coupon) return 0;
@@ -225,7 +225,7 @@ export default function CheckoutForm() {
         }
     };
 
-    const shipping = shippingCosts[formData.shippingMethod] || 75.00;
+    const shipping = 0.00;
     const total = subtotal + shipping;
 
     if (pageLoading) {
@@ -400,41 +400,7 @@ export default function CheckoutForm() {
                                 </div>
                             </div>
 
-                            {/* Shipping Method */}
-                            <div className="bg-white rounded-xl p-6 shadow-sm">
-                                <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                                    <span className="w-8 h-8 bg-pink-100 text-pink-600 rounded-full flex items-center justify-center text-sm font-bold">3</span>
-                                    Shipping Method
-                                </h2>
-                                <div className="space-y-3">
-                                    {[{ id: 'standard', name: 'Standard Shipping', time: '10-15 business days', price: 75.00 }
-                                    ].map(method => (
-                                        <label
-                                            key={method.id}
-                                            className={`flex items-center justify-between p-4 border rounded-lg cursor-pointer transition-colors ${formData.shippingMethod === method.id
-                                                ? 'border-pink-500 bg-pink-50'
-                                                : 'border-gray-200 hover:border-pink-300'
-                                                }`}
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <input
-                                                    type="radio"
-                                                    name="shippingMethod"
-                                                    value={method.id}
-                                                    checked={formData.shippingMethod === method.id}
-                                                    onChange={handleChange}
-                                                    className="text-pink-600 focus:ring-pink-500"
-                                                />
-                                                <div>
-                                                    <p className="font-medium">{method.name}</p>
-                                                    <p className="text-sm text-gray-500">{method.time}</p>
-                                                </div>
-                                            </div>
-                                            <span className="font-semibold">R{method.price.toFixed(2)}</span>
-                                        </label>
-                                    ))}
-                                </div>
-                            </div>
+
 
                             {/* Order Notes */}
                             <div className="bg-white rounded-xl p-6 shadow-sm">

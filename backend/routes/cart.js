@@ -7,7 +7,7 @@ const { protect, optionalAuth } = require('../middleware/auth');
 // Helper to get or create cart
 const getOrCreateCart = async (userId, sessionId) => {
   let cart;
-  
+
   if (userId) {
     cart = await Cart.findOne({ user: userId }).populate('items.product');
     if (!cart) {
@@ -19,7 +19,7 @@ const getOrCreateCart = async (userId, sessionId) => {
       cart = await Cart.create({ sessionId, items: [] });
     }
   }
-  
+
   return cart;
 };
 
@@ -114,7 +114,7 @@ router.post('/add', optionalAuth, async (req, res) => {
 
     const cart = await getOrCreateCart(userId, sessionId);
     await cart.addItem(productId, quantity, variant, price);
-    
+
     // Repopulate after update
     await cart.populate('items.product');
 
@@ -146,7 +146,7 @@ router.put('/item/:itemId', optionalAuth, async (req, res) => {
     const sessionId = req.headers['x-session-id'];
 
     const cart = await getOrCreateCart(userId, sessionId);
-    
+
     const item = cart.items.id(req.params.itemId);
     if (!item) {
       return res.status(404).json({
@@ -260,11 +260,12 @@ router.post('/coupon', optionalAuth, async (req, res) => {
     const validCoupons = {
       'WELCOME10': { discount: 10, type: 'percentage' },
       'SAVE20': { discount: 20, type: 'fixed' },
-      'BEAUTY15': { discount: 15, type: 'percentage' }
+      'BEAUTY15': { discount: 15, type: 'percentage' },
+      'AYOOSH50': { discount: 10, type: 'percentage' }
     };
 
     const coupon = validCoupons[code.toUpperCase()];
-    
+
     if (!coupon) {
       return res.status(400).json({
         success: false,
@@ -304,7 +305,7 @@ router.delete('/coupon', optionalAuth, async (req, res) => {
     const sessionId = req.headers['x-session-id'];
 
     const cart = await getOrCreateCart(userId, sessionId);
-    
+
     cart.couponCode = null;
     cart.discount = 0;
     await cart.save();

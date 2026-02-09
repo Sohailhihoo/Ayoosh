@@ -55,7 +55,7 @@ export default function BeautyPage() {
             _id: '69825dab2d01b1efb437017c',
             name: 'Centella Cica Glow Sun Cream',
             variant: '50ml Tube',
-            price: 421.99,
+            price: 486.99,
             image: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769715388/Sun_Tube_cmxezs.png',
             rating: 5.0
         },
@@ -63,7 +63,7 @@ export default function BeautyPage() {
             _id: '69825dab2d01b1efb4370176',
             name: 'Centella Cica Glow Sun Cream',
             variant: '10 x 5ml Sachet',
-            price: 412.99,
+            price: 477.40,
             image: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769748802/Pouch_and_Sachet_bjidrn.png',
             rating: 5.0,
             imageScale: 1.4

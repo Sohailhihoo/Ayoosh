@@ -187,8 +187,8 @@ export default function ProductDetailPage() {
                       key={i}
                       filled={i < Math.round(product.averageRating)}
                       className={`w-5 h-5 ${i < Math.round(product.averageRating)
-                          ? 'text-yellow-400'
-                          : 'text-gray-300'
+                        ? 'text-yellow-400'
+                        : 'text-gray-300'
                         }`}
                     />
                   ))}
@@ -202,7 +202,7 @@ export default function ProductDetailPage() {
             {/* Price */}
             <div className="flex items-center gap-4 mb-6">
               <span className="text-3xl font-bold text-gray-900">
-                R{currentPrice.toFixed(2)} (Excl VAT)
+                R{currentPrice.toFixed(2)} (Incl Shipping, Excl VAT)
               </span>
               {hasDiscount && (
                 <>
@@ -231,8 +231,8 @@ export default function ProductDetailPage() {
                       key={i}
                       onClick={() => setSelectedVariant(variant)}
                       className={`px-4 py-2 border-2 rounded-lg transition-colors ${selectedVariant?.value === variant.value
-                          ? 'border-pink-600 bg-pink-50 text-pink-600'
-                          : 'border-gray-200 hover:border-pink-300'
+                        ? 'border-pink-600 bg-pink-50 text-pink-600'
+                        : 'border-gray-200 hover:border-pink-300'
                         }`}
                     >
                       {variant.value}
@@ -299,8 +299,8 @@ export default function ProductDetailPage() {
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`pb-4 font-medium capitalize transition-colors ${activeTab === tab
-                      ? 'text-pink-600 border-b-2 border-pink-600'
-                      : 'text-gray-500 hover:text-gray-700'
+                    ? 'text-pink-600 border-b-2 border-pink-600'
+                    : 'text-gray-500 hover:text-gray-700'
                     }`}
                 >
                   {tab}
