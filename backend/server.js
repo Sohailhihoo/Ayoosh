@@ -26,7 +26,8 @@ const reviewRoutes = require('./routes/reviews');
 const app = express();
 
 // Trust proxy is required for secure cookies on Railway (behind load balancer)
-app.set('trust proxy', 1);
+// Use 'true' to trust the left-most IP in X-Forwarded-* headers, essential for deep proxy chains
+app.set('trust proxy', true);
 
 // Security Headers with Helmet
 app.use(helmet({

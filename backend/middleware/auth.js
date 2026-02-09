@@ -10,8 +10,12 @@ exports.protect = async (req, res, next) => {
     let sessionId;
 
     // Check if cookie exists
+    console.log('[Auth] Headers Cookie:', req.headers.cookie);
     if (req.cookies && req.cookies.sessionId) {
       sessionId = req.cookies.sessionId;
+      console.log('[Auth] Found session cookie:', sessionId.substring(0, 6) + '...');
+    } else {
+      console.log('[Auth] No session cookie found in req.cookies');
     }
 
     // If no session ID found in cookies
@@ -22,7 +26,12 @@ exports.protect = async (req, res, next) => {
     // 1. Check Redis for the session
     const userId = await redisClient.get(`session:${sessionId}`);
 
+    // DEBUG LOGGING
+    console.log(`[Auth] Check - SessionID: ${sessionId ? sessionId.substring(0, 6) + '...' : 'null'}`);
+    console.log(`[Auth] Redis Result for session:${sessionId ? sessionId.substring(0, 6) + '...' : 'null'} -> ${userId}`);
+
     if (!userId) {
+      console.log('[Auth] Session NOT found in Redis or Expired');
       // Session exists in cookie but NOT in Redis (Expired or Revoked)
       // Clear the invalid cookie so the browser stops sending it
       res.clearCookie('sessionId');
@@ -33,7 +42,11 @@ exports.protect = async (req, res, next) => {
     // We attach the user to the request object so controllers can use it
     const user = await User.findById(userId).select('-password');
 
+    // DEBUG LOGGING
+    console.log(`[Auth] User Lookup: ${user ? user.email : 'NOT FOUND'} (Role: ${user ? user.role : 'N/A'})`);
+
     if (!user) {
+      console.log('[Auth] User not found in DB');
       // Edge case: User was deleted from DB while session was active
       await redisClient.del(`session:${sessionId}`);
       return res.status(401).json({ success: false, message: 'User not found' });
