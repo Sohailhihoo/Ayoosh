@@ -80,7 +80,7 @@ export default function AdminOrders() {
             {/* Header */}
             <div>
                 <h1 className="text-3xl font-bold text-gray-900">Orders</h1>
-                <p className="text-gray-600 mt-1">Manage customer orders and track shipments. Click any order to view full details.</p>
+                <p className="text-gray-600 mt-1">Manage and view customer orders. Click any order row to expand full details.</p>
             </div>
 
             {/* Filter */}
