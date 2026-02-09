@@ -27,13 +27,13 @@ router.post('/subscribe', async (req, res) => {
                 return res.status(200).json({
                     success: true,
                     message: 'Welcome back! You have successfully re-subscribed.',
-                    coupon: 'AYOOSH20'
+                    coupon: 'AYOOSH50'
                 });
             }
             return res.status(200).json({ // Return 200 even if already subscribed to avoid exposing user status essentially
                 success: true,
                 message: 'You are already subscribed!',
-                coupon: 'AYOOSH20'
+                coupon: 'AYOOSH50'
             });
         }
 
@@ -43,7 +43,7 @@ router.post('/subscribe', async (req, res) => {
         res.status(201).json({
             success: true,
             message: 'Thank you for subscribing!',
-            coupon: 'AYOOSH20' // Hardcoded coupon code for now
+            coupon: 'AYOOSH50' // Hardcoded coupon code for now
         });
     } catch (error) {
         // Duplicate key error (race condition)
@@ -51,7 +51,7 @@ router.post('/subscribe', async (req, res) => {
             return res.status(200).json({
                 success: true,
                 message: 'You are already subscribed!',
-                coupon: 'AYOOSH20'
+                coupon: 'AYOOSH50'
             });
         }
         res.status(500).json({

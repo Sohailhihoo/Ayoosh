@@ -255,21 +255,21 @@ router.post('/coupon', optionalAuth, async (req, res) => {
 
     const cart = await getOrCreateCart(userId, sessionId);
 
-    // TODO: Implement coupon validation logic
-    // For now, just a placeholder with sample coupons
-    const validCoupons = {
-      'WELCOME10': { discount: 10, type: 'percentage' },
-      'SAVE20': { discount: 20, type: 'fixed' },
-      'BEAUTY15': { discount: 15, type: 'percentage' },
-      'AYOOSH50': { discount: 10, type: 'percentage' }
-    };
-
-    const coupon = validCoupons[code.toUpperCase()];
+    // Verify coupon against database
+    const Coupon = require('../models/Coupon');
+    const coupon = await Coupon.findOne({ code: code.toUpperCase(), isActive: true });
 
     if (!coupon) {
       return res.status(400).json({
         success: false,
         message: 'Invalid coupon code'
+      });
+    }
+
+    if (!coupon.isValid()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Coupon is expired or usage limit reached'
       });
     }
 
