@@ -109,10 +109,10 @@ export default function NewsletterPopup() {
                         EXCLUSIVE OFFER
                     </span>
                     <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
-                        FREE DELIVERY
+                        10% DISCOUNT
                     </h2>
                     <p className="text-white/90 text-lg">
-                        For the First 50 Customers
+                        On AYOOSH50
                     </p>
                 </div>
 
@@ -121,7 +121,7 @@ export default function NewsletterPopup() {
                     {!isSubmitted ? (
                         <>
                             <p className="text-gray-600 text-center mb-6 leading-relaxed">
-                                Get free delivery for the first 50 customers by applying code{' '}
+                                Get 10% discount on your first order by applying code{' '}
                                 <span className="font-bold text-[#4a4a4a]">AYOOSH50</span> at checkout.
                                 Subscribe to be the first to know!
                             </p>
@@ -162,7 +162,7 @@ export default function NewsletterPopup() {
                                 Welcome to the Family!
                             </h3>
                             <p className="text-gray-600 mb-2">
-                                Use code <span className="font-bold text-[#4a4a4a]">AYOOSH50</span> at checkout for free delivery.
+                                Use code <span className="font-bold text-[#4a4a4a]">AYOOSH50</span> at checkout for 10% discount.
                             </p>
                         </div>
                     )}
