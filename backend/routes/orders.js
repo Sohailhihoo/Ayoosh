@@ -227,14 +227,13 @@ router.post('/', optionalAuth, async (req, res) => {
     }
 
     // Calculate shipping cost based on method
+    // Calculate shipping cost based on method
     const shippingCosts = {
-      standard: 5.99,
-      express: 12.99,
-      overnight: 24.99,
+      standard: 75.00,
       pickup: 0
     };
 
-    const shippingCost = shippingCosts[shippingMethod] || 5.99;
+    const shippingCost = shippingCosts[shippingMethod] || 75.00;
     const taxRate = 0.08;
     const tax = Math.round(cart.subtotal * taxRate * 100) / 100;
 

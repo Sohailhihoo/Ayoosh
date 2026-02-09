@@ -98,7 +98,7 @@ const orderSchema = new mongoose.Schema({
   // Shipping
   shippingMethod: {
     type: String,
-    enum: ['standard', 'express', 'overnight', 'pickup'],
+    enum: ['standard', 'pickup'],
     default: 'standard'
   },
   trackingNumber: String,

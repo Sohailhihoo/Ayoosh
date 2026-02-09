@@ -92,13 +92,21 @@ export default function CartPage() {
               <div key={item._id} className="bg-white rounded-xl p-6 shadow-sm">
                 <div className="flex gap-6">
                   {/* Product Image */}
-                  <div className="w-24 h-24 bg-gradient-to-br from-pink-100 to-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <span className="text-3xl">
-                      {item.product?.productType === 'suncream' && '☀️'}
-                      {item.product?.productType === 'sunglasses' && '🕶️'}
-                      {item.product?.productType === 'accessories' && '👜'}
-                      {!item.product?.productType && '📦'}
-                    </span>
+                  <div className="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    {item.product?.images?.[0]?.url ? (
+                      <img
+                        src={item.product.images[0].url}
+                        alt={item.product?.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-3xl">
+                        {item.product?.productType === 'suncream' && '☀️'}
+                        {item.product?.productType === 'sunglasses' && '🕶️'}
+                        {item.product?.productType === 'accessories' && '👜'}
+                        {!item.product?.productType && '📦'}
+                      </span>
+                    )}
                   </div>
 
                   {/* Product Details */}

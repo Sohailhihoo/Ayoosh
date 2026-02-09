@@ -91,12 +91,11 @@ export default function CheckoutForm() {
 
     // Calculate shipping cost based on method
     const shippingCosts = {
-        standard: 10.00,
-        express: 12.00
+        standard: 75.00
     };
 
     // Calculate dynamic values
-    const currentShippingCost = shippingCosts[formData.shippingMethod] || 10.00;
+    const currentShippingCost = shippingCosts[formData.shippingMethod] || 75.00;
 
     const calculateDiscount = () => {
         if (!coupon) return 0;
@@ -226,7 +225,7 @@ export default function CheckoutForm() {
         }
     };
 
-    const shipping = shippingCosts[formData.shippingMethod] || 10.00;
+    const shipping = shippingCosts[formData.shippingMethod] || 75.00;
     const total = subtotal + shipping;
 
     if (pageLoading) {
@@ -408,9 +407,7 @@ export default function CheckoutForm() {
                                     Shipping Method
                                 </h2>
                                 <div className="space-y-3">
-                                    {[
-                                        { id: 'standard', name: 'Standard Shipping', time: '5-7 business days', price: 10.00 },
-                                        { id: 'express', name: 'Express Shipping', time: '2-3 business days', price: 12.00 }
+                                    {[{ id: 'standard', name: 'Standard Shipping', time: '10-15 business days', price: 75.00 }
                                     ].map(method => (
                                         <label
                                             key={method.id}
@@ -462,8 +459,16 @@ export default function CheckoutForm() {
                                 <div className="space-y-4 mb-6 max-h-64 overflow-y-auto">
                                     {items.map(item => (
                                         <div key={item._id} className="flex gap-3">
-                                            <div className="w-16 h-16 bg-gradient-to-br from-pink-100 to-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                                <span className="text-xl">📦</span>
+                                            <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
+                                                {item.product?.images?.[0]?.url ? (
+                                                    <img
+                                                        src={item.product.images[0].url}
+                                                        alt={item.product.name}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <span className="text-xl">📦</span>
+                                                )}
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <p className="font-medium text-sm truncate">{item.product?.name}</p>
