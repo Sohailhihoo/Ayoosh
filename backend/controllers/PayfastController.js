@@ -47,35 +47,54 @@ const generateSignature = (data, passphrase = null) => {
 };
 
 /**
- * Generate MD5 signature for ITN verification (INCOMING)
- * Uses ALPHABETICAL order
+ * Build ITN param string from raw POST body (most reliable method).
+ * Strips the signature param and returns the string ready for passphrase + hashing.
  */
-const generateITNSignature = (data, passphrase = null) => {
-    let pfOutput = '';
+const buildITNParamString = (rawBody) => {
+    return rawBody
+        .split('&')
+        .filter(pair => !pair.startsWith('signature='))
+        .join('&');
+};
 
-    // Sort keys alphabetically
-    const sortedKeys = Object.keys(data).sort();
+/**
+ * Verify ITN signature from PayFast.
+ * Uses the raw POST body to preserve exact field order and encoding.
+ * Falls back to rebuilding from parsed data in insertion order (for...in).
+ */
+const verifyITNSignature = (receivedSignature, rawBody, pfData, passphrase = null) => {
+    let pfParamString;
 
-    for (const key of sortedKeys) {
-        // CRITICAL FIX: Never include the signature in the hash calculation
-        if (key === 'signature') continue;
-
-        if (data[key] !== '' && data[key] !== null && data[key] !== undefined) {
-            let value = String(data[key]).trim();
-            // PayFast ITN specific encoding: spaces are +
-            value = encodeURIComponent(value).replace(/%20/g, '+');
-            pfOutput += `${key}=${value}&`;
+    if (rawBody) {
+        // PRIMARY: Use raw body - preserves exact order & encoding from PayFast
+        pfParamString = buildITNParamString(rawBody);
+    } else {
+        // FALLBACK: Rebuild from parsed data in insertion order (for...in)
+        let pfOutput = '';
+        for (const key in pfData) {
+            if (key === 'signature') continue;
+            if (Object.prototype.hasOwnProperty.call(pfData, key) && pfData[key] !== '') {
+                pfOutput += `${key}=${encodeURIComponent(String(pfData[key]).trim()).replace(/%20/g, '+')}&`;
+            }
         }
+        pfParamString = pfOutput.slice(0, -1);
     }
 
-    let getString = pfOutput.slice(0, -1); // Remove last &
-
+    // Append passphrase
     if (passphrase && passphrase.trim() !== '') {
-        const pfPass = encodeURIComponent(passphrase.trim()).replace(/%20/g, '+');
-        getString += `&passphrase=${pfPass}`;
+        pfParamString += `&passphrase=${encodeURIComponent(passphrase.trim()).replace(/%20/g, '+')}`;
     }
 
-    return crypto.createHash('md5').update(getString).digest('hex');
+    const expectedSignature = crypto.createHash('md5').update(pfParamString).digest('hex');
+
+    if (receivedSignature !== expectedSignature) {
+        console.error('ITN Signature Mismatch!');
+        console.error(`Expected: ${expectedSignature}`);
+        console.error(`Received: ${receivedSignature}`);
+        return false;
+    }
+
+    return true;
 };
 
 // @desc    Initiate PayFast payment
@@ -185,20 +204,18 @@ const handleITN = async (req, res) => {
         console.log('PayFast ITN Received:', pfData);
 
         // --- SECURITY CHECK 1: SIGNATURE ---
-        const receivedSignature = pfData.signature;
-        const dataWithoutSignature = { ...pfData };
-        delete dataWithoutSignature.signature; // Remove signature to verify hash
-
         const passphrase = process.env.PAYFAST_SANDBOX === 'true'
             ? process.env.PAYFAST_SANDBOX_PASSPHRASE
             : process.env.PAYFAST_PASSPHRASE;
 
-        const expectedSignature = generateITNSignature(dataWithoutSignature, passphrase);
+        const signatureValid = verifyITNSignature(
+            pfData.signature,
+            req.rawBody,  // Raw POST body captured in route middleware
+            pfData,
+            passphrase
+        );
 
-        if (receivedSignature !== expectedSignature) {
-            console.error('ITN Signature Mismatch!');
-            console.error(`Expected: ${expectedSignature}`);
-            console.error(`Received: ${receivedSignature}`);
+        if (!signatureValid) {
             // Return 200 to stop retry loops on fraud attempts
             return res.status(200).send('');
         }
