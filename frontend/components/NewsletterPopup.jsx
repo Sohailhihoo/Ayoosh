@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import api from '@/lib/api';
 
 // Inline SVG icon to avoid react-icons module issues
 const XIcon = ({ className }) => (
@@ -45,15 +46,8 @@ export default function NewsletterPopup() {
         setIsSubmitting(true);
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/newsletter/subscribe`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email }),
-            });
-
-            const data = await response.json();
+            const response = await api.post('/newsletter/subscribe', { email });
+            const data = response.data;
 
             if (data.success) {
                 setIsSubmitted(true);
