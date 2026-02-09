@@ -15,14 +15,19 @@ const createSession = async (res, userId) => {
   // Generate a random Session ID (32 bytes = 64 hex characters)
   const sessionId = crypto.randomBytes(32).toString('hex');
 
-  // Store in Redis: key = session:{sessionId}, value = userId, expiry = 1 hour
+  // Store in Redis: key = session:{sessionId}, value = userId, expiry = 7 days
   await redisClient.setEx(`session:${sessionId}`, SESSION_EXPIRY, userId.toString());
+
+  // Determine if we are in a secure environment (Production or Railway)
+  const isProduction = process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT_NAME;
+
+  console.log(`Creating session. Env: ${process.env.NODE_ENV}, Railway: ${process.env.RAILWAY_ENVIRONMENT_NAME}, Secure: ${isProduction}`);
 
   // Send session ID as HttpOnly Cookie
   res.cookie('sessionId', sessionId, {
     httpOnly: true,           // Prevents JavaScript access (XSS protection)
-    secure: process.env.NODE_ENV === 'production',  // HTTPS only in production
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'lax' is better for localhost than 'none' unless https
+    secure: isProduction,     // HTTPS only in production/Railway
+    sameSite: isProduction ? 'none' : 'lax', // 'none' required for cross-site (backend on different domain)
     maxAge: SESSION_EXPIRY * 1000,  // Convert to milliseconds
     path: '/' // Explicitly set path to root
   });
