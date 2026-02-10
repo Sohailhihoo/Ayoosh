@@ -218,7 +218,7 @@ router.post('/', optionalAuth, async (req, res) => {
       orderItems.push({
         product: product._id,
         name: product.name,
-        image: product.images?.[0] || null,
+        image: product.images?.[0]?.url || product.images?.[0] || null,
         sku: item.variant?.sku || product.sku,
         variant: item.variant,
         quantity: item.quantity,

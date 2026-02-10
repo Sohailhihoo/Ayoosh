@@ -2,7 +2,7 @@ import { Inter, Playfair_Display, Montserrat } from 'next/font/google';
 import './globals.css';
 import LayoutWrapper from '@/components/LayoutWrapper';
 import QueryProvider from '@/components/QueryProvider';
-import NewsletterPopup from '@/components/NewsletterPopup';
+// import NewsletterPopup from '@/components/NewsletterPopup';
 import { Toaster } from 'react-hot-toast';
 
 // Font configurations
@@ -133,7 +133,7 @@ export default function RootLayout({ children }) {
             }}
           />
           <LayoutWrapper>
-            <NewsletterPopup />
+            {/* <NewsletterPopup /> */}
             {children}
           </LayoutWrapper>
         </QueryProvider>

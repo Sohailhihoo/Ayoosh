@@ -169,8 +169,10 @@ export default function AdminOrders() {
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                     {format(new Date(order.createdAt), 'MMM dd, yyyy')}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                    {order.items?.length || 0} items
+                                                <td className="px-6 py-4 text-sm text-gray-500 max-w-[200px]">
+                                                    <div className="truncate">
+                                                        {order.items?.map(i => `${i.name} x${i.quantity}`).join(', ') || 'No items'}
+                                                    </div>
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${PAYMENT_COLORS[order.paymentStatus] || 'bg-yellow-100 text-yellow-800'}`}>
