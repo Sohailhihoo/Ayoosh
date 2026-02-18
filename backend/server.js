@@ -135,7 +135,13 @@ app.use(cors({
 
 app.use(morgan('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({
+  extended: true,
+  verify: (req, res, buf) => {
+    // Capture raw body for PayFast ITN signature verification
+    req.rawBody = buf.toString();
+  }
+}));
 app.use(cookieParser());
 
 // Database connection
