@@ -5,9 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useCartStore } from '@/lib/store';
 import { verifyPayFastPayment } from '@/lib/payfast';
-import { verifyPayGatePayment } from '@/lib/paygate';
 
-// Inline SVG icons to avoid react-icons module issues
 const CheckIcon = ({ className }) => (
   <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -43,7 +41,6 @@ function OrderConfirmationContent() {
     const orderId = searchParams.get('orderId');
     const orderNumber = searchParams.get('orderNumber');
     const status = searchParams.get('status');
-    const paymentMethod = searchParams.get('paymentMethod');
 
     useEffect(() => {
         let attempts = 0;
@@ -51,7 +48,7 @@ function OrderConfirmationContent() {
         let pollTimer;
 
         const verifyOrder = async () => {
-            // COD Logic: If no orderId, just show pending success
+            // COD Logic: no orderId, just show pending success
             if (orderNumber && !orderId) {
                 setOrder({ orderNumber, paymentStatus: 'pending', status: 'pending' });
                 clearCart();
@@ -66,22 +63,17 @@ function OrderConfirmationContent() {
             }
 
             try {
-                let result;
-                // Check status via backend
-                result = await verifyPayFastPayment(orderId);
+                const result = await verifyPayFastPayment(orderId);
 
                 if (result.success) {
                     setOrder(result.data);
-
                     if (result.data.paymentStatus === 'paid') {
-                        // Payment confirmed!
                         clearCart();
                         setLoading(false);
-                        return; // Stop polling
+                        return;
                     } else if (result.data.paymentStatus === 'failed') {
-                        // Payment failed
                         setLoading(false);
-                        return; // Stop polling
+                        return;
                     }
                 } else {
                     if (status === 'success') {
@@ -101,18 +93,15 @@ function OrderConfirmationContent() {
                 setLoading(false);
             }
 
-            // Continue polling if pending and attempts remaining
             attempts++;
             if (attempts < maxAttempts) {
-                pollTimer = setTimeout(verifyOrder, 3000); // Poll every 3 seconds
+                pollTimer = setTimeout(verifyOrder, 3000);
             }
         };
 
         verifyOrder();
-
-        // Cleanup timer on unmount
         return () => clearTimeout(pollTimer);
-    }, [orderId, orderNumber, status, paymentMethod, clearCart]);
+    }, [orderId, orderNumber, status, clearCart]);
 
     if (loading) {
         return (
@@ -134,15 +123,12 @@ function OrderConfirmationContent() {
                     </div>
                     <h1 className="text-2xl font-bold text-gray-900 mb-2">Something went wrong</h1>
                     <p className="text-gray-600 mb-6">{error}</p>
-                    <Link href="/" className="text-pink-600 hover:underline">
-                        Return to Home
-                    </Link>
+                    <Link href="/" className="text-pink-600 hover:underline">Return to Home</Link>
                 </div>
             </div>
         );
     }
 
-    // Payment was cancelled
     if (status === 'cancelled' || (order && order.paymentStatus === 'failed')) {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -153,123 +139,138 @@ function OrderConfirmationContent() {
                     <h1 className="text-2xl font-bold text-gray-900 mb-2">Payment Cancelled</h1>
                     <p className="text-gray-600 mb-6">Your payment was cancelled. Your order has not been processed.</p>
                     <div className="space-y-3">
-                        <Link
-                            href="/checkout"
-                            className="block w-full bg-pink-600 text-white px-6 py-3 rounded-lg hover:bg-pink-700 transition-colors"
-                        >
-                            Try Again
-                        </Link>
-                        <Link
-                            href="/"
-                            className="block w-full border border-gray-300 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors"
-                        >
-                            Return to Home
-                        </Link>
+                        <Link href="/checkout" className="block w-full bg-pink-600 text-white px-6 py-3 rounded-lg hover:bg-pink-700 transition-colors">Try Again</Link>
+                        <Link href="/" className="block w-full border border-gray-300 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors">Return to Home</Link>
                     </div>
                 </div>
             </div>
         );
     }
 
-    // Determine status display
     const isPaid = order?.paymentStatus === 'paid';
-    const isPending = order?.paymentStatus === 'pending' || order?.paymentStatus === 'processing';
 
-    // Success page
     return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12">
-            <div className="text-center max-w-lg mx-auto p-8 bg-white rounded-xl shadow-lg">
-                {/* Status Icon */}
-                <div className={`w-20 h-20 ${isPaid ? 'bg-green-100' : 'bg-blue-100'} rounded-full flex items-center justify-center mx-auto mb-6`}>
-                    {isPaid ? (
-                        <CheckIcon className="w-10 h-10 text-green-600" />
-                    ) : (
-                        <ClockIcon className="w-10 h-10 text-blue-600" />
-                    )}
-                </div>
+        <div className="min-h-screen bg-gray-50 py-12">
+            <div className="max-w-xl mx-auto px-4">
+                <div className="bg-white rounded-xl shadow-lg overflow-hidden">
 
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                    {isPaid ? 'Thank You!' : 'Order Received!'}
-                </h1>
-                <p className="text-gray-600 mb-6">
-                    {isPaid
-                        ? 'Your payment was successful and your order is confirmed.'
-                        : 'Your order has been placed and is being processed.'
-                    }
-                </p>
+                    {/* Header */}
+                    <div className={`p-8 text-center ${isPaid ? 'bg-green-50' : 'bg-blue-50'}`}>
+                        <div className={`w-20 h-20 ${isPaid ? 'bg-green-100' : 'bg-blue-100'} rounded-full flex items-center justify-center mx-auto mb-4`}>
+                            {isPaid
+                                ? <CheckIcon className="w-10 h-10 text-green-600" />
+                                : <ClockIcon className="w-10 h-10 text-blue-600" />
+                            }
+                        </div>
+                        <h1 className="text-3xl font-bold text-gray-900 mb-1">
+                            {isPaid ? 'Thank You!' : 'Order Received!'}
+                        </h1>
+                        <p className="text-gray-600">
+                            {isPaid
+                                ? 'Your payment was successful and your order is confirmed.'
+                                : 'Your order has been placed and is being processed.'
+                            }
+                        </p>
+                        {(order?.orderNumber || orderNumber) && (
+                            <p className="mt-3 text-sm font-mono font-semibold text-gray-700 bg-white inline-block px-3 py-1 rounded-full border">
+                                {order?.orderNumber || orderNumber}
+                            </p>
+                        )}
+                    </div>
 
-                {/* Order Details */}
-                {order && (
-                    <div className="bg-gray-50 rounded-lg p-6 mb-6 text-left">
-                        <h2 className="font-semibold mb-4 text-lg">Order Details</h2>
-                        <div className="space-y-3">
-                            {(order.orderNumber || orderNumber) && (
-                                <div className="flex justify-between">
-                                    <span className="text-gray-600">Order Number:</span>
-                                    <span className="font-mono font-semibold">{order.orderNumber || orderNumber}</span>
+                    <div className="p-6 space-y-6">
+
+                        {/* Order Items */}
+                        {order?.items?.length > 0 && (
+                            <div>
+                                <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Items Ordered</h2>
+                                <div className="space-y-3">
+                                    {order.items.map((item, idx) => (
+                                        <div key={idx} className="flex items-center gap-3">
+                                            {item.image && typeof item.image === 'string' && item.image.startsWith('http') && (
+                                                <img src={item.image} alt={item.name} className="w-12 h-12 rounded-lg object-cover bg-gray-100 flex-shrink-0" />
+                                            )}
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-sm font-medium text-gray-900 truncate">{item.name}</p>
+                                                <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+                                            </div>
+                                            <p className="text-sm font-medium text-gray-900 flex-shrink-0">
+                                                R{(item.price * item.quantity).toFixed(2)}
+                                            </p>
+                                        </div>
+                                    ))}
                                 </div>
-                            )}
-                            {order.orderId && (
-                                <div className="flex justify-between">
-                                    <span className="text-gray-600">Order ID:</span>
-                                    <span className="font-mono text-sm">{order.orderId.slice(-8).toUpperCase()}</span>
-                                </div>
-                            )}
-                            <div className="flex justify-between">
-                                <span className="text-gray-600">Payment Status:</span>
-                                <span className={`font-medium px-2 py-1 rounded-full text-sm ${isPaid
-                                    ? 'bg-green-100 text-green-700'
-                                    : 'bg-yellow-100 text-yellow-700'
-                                    }`}>
-                                    {isPaid ? 'Paid' : 'Pending'}
-                                </span>
                             </div>
-                            {order.total && (
-                                <div className="flex justify-between">
-                                    <span className="text-gray-600">Total:</span>
-                                    <span className="font-semibold">R{order.total.toFixed(2)}</span>
+                        )}
+
+                        {/* Price Breakdown */}
+                        {order?.total && (
+                            <div>
+                                <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Receipt</h2>
+                                <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm">
+                                    {order.subtotal != null && (
+                                        <div className="flex justify-between text-gray-600">
+                                            <span>Subtotal</span>
+                                            <span>R{Number(order.subtotal).toFixed(2)}</span>
+                                        </div>
+                                    )}
+                                    {order.shippingCost != null && (
+                                        <div className="flex justify-between text-gray-600">
+                                            <span>Delivery ({order.shippingMethod || 'Standard'})</span>
+                                            <span>{order.shippingCost === 0 ? 'Free' : `R${Number(order.shippingCost).toFixed(2)}`}</span>
+                                        </div>
+                                    )}
+                                    {order.tax != null && order.tax > 0 && (
+                                        <div className="flex justify-between text-gray-600">
+                                            <span>Tax</span>
+                                            <span>R{Number(order.tax).toFixed(2)}</span>
+                                        </div>
+                                    )}
+                                    {order.discount != null && order.discount > 0 && (
+                                        <div className="flex justify-between text-green-600">
+                                            <span>Discount{order.couponCode ? ` (${order.couponCode})` : ''}</span>
+                                            <span>-R{Number(order.discount).toFixed(2)}</span>
+                                        </div>
+                                    )}
+                                    <div className="flex justify-between font-semibold text-gray-900 pt-2 border-t border-gray-200 text-base">
+                                        <span>Total</span>
+                                        <span>R{Number(order.total).toFixed(2)}</span>
+                                    </div>
                                 </div>
-                            )}
+                            </div>
+                        )}
+
+                        {/* Payment Status */}
+                        <div className="flex items-center justify-between py-3 border-t border-gray-100">
+                            <span className="text-sm text-gray-600">Payment Status</span>
+                            <span className={`text-sm font-medium px-3 py-1 rounded-full ${isPaid ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                                {isPaid ? 'Paid' : 'Pending'}
+                            </span>
+                        </div>
+
+                        {/* Info Message */}
+                        <div className="bg-blue-50 border border-blue-100 rounded-lg p-4">
+                            <p className="text-sm text-blue-700">
+                                {isPaid
+                                    ? 'A confirmation email will be sent to your email address.'
+                                    : 'Payment confirmation may take a few moments. You will receive an email once confirmed.'
+                                }
+                            </p>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="space-y-3">
+                            <Link href="/" className="block w-full bg-[#4a4a4a] text-white px-6 py-3 rounded-lg hover:bg-[#333] transition-colors font-medium text-center">
+                                Continue Shopping
+                            </Link>
                         </div>
                     </div>
-                )}
-
-                {/* Info Message */}
-                <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-6">
-                    <p className="text-sm text-blue-700">
-                        {isPaid
-                            ? 'A confirmation email has been sent to your email address with your order details.'
-                            : 'Payment confirmation may take a few moments. You will receive an email once your payment is confirmed.'
-                        }
-                    </p>
                 </div>
-
-                {/* Action Buttons */}
-                <div className="space-y-3">
-                    <Link
-                        href="/orders"
-                        className="block w-full bg-pink-600 text-white px-6 py-3 rounded-lg hover:bg-pink-700 transition-colors font-medium"
-                    >
-                        View My Orders
-                    </Link>
-                    <Link
-                        href="/"
-                        className="block w-full border border-gray-300 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                        Continue Shopping
-                    </Link>
-                </div>
-
-                {/* Support Link */}
-                <p className="mt-6 text-sm text-gray-500">
-                    Need help? <Link href="/contact" className="text-pink-600 hover:underline">Contact Support</Link>
-                </p>
             </div>
         </div>
     );
 }
 
-// Export with Suspense wrapper for useSearchParams
 export default function OrderConfirmationPage() {
     return (
         <Suspense fallback={

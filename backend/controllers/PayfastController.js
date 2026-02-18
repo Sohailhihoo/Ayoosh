@@ -138,7 +138,7 @@ const initiatePayment = async (req, res) => {
         const paymentData = {
             merchant_id: process.env.PAYFAST_SANDBOX === 'true' ? process.env.PAYFAST_SANDBOX_MERCHANT_ID : process.env.PAYFAST_MERCHANT_ID,
             merchant_key: process.env.PAYFAST_SANDBOX === 'true' ? process.env.PAYFAST_SANDBOX_MERCHANT_KEY : process.env.PAYFAST_MERCHANT_KEY,
-            return_url: `${baseUrl}/order-confirmation?status=success`,
+            return_url: `${baseUrl}/order-confirmation?status=success&orderId=${order._id}`,
             cancel_url: `${baseUrl}/checkout?cancelled=true`,
             notify_url: `${backendUrl}/api/payfast/notify`,
             name_first: firstName,
@@ -282,9 +282,20 @@ const verifyPayment = async (req, res) => {
             success: true,
             data: {
                 orderId: order._id,
+                orderNumber: order.orderNumber,
                 paymentStatus: order.paymentStatus,
+                paymentMethod: order.paymentMethod,
                 status: order.status,
-                paidAt: order.paidAt
+                paidAt: order.paidAt,
+                // Itemised breakdown
+                items: order.items,
+                subtotal: order.subtotal,
+                shippingCost: order.shippingCost,
+                shippingMethod: order.shippingMethod,
+                tax: order.tax,
+                discount: order.discount,
+                couponCode: order.couponCode,
+                total: order.total,
             }
         });
     } catch (error) {
