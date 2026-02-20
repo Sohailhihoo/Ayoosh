@@ -76,7 +76,7 @@ export default function ProductCard({ product }) {
         <div className="text-center">
           <h3 className="font-medium text-gray-900 mb-1">{product.name}</h3>
           <p className="text-sm text-gray-600">
-            R{product.price?.toFixed(2)} (Incl Shipping, Excl VAT)
+            R{product.price?.toFixed(2)}
           </p>
         </div>
       </div>

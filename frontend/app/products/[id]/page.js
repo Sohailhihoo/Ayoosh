@@ -202,7 +202,7 @@ export default function ProductDetailPage() {
             {/* Price */}
             <div className="flex items-center gap-4 mb-6">
               <span className="text-3xl font-bold text-gray-900">
-                R{currentPrice.toFixed(2)} (Incl Shipping, Excl VAT)
+                R{currentPrice.toFixed(2)}
               </span>
               {hasDiscount && (
                 <>
