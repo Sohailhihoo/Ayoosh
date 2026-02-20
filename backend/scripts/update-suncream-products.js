@@ -17,13 +17,13 @@ const updateProducts = async () => {
         await mongoose.connect(MONGODB_URI);
         console.log('✅ Connected.');
 
-        // Update first product - SUN CREAM
-        console.log('📝 Updating SUN CREAM product...');
+        // Update first product - SUN CREAM TUBE
+        console.log('📝 Updating SUN CREAM (Tube) product...');
         const product1 = await Product.findByIdAndUpdate(
             '69825dab2d01b1efb437017c',
             {
                 name: 'SUN CREAM',
-                price: 20,
+                price: 525.95,
                 compareAtPrice: null,
                 productType: 'suncream',
                 description: 'Premium sun protection in a convenient 50ml tube. SPF 50+ PA+++ for maximum protection against UVA and UVB rays.',
@@ -44,7 +44,7 @@ const updateProducts = async () => {
             '69825dab2d01b1efb4370176',
             {
                 name: 'SUN CREAM POUCH',
-                price: 20,
+                price: 515.95,
                 compareAtPrice: null,
                 productType: 'suncream',
                 description: 'Convenient on-the-go sun protection. 10 sachets x 5ml each. Perfect for travel and daily use.',

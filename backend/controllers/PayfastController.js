@@ -97,6 +97,14 @@ const verifyITNSignature = (receivedSignature, rawBody, pfData, passphrase = nul
     return true;
 };
 
+// PayFast-specific prices for suncream products (different from display prices)
+// Display prices (in DB): Tube = R525.95, Pouch = R515.95
+// PayFast charge prices:  Tube = R529.07, Pouch = R518.68
+const PAYFAST_PRICE_OVERRIDES = {
+    'SUN CREAM': 529.07,
+    'SUN CREAM POUCH': 518.68,
+};
+
 // @desc    Initiate PayFast payment
 // @route   POST /api/payfast/initiate
 const initiatePayment = async (req, res) => {
@@ -135,6 +143,16 @@ const initiatePayment = async (req, res) => {
         const backendUrl = process.env.BACKEND_URL || process.env.HOST_URL || 'http://localhost:8080';
 
         // --- STEP 2: BUILD PAYLOAD ---
+        // Compute PayFast-specific total — NO tax is added.
+        // Suncream items use PAYFAST_PRICE_OVERRIDES; all prices are treated as tax-inclusive finals.
+        let payfastSubtotal = 0;
+        for (const item of order.items) {
+            const overridePrice = PAYFAST_PRICE_OVERRIDES[item.name?.toUpperCase().trim()];
+            const unitPrice = overridePrice !== undefined ? overridePrice : item.price;
+            payfastSubtotal += unitPrice * item.quantity;
+        }
+        const payfastTotal = payfastSubtotal + (order.shippingCost || 0) - (order.discount || 0);
+
         const paymentData = {
             merchant_id: process.env.PAYFAST_SANDBOX === 'true' ? process.env.PAYFAST_SANDBOX_MERCHANT_ID : process.env.PAYFAST_MERCHANT_ID,
             merchant_key: process.env.PAYFAST_SANDBOX === 'true' ? process.env.PAYFAST_SANDBOX_MERCHANT_KEY : process.env.PAYFAST_MERCHANT_KEY,
@@ -145,7 +163,7 @@ const initiatePayment = async (req, res) => {
             name_last: lastName,
             email_address: email,
             m_payment_id: order._id.toString(),
-            amount: Number(order.total).toFixed(2),
+            amount: payfastTotal.toFixed(2),
             item_name: `Order ${order.orderNumber || order._id}`,
         };
 
@@ -236,8 +254,17 @@ const handleITN = async (req, res) => {
             }
 
             // Security Check 2: Amount
+            // Recompute expected PayFast total using same logic as initiatePayment
             const paidAmount = parseFloat(pfData.amount_gross).toFixed(2);
-            const orderAmount = parseFloat(order.total).toFixed(2);
+            // Recompute expected PayFast total — NO tax (matches initiatePayment logic)
+            let expectedSubtotal = 0;
+            for (const item of order.items) {
+                const overridePrice = PAYFAST_PRICE_OVERRIDES[item.name?.toUpperCase().trim()];
+                const unitPrice = overridePrice !== undefined ? overridePrice : item.price;
+                expectedSubtotal += unitPrice * item.quantity;
+            }
+            const expectedPayfastTotal = expectedSubtotal + (order.shippingCost || 0) - (order.discount || 0);
+            const orderAmount = parseFloat(expectedPayfastTotal).toFixed(2);
 
             if (Math.abs(paidAmount - orderAmount) > 0.01) {
                 console.error(`Amount Mismatch: Paid ${paidAmount}, Expected ${orderAmount}`);
