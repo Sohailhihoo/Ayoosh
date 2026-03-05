@@ -8,6 +8,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Mistrully';
+  src: url('/fonts/Mistrully.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --foreground: #171717;
   --background: #ffffff;
@@ -392,7 +400,7 @@ a {
   border-top: 1px solid #e5e7eb;
 }
 
-.product-description .faq-section > h2 {
+.product-description .faq-section>h2 {
   font-size: 1.5rem;
   font-weight: 700;
   color: #1a1a1a;

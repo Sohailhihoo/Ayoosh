@@ -34,7 +34,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 md:gap-12">
 
           {/* Brand - Full width on mobile */}
-          <div className="col-span-2 md:col-span-4 lg:col-span-1 flex flex-col items-center lg:items-start mb-8 lg:mb-0">
+          <div className="col-span-2 md:col-span-4 lg:col-span-1 flex flex-col items-center mb-8 lg:mb-0">
             <Link href="/">
               <img
                 src={ASSETS.logos.light}
@@ -42,8 +42,8 @@ export default function Footer() {
                 className="h-24 w-auto object-contain"
               />
             </Link>
-            <p className="mt-4 text-sm text-gray-400 text-center lg:text-left">
-              Look Good, Feel Good<br />and Do Good
+            <p className="mt-4 text-sm text-gray-400 text-center w-full" style={{ fontFamily: "'Mistrully', serif" }}>
+              Look Good, Feel Good, <br />and do good simultaneously
             </p>
           </div>
 
