@@ -6,9 +6,9 @@ export default function AboutPage() {
     return (
         <div className="bg-white min-h-screen font-[family-name:var(--font-montserrat)]">
             {/* Hero Header */}
-            <div className="bg-[#faf7f5] border-b border-gray-100">
+            <div className="bg-[#f4f2f0] border-b border-gray-100">
                 <div className="max-w-4xl mx-auto px-6 py-20 md:py-32 text-center">
-                    <p className="text-xs uppercase tracking-[0.3em] text-[#e8a4b8] mb-4 font-medium">Our Story</p>
+                    <p className="text-xs uppercase tracking-[0.3em] text-[#b87c6b] mb-4 font-medium">Our Story</p>
                     <h1 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl lg:text-6xl text-[#333] mb-6">
                         About Us
                     </h1>
@@ -54,7 +54,7 @@ export default function AboutPage() {
                     {/* Our Mantra */}
                     <section className="text-center py-8">
                         <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Our Mantra?</h2>
-                        <p className="font-[family-name:var(--font-playfair)] text-xl md:text-2xl text-[#e8a4b8] italic mb-6">
+                        <p className="font-[family-name:var(--font-playfair)] text-xl md:text-2xl text-[#b87c6b] italic mb-6">
                             Look Good, Feel Good, and Do Good Simultaneously
                         </p>
                         <p>This isn&rsquo;t just a slogan; it&rsquo;s the foundation of everything we create. Choosing AYOOSH is choosing yourself and joining a community that values kindness, intention, and shared goodness.</p>
@@ -79,9 +79,9 @@ export default function AboutPage() {
                         <p className="mb-8">AYOOSH&rsquo;s vision has grown as the brand has evolved. The brand today is defined by three distinct but interconnected pillars that come together to create a lifestyle rooted in confidence, self-care, and purpose.</p>
 
                         {/* Pillar 1 */}
-                        <div className="bg-[#faf7f5] rounded-lg p-6 md:p-8 mb-6">
+                        <div className="bg-[#f4f2f0] rounded-lg p-6 md:p-8 mb-6">
                             <div className="flex items-start gap-4">
-                                <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#e8a4b8] text-white flex items-center justify-center text-sm font-medium">1</span>
+                                <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#b87c6b] text-white flex items-center justify-center text-sm font-medium">1</span>
                                 <div>
                                     <h3 className="text-lg font-medium text-[#333] mb-3">AYOOSH Skincare &mdash; Your Glow, Our Secret</h3>
                                     <p>This is the place where transformation starts, from the inside out. Our skincare was created to make you feel confident in your skin, help build self-esteem, and encourage daily self-care. When you feel good, it naturally shows.</p>
@@ -90,9 +90,9 @@ export default function AboutPage() {
                         </div>
 
                         {/* Pillar 2 */}
-                        <div className="bg-[#faf7f5] rounded-lg p-6 md:p-8 mb-6">
+                        <div className="bg-[#f4f2f0] rounded-lg p-6 md:p-8 mb-6">
                             <div className="flex items-start gap-4">
-                                <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#e8a4b8] text-white flex items-center justify-center text-sm font-medium">2</span>
+                                <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#b87c6b] text-white flex items-center justify-center text-sm font-medium">2</span>
                                 <div>
                                     <h3 className="text-lg font-medium text-[#333] mb-3">Authentically AYOOSH - Fashion &amp; Accessories</h3>
                                     <p>Fashion is a form of self-expression that does not require explanation. Authentically AYOOSH is here to help you be yourself, bold, expressive, and unapologetic. Each piece is designed with comfort, confidence and effortless style in mind.</p>
@@ -101,9 +101,9 @@ export default function AboutPage() {
                         </div>
 
                         {/* Pillar 3 */}
-                        <div className="bg-[#faf7f5] rounded-lg p-6 md:p-8 mb-8">
+                        <div className="bg-[#f4f2f0] rounded-lg p-6 md:p-8 mb-8">
                             <div className="flex items-start gap-4">
-                                <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#e8a4b8] text-white flex items-center justify-center text-sm font-medium">3</span>
+                                <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#b87c6b] text-white flex items-center justify-center text-sm font-medium">3</span>
                                 <div>
                                     <h3 className="text-lg font-medium text-[#333] mb-3">AYOOSH Foundation &mdash; Enrichment &amp; Empowerment Programme</h3>
                                     <p>Giving back is woven into who we are. Every purchase made through the AYOOSH foundation has a meaningful impact, supporting empowerment, nourishment, and community upliftment. Together, we transform our intention into action.</p>
@@ -116,20 +116,20 @@ export default function AboutPage() {
                             <h3 className="text-lg font-medium text-[#333] mb-4">The Ayoosh Cycle</h3>
                             <ul className="space-y-3 mb-6">
                                 <li className="flex items-start gap-3">
-                                    <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-[#e8a4b8] mt-2"></span>
+                                    <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-[#b87c6b] mt-2"></span>
                                     <span>Skincare routine will help you look and feel your best.</span>
                                 </li>
                                 <li className="flex items-start gap-3">
-                                    <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-[#e8a4b8] mt-2"></span>
+                                    <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-[#b87c6b] mt-2"></span>
                                     <span>Fashion allows you to be yourself.</span>
                                 </li>
                                 <li className="flex items-start gap-3">
-                                    <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-[#e8a4b8] mt-2"></span>
+                                    <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-[#b87c6b] mt-2"></span>
                                     <span>Foundation gives you the opportunity to make a difference through your choices.</span>
                                 </li>
                             </ul>
                             <p className="mb-3">Together, these elements make up the AYOOSH Philosophy:</p>
-                            <p className="font-[family-name:var(--font-playfair)] text-lg md:text-xl text-[#e8a4b8] italic">
+                            <p className="font-[family-name:var(--font-playfair)] text-lg md:text-xl text-[#b87c6b] italic">
                                 Look Good, Feel Good, and Do Good Simultaneously
                             </p>
                         </div>

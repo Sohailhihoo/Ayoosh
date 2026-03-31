@@ -63,7 +63,7 @@ export default function ProductScroller() {
                         alt="Ayoosh Sun Cream"
                         className="w-auto h-[220px] sm:h-[280px] object-contain"
                         style={{
-                            filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.25))'
+                            filter: 'none'
                         }}
                     />
                 </div>
@@ -155,7 +155,7 @@ export default function ProductScroller() {
                             alt="Ayoosh Sun Cream"
                             className="w-auto h-[750px] object-contain relative z-10"
                             style={{
-                                filter: 'drop-shadow(0 30px 60px rgba(0, 0, 0, 0.35)) drop-shadow(0 15px 30px rgba(0, 0, 0, 0.25))'
+                                filter: 'none'
                             }}
                         />
                     </motion.div>

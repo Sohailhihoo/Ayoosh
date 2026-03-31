@@ -58,22 +58,25 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
-      <div className="max-w-md w-full">
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center space-x-2">
-            <span className="text-3xl font-bold text-pink-600">Beauty</span>
-            <span className="text-3xl font-light text-gray-800">Store</span>
-          </Link>
-          <h1 className="text-2xl font-bold mt-6 text-gray-900">Create an account</h1>
-          <p className="text-gray-600 mt-2">Join us and start shopping</p>
-        </div>
+    <div className="min-h-[calc(100vh-6rem)] flex text-gray-800 font-sans">
 
-        <div className="bg-white rounded-2xl shadow-sm p-8">
+      {/* LEFT SIDE - FORM */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
+        <div className="max-w-xl w-full">
+
+          <div className="mb-10 text-center lg:text-left">
+            <h1 className="text-5xl font-bold text-[#f9cb19] mb-4" style={{ fontFamily: "'Tan Pearl', serif" }}>Create Account</h1>
+            <p className="text-gray-400 text-lg font-light">
+              Join the Ayoosh community and start your journey.
+            </p>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-5">
+
+            {/* Name Fields */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-base font-bold text-gray-700 mb-3">
                   First Name
                 </label>
                 <input
@@ -82,12 +85,12 @@ export default function RegisterPage() {
                   value={formData.firstName}
                   onChange={handleChange}
                   required
-                  className="input-field"
-                  placeholder="John"
+                  className="w-full px-5 py-4 text-lg border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f9cb19]/50 focus:border-[#f9cb19] transition-all placeholder:font-light placeholder:text-gray-300"
+                  placeholder="First name"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-base font-bold text-gray-700 mb-3">
                   Last Name
                 </label>
                 <input
@@ -96,14 +99,15 @@ export default function RegisterPage() {
                   value={formData.lastName}
                   onChange={handleChange}
                   required
-                  className="input-field"
-                  placeholder="Doe"
+                  className="w-full px-5 py-4 text-lg border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f9cb19]/50 focus:border-[#f9cb19] transition-all placeholder:font-light placeholder:text-gray-300"
+                  placeholder="Last name"
                 />
               </div>
             </div>
 
+            {/* Email Field */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-base font-bold text-gray-700 mb-3">
                 Email
               </label>
               <input
@@ -112,13 +116,14 @@ export default function RegisterPage() {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="input-field"
-                placeholder="you@example.com"
+                className="w-full px-5 py-4 text-lg border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f9cb19]/50 focus:border-[#f9cb19] transition-all placeholder:font-light placeholder:text-gray-300"
+                placeholder="Enter your email"
               />
             </div>
 
+            {/* Password Field */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-base font-bold text-gray-700 mb-3">
                 Password
               </label>
               <input
@@ -128,14 +133,15 @@ export default function RegisterPage() {
                 onChange={handleChange}
                 required
                 minLength={6}
-                className="input-field"
-                placeholder="••••••••"
+                className="w-full px-5 py-4 text-lg border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f9cb19]/50 focus:border-[#f9cb19] transition-all placeholder:font-light placeholder:text-gray-300"
+                placeholder="Create a password"
               />
-              <p className="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
+              <p className="text-sm text-gray-400 font-light mt-2">Minimum 6 characters</p>
             </div>
 
+            {/* Confirm Password Field */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-base font-bold text-gray-700 mb-3">
                 Confirm Password
               </label>
               <input
@@ -144,39 +150,51 @@ export default function RegisterPage() {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 required
-                className="input-field"
-                placeholder="••••••••"
+                className="w-full px-5 py-4 text-lg border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f9cb19]/50 focus:border-[#f9cb19] transition-all placeholder:font-light placeholder:text-gray-300"
+                placeholder="Confirm your password"
               />
             </div>
 
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full btn-primary py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-[#f9cb19] text-white text-lg font-bold py-4 rounded-lg shadow-lg hover:bg-[#e5b817] hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-[0.98]"
             >
-              {loading ? 'Creating account...' : 'Create Account'}
+              {loading ? 'Creating Account...' : 'Create Account'}
             </button>
-          </form>
 
-          <div className="mt-6">
-            <p className="text-xs text-gray-500 text-center">
+            {/* Terms */}
+            <p className="text-sm text-gray-400 font-light text-center">
               By signing up, you agree to our{' '}
-              <Link href="/terms" className="text-pink-600 hover:underline">Terms of Service</Link>
+              <Link href="/terms" className="text-[#f9cb19] font-bold hover:underline">Terms of Service</Link>
               {' '}and{' '}
-              <Link href="/privacy" className="text-pink-600 hover:underline">Privacy Policy</Link>
+              <Link href="/privacy" className="text-[#f9cb19] font-bold hover:underline">Privacy Policy</Link>
             </p>
 
-            <div className="mt-6 text-center">
-              <p className="text-gray-600">
-                Already have an account?{' '}
-                <Link href="/login" className="text-pink-600 font-medium hover:underline">
-                  Sign in
-                </Link>
-              </p>
+            {/* Sign In Link */}
+            <div className="text-center mt-8 text-base text-gray-400 font-light">
+              Already have an account?{' '}
+              <Link href="/login" className="text-[#f9cb19] font-bold hover:underline ml-1">
+                Sign in
+              </Link>
             </div>
-          </div>
+
+          </form>
         </div>
       </div>
+
+      {/* RIGHT SIDE - IMAGE */}
+      <div className="hidden lg:flex w-1/2 relative bg-[#f4f2f0] p-0 border-none">
+        <div className="absolute inset-0">
+          <img
+            src="https://res.cloudinary.com/dpdg462fb/image/upload/v1769770501/Group_49_1_hsbwkx.png"
+            alt="Ayoosh Beauty"
+            className="w-full h-full object-contain object-left-bottom"
+          />
+        </div>
+      </div>
+
     </div>
   );
 }
