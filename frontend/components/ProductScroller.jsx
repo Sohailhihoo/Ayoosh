@@ -49,48 +49,91 @@ export default function ProductScroller() {
         }
     };
 
+    // Mobile layout - specs split into left and right columns around product
+    const leftSpecs = [
+        specs[8],  // Polygonum Root Extract - Intense Hydration
+        specs[7],  // Chamomile Extract - Calming Effect
+        specs[6],  // Allantoin - Irritation Relief
+        specs[5],  // Centella Asiatica - Soothing & Repair
+        specs[4],  // Betaine - Skin Barrier Support
+    ];
+
+    const rightSpecs = [
+        specs[9],  // Licorice Root Extract - Brightening
+        specs[0],  // Advanced Korean UV filter - SPF 50+ PA++++
+        specs[1],  // Vitamin E - Antioxidant Protection
+        specs[2],  // Propanediol - Hydration & Smoothness
+        specs[3],  // Glycerin - Deep Moisturization
+    ];
+
     return (
         <section
             ref={containerRef}
             className="relative bg-[#f4f2f0] lg:h-[300vh]"
         >
             {/* ==================== MOBILE VIEW (Visible < 1024px) ==================== */}
-            <div className="lg:hidden py-12 px-4">
-                {/* Product Image */}
-                <div className="flex justify-center mb-8">
-                    <img
-                        src="https://res.cloudinary.com/dpdg462fb/image/upload/v1769715388/Sun_Tube_cmxezs.png"
-                        alt="Ayoosh Sun Cream"
-                        className="w-auto h-[220px] sm:h-[280px] object-contain"
-                        style={{
-                            filter: 'none'
-                        }}
-                    />
-                </div>
+            <div className="lg:hidden py-10 px-3 sm:px-4">
+                <div className="flex items-center justify-center gap-1 sm:gap-2">
 
-                {/* Specs Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-md mx-auto">
-                    {specs.slice(0, 8).map((spec, index) => {
-                        const isYellow = index % 2 === 0;
-                        return (
-                            <div
+                    {/* Left Specs */}
+                    <div className="flex flex-col gap-2.5 sm:gap-3 items-end flex-1">
+                        {leftSpecs.map((spec, index) => (
+                            <motion.div
                                 key={spec.id}
-                                className={`
-                                    rounded-lg px-4 py-4 text-center
-                                    ${isYellow
+                                initial={{ opacity: 0, x: -20 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.4, delay: index * 0.1 }}
+                                className={`rounded-lg px-2.5 py-2 sm:px-3 sm:py-2.5 text-right w-full
+                                    ${index % 2 === 0
                                         ? 'bg-[#f9cb19] text-black'
-                                        : 'bg-white text-gray-900 shadow-sm'}
-                                `}
+                                        : 'bg-white text-gray-900 shadow-sm'}`}
                             >
-                                <p className={`text-[10px] sm:text-xs uppercase tracking-wide font-medium mb-1.5 ${isYellow ? 'text-black/60' : 'text-gray-500'}`}>
+                                <p className={`text-[7px] sm:text-[9px] uppercase tracking-wide font-medium mb-0.5 leading-tight ${index % 2 === 0 ? 'text-black/60' : 'text-gray-500'}`}>
                                     {spec.label}
                                 </p>
-                                <p className="text-sm sm:text-base font-semibold">
+                                <p className="text-[10px] sm:text-xs font-semibold leading-tight">
                                     {spec.value}
                                 </p>
-                            </div>
-                        );
-                    })}
+                            </motion.div>
+                        ))}
+                    </div>
+
+                    {/* Center Product */}
+                    <motion.img
+                        src="https://res.cloudinary.com/dpdg462fb/image/upload/v1769715388/Sun_Tube_cmxezs.png"
+                        alt="Ayoosh Sun Cream"
+                        className="flex-shrink-0 w-auto h-[220px] sm:h-[320px] object-contain"
+                        initial={{ opacity: 0, scale: 0.85 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5 }}
+                    />
+
+                    {/* Right Specs */}
+                    <div className="flex flex-col gap-2.5 sm:gap-3 items-start flex-1">
+                        {rightSpecs.map((spec, index) => (
+                            <motion.div
+                                key={spec.id}
+                                initial={{ opacity: 0, x: 20 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.4, delay: index * 0.1 }}
+                                className={`rounded-lg px-2.5 py-2 sm:px-3 sm:py-2.5 text-left w-full
+                                    ${index % 2 === 0
+                                        ? 'bg-[#f9cb19] text-black'
+                                        : 'bg-white text-gray-900 shadow-sm'}`}
+                            >
+                                <p className={`text-[7px] sm:text-[9px] uppercase tracking-wide font-medium mb-0.5 leading-tight ${index % 2 === 0 ? 'text-black/60' : 'text-gray-500'}`}>
+                                    {spec.label}
+                                </p>
+                                <p className="text-[10px] sm:text-xs font-semibold leading-tight">
+                                    {spec.value}
+                                </p>
+                            </motion.div>
+                        ))}
+                    </div>
+
                 </div>
             </div>
 
