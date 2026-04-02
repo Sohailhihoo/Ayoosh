@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const axios = require('axios');
 const Order = require('../models/Order');
+const { processAffiliateCommission } = require('../utils/affiliateCommission');
 
 // PayGate URLs
 const PAYGATE_INITIATE_URL = 'https://secure.paygate.co.za/payweb3/initiate.trans';
@@ -241,6 +242,9 @@ const handleNotify = async (req, res) => {
                     timestamp: new Date()
                 });
                 console.log('PayGate: Payment approved ✓');
+
+                // Process affiliate commission
+                await processAffiliateCommission(order);
                 break;
 
             case 2: // Declined

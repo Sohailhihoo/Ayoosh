@@ -199,7 +199,9 @@ export default function CheckoutForm() {
                 customerNote: formData.customerNote,
                 // Coupon Data
                 couponCode: coupon?.code,
-                discountAmount: calculateDiscount()
+                discountAmount: calculateDiscount(),
+                // Affiliate tracking
+                affiliateCode: document.cookie.match(/ayoosh_ref=([^;]+)/)?.[1] || null
             };
 
             const response = await orderAPI.create(orderData);

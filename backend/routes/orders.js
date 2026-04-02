@@ -143,7 +143,8 @@ router.post('/', optionalAuth, async (req, res) => {
     paymentMethod,
     shippingMethod = 'standard',
     customerNote,
-    couponCode: bodyCouponCode
+    couponCode: bodyCouponCode,
+    affiliateCode
   } = req.body;
 
   const userId = req.user?._id;
@@ -290,6 +291,7 @@ router.post('/', optionalAuth, async (req, res) => {
       tax,
       discount: discountAmount,
       couponCode: couponCode,
+      affiliateCode: affiliateCode || null,
       total: cart.subtotal + shippingCost + tax - discountAmount,
       paymentMethod,
       shippingMethod,

@@ -76,6 +76,7 @@ const orderSchema = new mongoose.Schema({
     default: 0
   },
   couponCode: String,
+  affiliateCode: String,  // Affiliate referral code for commission tracking
   total: {
     type: Number,
     required: true

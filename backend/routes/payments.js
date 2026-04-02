@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Order = require('../models/Order');
 const { protect, optionalAuth } = require('../middleware/auth');
+const { processAffiliateCommission } = require('../utils/affiliateCommission');
 
 // Stripe initialization (only if STRIPE_SECRET_KEY is set)
 let stripe;
@@ -119,6 +120,9 @@ router.post('/confirm', protect, async (req, res) => {
     });
     await order.save();
 
+    // Process affiliate commission
+    await processAffiliateCommission(order);
+
     res.json({
       success: true,
       message: 'Payment confirmed',
@@ -198,7 +202,9 @@ async function handlePaymentSuccess(paymentIntent) {
         note: 'Payment received via Stripe'
       });
       await order.save();
-      await order.save();
+
+      // Process affiliate commission
+      await processAffiliateCommission(order);
     }
   } catch (error) {
     console.error('Error handling payment success:', error.message);

@@ -1,6 +1,7 @@
 // PayFast Controller - Fixed & Optimized for Production
 const crypto = require('crypto');
 const Order = require('../models/Order');
+const { processAffiliateCommission } = require('../utils/affiliateCommission');
 
 // PayFast URLs
 const PAYFAST_SANDBOX_URL = 'https://sandbox.payfast.co.za/eng/process';
@@ -283,6 +284,10 @@ const handleITN = async (req, res) => {
             });
 
             await order.save();
+
+            // Process affiliate commission
+            await processAffiliateCommission(order);
+
             console.log(`Order ${orderId} marked as PAID via ITN`);
         }
 
