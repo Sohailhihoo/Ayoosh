@@ -93,7 +93,7 @@ export default function ProductsGrid({
                     >
                         {products.map((product) => (
                             <motion.div key={product._id} variants={scaleIn}>
-                                <Link href={`/products/${product._id}`} className="group block">
+                                <Link href={`/products/${product.slug}`} className="group block">
                                     <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-4">
                                         <div className="w-full h-full flex items-center justify-center text-6xl group-hover:scale-110 transition-transform duration-300">
                                             💄

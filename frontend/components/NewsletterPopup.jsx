@@ -117,7 +117,7 @@ export default function NewsletterPopup() {
                             <p className="text-gray-600 text-center mb-6 leading-relaxed">
                                 Get <span className="font-bold text-[#4a4a4a]">15% off</span> all Ayoosh products this Easter! Use code{' '}
                                 <span className="font-bold text-[#4a4a4a]">AYOOSHEASTER26</span> at checkout.
-                                Offer ends Sunday, 5 April. Subscribe to never miss a deal!
+                                Offer ends Monday, 6 April. Subscribe to never miss a deal!
                             </p>
 
                             <form onSubmit={handleSubmit} className="space-y-4">

@@ -4,6 +4,7 @@ const User = require('../models/User');
 const { protect } = require('../middleware/auth');
 const crypto = require('crypto');
 const redisClient = require('../lib/redis');
+const sendRegisterationEmail = require("../utils/sendRegisterationEmail")
 
 // Session configuration
 const SESSION_EXPIRY = 604800; // 7 days in seconds
@@ -75,6 +76,7 @@ router.post('/register', async (req, res) => {
         role: user.role
       }
     });
+  await sendRegisterationEmail(email);
   } catch (error) {
     res.status(500).json({
       success: false,

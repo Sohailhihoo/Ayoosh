@@ -33,7 +33,7 @@ export default function ProductCard({ product }) {
   };
 
   return (
-    <Link href={`/products/${product._id}`}>
+    <Link href={`/products/${product.slug}`}>
       <div
         className="group cursor-pointer"
         onMouseEnter={() => setIsHovered(true)}
