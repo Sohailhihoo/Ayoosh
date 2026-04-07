@@ -17,7 +17,6 @@ const categoryRoutes = require('./routes/categories');
 const cartRoutes = require('./routes/cart');
 const payfastRoutes = require('./routes/payfast');
 const orderRoutes = require('./routes/orders');
-const paymentRoutes = require('./routes/payments');
 const userRoutes = require('./routes/users');
 const analyticsRoutes = require('./routes/analytics');
 const couponRoutes = require('./routes/coupons');
@@ -156,13 +155,13 @@ app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
-app.use('/api/payments', paymentRoutes);
 app.use('/api/payfast', payfastRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/coupons', couponRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/newsletter', require('./routes/newsletter'));
+app.use('/api/affiliates', require('./routes/affiliates'));
 
 // Health check
 app.get('/api/health', (req, res) => {

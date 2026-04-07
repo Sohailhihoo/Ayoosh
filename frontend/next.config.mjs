@@ -33,7 +33,7 @@ const nextConfig = {
       },
       {
         key: 'Content-Security-Policy',
-        value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https: http:; font-src 'self' https://fonts.gstatic.com data:; media-src 'self' blob: https://res.cloudinary.com; connect-src 'self' https://www.google-analytics.com https://ayooshonline.com https://www.ayooshonline.com http://localhost:5000 http://127.0.0.1:5000 https://ayoosh-production.up.railway.app; frame-ancestors 'none'; form-action *; base-uri 'self'; object-src 'none';",
+        value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https: http:; font-src 'self' https://fonts.gstatic.com data:; media-src 'self' blob: https://res.cloudinary.com; connect-src 'self' https://www.google-analytics.com https://ayooshonline.com https://www.ayooshonline.com http://localhost:5001 http://127.0.0.1:5001 https://ayoosh-production.up.railway.app; frame-ancestors 'none'; form-action *; base-uri 'self'; object-src 'none';",
       },
     ];
 
@@ -122,7 +122,7 @@ const nextConfig = {
           {
             // CSP without form-action restriction for PayFast payment redirect
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https: http:; font-src 'self' https://fonts.gstatic.com data:; media-src 'self' blob: https://res.cloudinary.com; connect-src 'self' https://www.google-analytics.com https://ayooshonline.com https://www.ayooshonline.com http://localhost:5000 http://127.0.0.1:5000 https://ayoosh-production.up.railway.app; frame-ancestors 'none'; form-action *; base-uri 'self'; object-src 'none';",
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https: http:; font-src 'self' https://fonts.gstatic.com data:; media-src 'self' blob: https://res.cloudinary.com; connect-src 'self' https://www.google-analytics.com https://ayooshonline.com https://www.ayooshonline.com http://localhost:5001 http://127.0.0.1:5001 https://ayoosh-production.up.railway.app; frame-ancestors 'none'; form-action *; base-uri 'self'; object-src 'none';",
           },
           {
             key: 'Cache-Control',

@@ -100,13 +100,13 @@ export default function NewsletterPopup() {
                 {/* Decorative Header */}
                 <div className="bg-gradient-to-r from-[#F6C811] to-[#d4a90e] py-8 px-6 text-center">
                     <span className="inline-block px-4 py-1 bg-white/20 rounded-full text-white text-sm tracking-widest mb-3">
-                        EXCLUSIVE OFFER
+                        EASTER SPECIAL
                     </span>
                     <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
-                        10% DISCOUNT
+                        FREE DELIVERY
                     </h2>
                     <p className="text-white/90 text-lg">
-                        On AYOOSH50
+                        This Weekend Only!
                     </p>
                 </div>
 
@@ -115,9 +115,9 @@ export default function NewsletterPopup() {
                     {!isSubmitted ? (
                         <>
                             <p className="text-gray-600 text-center mb-6 leading-relaxed">
-                                Get 10% discount on your first order by applying code{' '}
-                                <span className="font-bold text-[#4a4a4a]">AYOOSH50</span> at checkout.
-                                Subscribe to be the first to know!
+                                Enjoy <span className="font-bold text-[#4a4a4a]">FREE delivery</span> on all orders this Easter! Use code{' '}
+                                <span className="font-bold text-[#4a4a4a]">AYOOSHEASTER26</span> at checkout.
+                                Offer ends Sunday, 5 April. Subscribe to never miss a deal!
                             </p>
 
                             <form onSubmit={handleSubmit} className="space-y-4">
@@ -153,10 +153,10 @@ export default function NewsletterPopup() {
                                 </svg>
                             </div>
                             <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                                Welcome to the Family!
+                                Happy Easter!
                             </h3>
                             <p className="text-gray-600 mb-2">
-                                Use code <span className="font-bold text-[#4a4a4a]">AYOOSH50</span> at checkout for 10% discount.
+                                Use code <span className="font-bold text-[#4a4a4a]">AYOOSHEASTER26</span> at checkout for free delivery. Ends Sunday!
                             </p>
                         </div>
                     )}
