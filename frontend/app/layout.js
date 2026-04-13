@@ -2,7 +2,6 @@ import { Inter, Playfair_Display, Montserrat } from 'next/font/google';
 import './globals.css';
 import LayoutWrapper from '@/components/LayoutWrapper';
 import QueryProvider from '@/components/QueryProvider';
-import NewsletterPopup from '@/components/NewsletterPopup';
 import AffiliateTracker from '@/components/AffiliateTracker';
 import { Suspense } from 'react';
 import { Toaster } from 'react-hot-toast';
@@ -136,7 +135,6 @@ export default function RootLayout({ children }) {
           />
           <LayoutWrapper>
             <Suspense fallback={null}><AffiliateTracker /></Suspense>
-            <NewsletterPopup />
             {children}
           </LayoutWrapper>
         </QueryProvider>
