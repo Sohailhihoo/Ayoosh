@@ -112,7 +112,7 @@ export default function SunglassesCircle() {
                             </p>
 
                             <Link
-                                href={`/products/${activeProduct.productId}`}
+                                href={`/products/${activeProduct.slug}`}
                                 className="pointer-events-auto text-white px-8 py-3 rounded-full text-sm font-bold tracking-wide uppercase transition-all hover:scale-105 shadow-xl hover:opacity-90 inline-block"
                                 style={{ backgroundColor: activeProduct.color }}
                             >
@@ -146,7 +146,7 @@ export default function SunglassesCircle() {
                                     rotate: useTransform(smoothRotate, (r) => -r)
                                 }}
                             >
-                                <Link href={`/products/${product.productId}`} className={`block transition-all duration-500 ease-out transform ${isActive
+                                <Link href={`/products/${product.slug}`} className={`block transition-all duration-500 ease-out transform ${isActive
                                     ? 'scale-[1.6] z-50 filter-none opacity-100 drop-shadow-2xl'
                                     : 'scale-90 z-0 grayscale opacity-60'
                                     }`}>

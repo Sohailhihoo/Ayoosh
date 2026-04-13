@@ -89,7 +89,7 @@ function FeaturedProductCard({ product, index }) {
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            <Link href={`/products/${product._id}`} className="block">
+            <Link href={`/products/${product.slug}`} className="block">
                 {/* Product Image Container */}
                 <div className="relative bg-[#f4f2f0] rounded-lg overflow-hidden aspect-square mb-4 shadow-sm">
                     {/* Sale Badge removed */}

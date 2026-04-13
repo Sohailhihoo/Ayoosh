@@ -40,7 +40,7 @@ const StarIcon = ({ className, filled }) => (
 );
 
 export default function ProductDetailPage() {
-  const { id } = useParams();
+  const { slug } = useParams();
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -51,12 +51,12 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     fetchProduct();
-  }, [id]);
+  }, [slug]);
 
   const fetchProduct = async () => {
     try {
       setLoading(true);
-      const { data } = await productAPI.getOne(id);
+      const { data } = await productAPI.getOne(slug);
       setProduct(data.data);
 
       // Fetch related products
@@ -66,7 +66,7 @@ export default function ProductDetailPage() {
           limit: 4
         });
         setRelatedProducts(
-          relatedRes.data.data.products.filter(p => p._id !== id).slice(0, 4)
+          relatedRes.data.data.products.filter(p => p.slug !== slug).slice(0, 4)
         );
       } catch (e) {
         console.log('No related products');
