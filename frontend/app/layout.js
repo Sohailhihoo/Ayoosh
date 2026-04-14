@@ -121,7 +121,7 @@ export default function RootLayout({ children }) {
               },
               success: {
                 iconTheme: {
-                  primary: '#e8a4b8',
+                  primary: '#F6C811',
                   secondary: '#fff',
                 },
               },

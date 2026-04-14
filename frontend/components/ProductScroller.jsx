@@ -101,7 +101,7 @@ export default function ProductScroller() {
 
                     {/* Center Product */}
                     <motion.img
-                        src="https://res.cloudinary.com/dpdg462fb/image/upload/v1769715388/Sun_Tube_cmxezs.png"
+                        src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769715388/Sun_Tube_cmxezs.png"
                         alt="Ayoosh Sun Cream"
                         className="flex-shrink-0 w-auto h-[220px] sm:h-[320px] object-contain"
                         initial={{ opacity: 0, scale: 0.85 }}
@@ -194,7 +194,7 @@ export default function ProductScroller() {
                         <div className="absolute inset-0 top-1/2 -translate-y-1/2 bg-white/40 blur-3xl rounded-full scale-110 pointer-events-none" />
 
                         <img
-                            src="https://res.cloudinary.com/dpdg462fb/image/upload/v1769715388/Sun_Tube_cmxezs.png"
+                            src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769715388/Sun_Tube_cmxezs.png"
                             alt="Ayoosh Sun Cream"
                             className="w-auto h-[750px] object-contain relative z-10"
                             style={{

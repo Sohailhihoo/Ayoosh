@@ -102,7 +102,7 @@ export default function HeroLogoAnimation() {
                         transition={{ duration: 0.5 }}
                     >
                         <motion.img
-                            src="https://res.cloudinary.com/dpdg462fb/image/upload/v1769514667/ayoosh-beauty/brand/logos/loading.png"
+                            src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769514667/ayoosh-beauty/brand/logos/loading.png"
                             alt="Ayoosh Logo"
                             className="w-20 h-20 md:w-24 md:h-24 object-contain"
                             animate={{ rotate: 360 }}
@@ -135,7 +135,7 @@ export default function HeroLogoAnimation() {
                         }}
                     >
                         <img
-                            src="https://res.cloudinary.com/dpdg462fb/image/upload/v1769514667/ayoosh-beauty/brand/logos/loading.png"
+                            src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769514667/ayoosh-beauty/brand/logos/loading.png"
                             alt="Ayoosh Logo"
                             className="w-20 h-20 md:w-24 md:h-24 object-contain"
                         />
@@ -152,7 +152,7 @@ export default function HeroLogoAnimation() {
                         animate={{ opacity: 1 }}
                     >
                         <img
-                            src="https://res.cloudinary.com/dpdg462fb/image/upload/v1769514667/ayoosh-beauty/brand/logos/loading.png"
+                            src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769514667/ayoosh-beauty/brand/logos/loading.png"
                             alt="Ayoosh Logo"
                             className="w-20 h-20 md:w-24 md:h-24 object-contain"
                         />
@@ -171,7 +171,7 @@ export default function HeroLogoAnimation() {
                             transition={{ duration: 0.8 }}
                         >
                             <img
-                                src="https://res.cloudinary.com/dpdg462fb/image/upload/v1769514667/ayoosh-beauty/brand/logos/loading.png"
+                                src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769514667/ayoosh-beauty/brand/logos/loading.png"
                                 alt="Ayoosh Logo"
                                 className="w-20 h-20 md:w-24 md:h-24 object-contain"
                             />
@@ -186,7 +186,7 @@ export default function HeroLogoAnimation() {
                             transition={{ duration: 0.8 }}
                         >
                             <img
-                                src="https://res.cloudinary.com/dpdg462fb/image/upload/v1769783995/White-color-Logo_tre0tf.png"
+                                src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769783995/White-color-Logo_tre0tf.png"
                                 alt="Ayoosh"
                                 className="object-contain w-20 h-20 md:w-[200px] md:h-[200px]"
                             />
@@ -203,7 +203,7 @@ export default function HeroLogoAnimation() {
                         initial={{ opacity: 1 }}
                     >
                         <img
-                            src="https://res.cloudinary.com/dpdg462fb/image/upload/v1769783995/White-color-Logo_tre0tf.png"
+                            src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769783995/White-color-Logo_tre0tf.png"
                             alt="Ayoosh"
                             className="object-contain w-20 h-20 md:w-[200px] md:h-[200px]"
                         />

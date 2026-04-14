@@ -21,7 +21,7 @@
   --background: #ffffff;
   --primary: #4a4a4a;
   --primary-light: #6b6b6b;
-  --accent: #e8a4b8;
+  --accent: #F6C811;
 }
 
 * {
@@ -188,7 +188,7 @@ html {
 
 /* Selection color */
 ::selection {
-  background-color: #e8a4b8;
+  background-color: #F6C811;
   color: white;
 }
 
@@ -252,7 +252,7 @@ a {
   left: 50%;
   width: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, #e8a4b8, transparent);
+  background: linear-gradient(90deg, transparent, #F6C811, transparent);
   transform: translateX(-50%);
   transition: width 0.4s ease;
 }

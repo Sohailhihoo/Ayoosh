@@ -38,7 +38,7 @@ export default function TermsPage() {
             {/* Hero Header */}
             <div className="bg-[#faf7f5] border-b border-gray-100">
                 <div className="max-w-4xl mx-auto px-6 py-16 md:py-24 text-center">
-                    <p className="text-xs uppercase tracking-[0.3em] text-[#e8a4b8] mb-4 font-medium">Legal</p>
+                    <p className="text-xs uppercase tracking-[0.3em] text-[#F6C811] mb-4 font-medium">Legal</p>
                     <h1 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl text-[#333] mb-4">
                         Terms &amp; Conditions
                     </h1>
@@ -71,7 +71,7 @@ export default function TermsPage() {
                                 <a
                                     key={section.id}
                                     href={`#${section.id}`}
-                                    className="block py-1.5 text-sm text-gray-500 hover:text-[#e8a4b8] transition-colors break-inside-avoid"
+                                    className="block py-1.5 text-sm text-gray-500 hover:text-[#F6C811] transition-colors break-inside-avoid"
                                 >
                                     {section.title}
                                 </a>
@@ -151,7 +151,7 @@ export default function TermsPage() {
                             <p>The content on this site is only for informational purposes and not to be used as a basis for decisions. You should consult primary, independent, or more current sources of information before acting on any material provided on this site.</p>
                             <p>You are solely responsible for any reliance you place on information obtained through our website.</p>
                             <p>This site contains information that may be outdated. It is only provided for reference.</p>
-                            <p className="bg-[#faf7f5] border-l-2 border-[#e8a4b8] px-4 py-3 text-sm italic">Note: We reserve the right to remove, modify, or update content on this site without prior notice. We are not required to update information. You agree to regularly check out this site for updates.</p>
+                            <p className="bg-[#faf7f5] border-l-2 border-[#F6C811] px-4 py-3 text-sm italic">Note: We reserve the right to remove, modify, or update content on this site without prior notice. We are not required to update information. You agree to regularly check out this site for updates.</p>
                         </div>
                     </section>
 
@@ -281,7 +281,7 @@ export default function TermsPage() {
 
                             <h3 className="text-lg font-medium text-[#333] mb-3 mt-6">Cookie Opt Out</h3>
                             <p>Most web browsers allow you to block all or certain types of cookies if you choose to do so. Users may also opt out of the Google Display Network through the Google Ads Preferences Manager.</p>
-                            <p className="bg-[#faf7f5] border-l-2 border-[#e8a4b8] px-4 py-3 text-sm italic">Note: Please be aware that our website relies on cookies for many of its features to work properly. Blocking cookies can limit your experience with the site.</p>
+                            <p className="bg-[#faf7f5] border-l-2 border-[#F6C811] px-4 py-3 text-sm italic">Note: Please be aware that our website relies on cookies for many of its features to work properly. Blocking cookies can limit your experience with the site.</p>
                         </div>
                     </section>
 
@@ -508,7 +508,7 @@ export default function TermsPage() {
 
                             <h3 className="text-lg font-medium text-[#333] mb-3 mt-6">Shipping Address and Returns Address</h3>
                             <p>Please return the product to:</p>
-                            <address className="not-italic bg-[#faf7f5] px-5 py-4 my-3 border-l-2 border-[#e8a4b8] text-sm leading-relaxed">
+                            <address className="not-italic bg-[#faf7f5] px-5 py-4 my-3 border-l-2 border-[#F6C811] text-sm leading-relaxed">
                                 Ayoosh (Pty) Ltd<br />
                                 
                             </address>
@@ -531,7 +531,7 @@ export default function TermsPage() {
                 <div className="mt-16 pt-8 border-t border-gray-100 text-center">
                     <a
                         href="#overview"
-                        className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-[#e8a4b8] transition-colors"
+                        className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-[#F6C811] transition-colors"
                     >
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />

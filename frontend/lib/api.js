@@ -85,6 +85,12 @@ export const orderAPI = {
   getByNumber: (orderNumber) => api.get(`/orders/number/${orderNumber}`),
 };
 
+// Shipping APIs
+export const shippingAPI = {
+  getRates: (destination, items) => api.post('/shipping/rates', { destination, items }),
+  track: (ref) => api.get(`/shipping/track/${ref}`),
+};
+
 // Payment APIs
 export const paymentAPI = {
   createIntent: (orderId) => api.post('/payments/create-intent', { orderId }),

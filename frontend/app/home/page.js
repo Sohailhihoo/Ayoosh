@@ -187,7 +187,7 @@ export default function HomePage() {
                         className="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110 brightness-[0.3] group-hover:brightness-110 grayscale group-hover:grayscale-0"
                         aria-label="Skincare collection video"
                     >
-                        <source src="https://res.cloudinary.com/dpdg462fb/video/upload/v1770179502/1_pdu3jc.mp4" type="video/mp4" />
+                        <source src="https://res.cloudinary.com/dpdg462fb/video/upload/q_auto/v1770179502/1_pdu3jc.mp4" type="video/mp4" />
                         Your browser does not support the video tag.
                     </video>
 
@@ -229,7 +229,7 @@ export default function HomePage() {
                         className="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110 brightness-[0.3] group-hover:brightness-110 grayscale group-hover:grayscale-0"
                         aria-label="SkinBooster collection video"
                     >
-                        <source src="https://res.cloudinary.com/dpdg462fb/video/upload/v1770179502/2_m0puzp.mp4" type="video/mp4" />
+                        <source src="https://res.cloudinary.com/dpdg462fb/video/upload/q_auto/v1770179502/2_m0puzp.mp4" type="video/mp4" />
                         Your browser does not support the video tag.
                     </video>
 
@@ -271,7 +271,7 @@ export default function HomePage() {
                         variants={scaleIn}
                     >
                         <div className="w-16 h-16 mb-4 mx-auto group-hover:scale-110 transition-all duration-500">
-                            <img src="https://res.cloudinary.com/dpdg462fb/image/upload/v1770184422/Group_70_vhucel.png" alt="Skincare Icon" className="w-full h-full object-contain" />
+                            <img src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1770184422/Group_70_vhucel.png" alt="Skincare Icon" className="w-full h-full object-contain" />
                         </div>
                         <h3 className="text-lg font-playfair font-bold text-gray-900 mb-2">Skincare</h3>
                         <p className="text-gray-500 text-sm font-light leading-relaxed mb-6">Discover our Korean skincare rituals, crafted to help you glow with intention, feel 
@@ -288,7 +288,7 @@ little more you every day. </p>
                         variants={scaleIn}
                     >
                         <div className="w-16 h-16 mb-4 mx-auto group-hover:scale-110 transition-all duration-500">
-                            <img src="https://res.cloudinary.com/dpdg462fb/image/upload/v1770184424/Group_69_n3ezsx.png" alt="Sunglasses Icon" className="w-full h-full object-contain" />
+                            <img src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1770184424/Group_69_n3ezsx.png" alt="Sunglasses Icon" className="w-full h-full object-contain" />
                         </div>
                         <h3 className="text-lg font-playfair font-bold text-gray-900 mb-2">Sunglasses</h3>
                         <p className="text-gray-500 text-sm font-light leading-relaxed mb-6">Discover our statement sunglasses, designed to elevate your look, sharpen your 
@@ -306,7 +306,7 @@ presence, and help you see the world with confidence, clarity, and Ayoosh energy
                         variants={scaleIn}
                     >
                         <div className="w-16 h-16 mb-4 mx-auto group-hover:scale-110 transition-all duration-500">
-                            <img src="https://res.cloudinary.com/dpdg462fb/image/upload/v1770184357/Group_71_csjhfp.png" alt="Foundation Icon" className="w-full h-full object-contain" />
+                            <img src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1770184357/Group_71_csjhfp.png" alt="Foundation Icon" className="w-full h-full object-contain" />
                         </div>
                         <h3 className="text-lg font-playfair font-bold text-gray-900 mb-2">Ayoosh Foundation</h3>
                         <p className="text-gray-500 text-sm font-light leading-relaxed mb-6">This is where Ayoosh becomes more than a brand, where we turn looking good, feeling 

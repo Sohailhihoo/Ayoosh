@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useCartStore, useAuthStore } from '@/lib/store';
-import { orderAPI, couponAPI } from '@/lib/api';
+import { orderAPI, couponAPI, shippingAPI } from '@/lib/api';
 import { initiatePayFastPayment } from '@/lib/payfast';
 import toast from 'react-hot-toast';
 
@@ -39,6 +39,12 @@ export default function CheckoutForm() {
     // Coupon State
     const [couponInput, setCouponInput] = useState('');
     const [validatingCoupon, setValidatingCoupon] = useState(false);
+
+    // Shipping rates state
+    const [shippingRates, setShippingRates] = useState([]);
+    const [selectedRate, setSelectedRate] = useState(null);
+    const [ratesLoading, setRatesLoading] = useState(false);
+    const [ratesError, setRatesError] = useState('');
 
     // Form state
     const [formData, setFormData] = useState({
@@ -89,13 +95,44 @@ export default function CheckoutForm() {
         }
     }, [user]);
 
-    // Calculate shipping cost based on method
-    const shippingCosts = {
-        standard: 0.00
-    };
+    // Dynamic shipping cost from selected Bob Go rate
+    const currentShippingCost = selectedRate ? Number(selectedRate.total_price) : 0;
 
-    // Calculate dynamic values
-    const currentShippingCost = 0.00;
+    // Fetch Bob Go rates when city & zipCode are ready (debounced)
+    useEffect(() => {
+        const { city, zipCode } = formData;
+        if (!city?.trim() || !zipCode?.trim() || items.length === 0) {
+            setShippingRates([]);
+            setSelectedRate(null);
+            return;
+        }
+        const handle = setTimeout(async () => {
+            setRatesLoading(true);
+            setRatesError('');
+            try {
+                const payload = {
+                    destination: { city, zip: zipCode, country: 'ZA' },
+                    items: items
+                        .map(i => ({ productId: i.product?._id, quantity: i.quantity }))
+                        .filter(i => i.productId),
+                };
+                const { data } = await shippingAPI.getRates(payload.destination, payload.items);
+                if (data.success) {
+                    setShippingRates(data.rates || []);
+                    setSelectedRate(prev =>
+                        (data.rates || []).find(r => r.service_code === prev?.service_code) || data.rates?.[0] || null
+                    );
+                }
+            } catch (e) {
+                setRatesError('Could not load shipping rates. Please try again.');
+                setShippingRates([]);
+                setSelectedRate(null);
+            } finally {
+                setRatesLoading(false);
+            }
+        }, 500);
+        return () => clearTimeout(handle);
+    }, [formData.city, formData.zipCode, items]);
 
     const calculateDiscount = () => {
         if (!coupon) return 0;
@@ -161,6 +198,10 @@ export default function CheckoutForm() {
             toast.error('Please enter a valid email address');
             return false;
         }
+        if (!selectedRate) {
+            toast.error('Please select a shipping option');
+            return false;
+        }
         return true;
     };
 
@@ -196,6 +237,16 @@ export default function CheckoutForm() {
                 },
                 paymentMethod: formData.paymentMethod,
                 shippingMethod: formData.shippingMethod,
+                shippingCost: currentShippingCost,
+                shippingService: selectedRate && {
+                    provider: 'bobgo',
+                    service_code: selectedRate.service_code,
+                    service_name: selectedRate.service_name,
+                    courier: selectedRate.courier,
+                    price: selectedRate.total_price,
+                    min_delivery_date: selectedRate.min_delivery_date,
+                    max_delivery_date: selectedRate.max_delivery_date,
+                },
                 customerNote: formData.customerNote,
                 // Coupon Data
                 couponCode: coupon?.code,
@@ -227,13 +278,12 @@ export default function CheckoutForm() {
         }
     };
 
-    const shipping = 0.00;
-    const total = subtotal + shipping;
+    const shipping = coupon?.discountType === 'free_shipping' ? 0 : currentShippingCost;
 
     if (pageLoading) {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-4 border-pink-500 border-t-transparent"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-4 border-yellow-500 border-t-transparent"></div>
             </div>
         );
     }
@@ -255,13 +305,13 @@ export default function CheckoutForm() {
             <div className="container-custom py-8">
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-8">
-                    <Link href="/cart" className="text-gray-600 hover:text-pink-600 transition-colors">
+                    <Link href="/cart" className="text-gray-600 hover:text-yellow-600 transition-colors">
                         <ArrowLeftIcon className="w-6 h-6" />
                     </Link>
                     <h1 className="text-3xl font-bold">Checkout</h1>
                     {!isAuthenticated && (
                         <span className="ml-auto text-sm text-gray-500">
-                            <Link href="/login?redirect=/checkout" className="text-pink-600 hover:underline">Login</Link> for faster checkout
+                            <Link href="/login?redirect=/checkout" className="text-yellow-600 hover:underline">Login</Link> for faster checkout
                         </span>
                     )}
                 </div>
@@ -274,7 +324,7 @@ export default function CheckoutForm() {
                             {/* Contact Information */}
                             <div className="bg-white rounded-xl p-6 shadow-sm">
                                 <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                                    <span className="w-8 h-8 bg-pink-100 text-pink-600 rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                                    <span className="w-8 h-8 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center text-sm font-bold">1</span>
                                     Contact Information
                                 </h2>
                                 <div className="grid md:grid-cols-2 gap-4">
@@ -285,7 +335,7 @@ export default function CheckoutForm() {
                                             name="email"
                                             value={formData.email}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
                                             placeholder="your@email.com"
                                             required
                                         />
@@ -298,7 +348,7 @@ export default function CheckoutForm() {
                                             name="firstName"
                                             value={formData.firstName}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
                                             required
                                         />
                                     </div>
@@ -309,7 +359,7 @@ export default function CheckoutForm() {
                                             name="lastName"
                                             value={formData.lastName}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
                                             required
                                         />
                                     </div>
@@ -320,7 +370,7 @@ export default function CheckoutForm() {
                                             name="phone"
                                             value={formData.phone}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
                                             placeholder="+27 12 345 6789"
                                         />
                                     </div>
@@ -330,7 +380,7 @@ export default function CheckoutForm() {
                             {/* Shipping Address */}
                             <div className="bg-white rounded-xl p-6 shadow-sm">
                                 <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                                    <span className="w-8 h-8 bg-pink-100 text-pink-600 rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                                    <span className="w-8 h-8 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center text-sm font-bold">2</span>
                                     Shipping Address
                                 </h2>
                                 <div className="grid md:grid-cols-2 gap-4">
@@ -341,7 +391,7 @@ export default function CheckoutForm() {
                                             name="street"
                                             value={formData.street}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
                                             required
                                         />
                                     </div>
@@ -352,7 +402,7 @@ export default function CheckoutForm() {
                                             name="city"
                                             value={formData.city}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
                                             required
                                         />
                                     </div>
@@ -362,7 +412,7 @@ export default function CheckoutForm() {
                                             name="state"
                                             value={formData.state}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
                                             required
                                         >
                                             <option value="">Select Province</option>
@@ -384,7 +434,7 @@ export default function CheckoutForm() {
                                             name="zipCode"
                                             value={formData.zipCode}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
                                             required
                                         />
                                     </div>
@@ -394,7 +444,7 @@ export default function CheckoutForm() {
                                             name="country"
                                             value={formData.country}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
                                         >
                                             <option>South Africa</option>
                                         </select>
@@ -404,6 +454,59 @@ export default function CheckoutForm() {
 
 
 
+                            {/* Shipping Method */}
+                            <div className="bg-white rounded-xl p-6 shadow-sm">
+                                <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                                    <span className="w-8 h-8 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                                    Shipping Method
+                                </h2>
+                                {!formData.city?.trim() || !formData.zipCode?.trim() ? (
+                                    <p className="text-sm text-gray-500">Enter city and postal code above to see delivery options.</p>
+                                ) : ratesLoading ? (
+                                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-yellow-500 border-t-transparent"></div>
+                                        Fetching shipping rates...
+                                    </div>
+                                ) : ratesError ? (
+                                    <p className="text-sm text-red-600">{ratesError}</p>
+                                ) : shippingRates.length === 0 ? (
+                                    <p className="text-sm text-gray-500">No shipping options available for this address.</p>
+                                ) : (
+                                    <div className="space-y-3">
+                                        {shippingRates.map(rate => {
+                                            const checked = selectedRate?.service_code === rate.service_code;
+                                            return (
+                                                <label
+                                                    key={rate.service_code}
+                                                    className={`flex items-start gap-3 p-4 border rounded-lg cursor-pointer transition-colors ${checked ? 'border-yellow-500 bg-yellow-50' : 'border-gray-200 hover:border-gray-300'
+                                                        }`}
+                                                >
+                                                    <input
+                                                        type="radio"
+                                                        name="shippingRate"
+                                                        checked={checked}
+                                                        onChange={() => setSelectedRate(rate)}
+                                                        className="mt-1 accent-yellow-600"
+                                                    />
+                                                    <div className="flex-1">
+                                                        <div className="flex items-center justify-between">
+                                                            <span className="font-medium">{rate.service_name}</span>
+                                                            <span className="font-semibold">R{Number(rate.total_price).toFixed(2)}</span>
+                                                        </div>
+                                                        <p className="text-xs text-gray-500 mt-1">
+                                                            {rate.courier}
+                                                            {rate.min_delivery_date && rate.max_delivery_date && (
+                                                                <> · {rate.min_delivery_date} – {rate.max_delivery_date}</>
+                                                            )}
+                                                        </p>
+                                                    </div>
+                                                </label>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
+
                             {/* Order Notes */}
                             <div className="bg-white rounded-xl p-6 shadow-sm">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Order Notes (Optional)</label>
@@ -412,7 +515,7 @@ export default function CheckoutForm() {
                                     value={formData.customerNote}
                                     onChange={handleChange}
                                     rows={3}
-                                    className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                    className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
                                     placeholder="Special delivery instructions, gift message, etc."
                                 />
                             </div>
@@ -484,7 +587,7 @@ export default function CheckoutForm() {
                                             value={couponInput}
                                             onChange={(e) => setCouponInput(e.target.value)}
                                             placeholder="Coupon Code"
-                                            className="flex-1 px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-pink-500 uppercase"
+                                            className="flex-1 px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-yellow-500 uppercase"
                                         />
                                         <button
                                             type="button"
@@ -555,7 +658,7 @@ export default function CheckoutForm() {
 
                             <Link
                                 href="/cart"
-                                className="block text-center text-pink-600 hover:underline mt-4 text-sm"
+                                className="block text-center text-yellow-600 hover:underline mt-4 text-sm"
                             >
                                 ← Return to Cart
                             </Link>

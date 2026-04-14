@@ -124,9 +124,9 @@ export default function ProductDetailPage() {
       {/* Breadcrumb */}
       <div className="container-custom py-4">
         <nav className="text-sm text-gray-500">
-          <Link href="/" className="hover:text-pink-600">Home</Link>
+          <Link href="/" className="hover:text-yellow-600">Home</Link>
           <span className="mx-2">/</span>
-          <Link href="/products" className="hover:text-pink-600">Products</Link>
+          <Link href="/products" className="hover:text-yellow-600">Products</Link>
           <span className="mx-2">/</span>
           <span className="text-gray-900">{product.name}</span>
         </nav>
@@ -157,7 +157,7 @@ export default function ProductDetailPage() {
             {product.images?.length > 1 && (
               <div className="grid grid-cols-4 gap-2">
                 {product.images.map((img, i) => (
-                  <div key={i} className="aspect-square bg-gray-100 rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-pink-500 transition-all">
+                  <div key={i} className="aspect-square bg-gray-100 rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-yellow-500 transition-all">
                     <img
                       src={img.url}
                       alt={`${product.name} - ${i + 1}`}
@@ -171,7 +171,7 @@ export default function ProductDetailPage() {
 
           {/* Product Info */}
           <div>
-            <p className="text-sm text-pink-600 font-medium uppercase tracking-wide mb-2">
+            <p className="text-sm text-yellow-600 font-medium uppercase tracking-wide mb-2">
               {product.brand}
             </p>
             <h1 className="text-3xl font-bold text-gray-900 mb-4">
@@ -223,7 +223,7 @@ export default function ProductDetailPage() {
               <div className="mb-6">
                 <h3 className="font-medium mb-3">
                   {product.variants[0].name}:
-                  <span className="text-pink-600 ml-2">{selectedVariant?.value || 'Select'}</span>
+                  <span className="text-yellow-600 ml-2">{selectedVariant?.value || 'Select'}</span>
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {product.variants.map((variant, i) => (
@@ -231,8 +231,8 @@ export default function ProductDetailPage() {
                       key={i}
                       onClick={() => setSelectedVariant(variant)}
                       className={`px-4 py-2 border-2 rounded-lg transition-colors ${selectedVariant?.value === variant.value
-                        ? 'border-pink-600 bg-pink-50 text-pink-600'
-                        : 'border-gray-200 hover:border-pink-300'
+                        ? 'border-yellow-600 bg-yellow-50 text-yellow-600'
+                        : 'border-gray-200 hover:border-yellow-300'
                         }`}
                     >
                       {variant.value}
@@ -277,7 +277,7 @@ export default function ProductDetailPage() {
                 <ShoppingBagIcon className="w-5 h-5" />
                 {product.productType === 'sunglasses' ? 'Pre-Order' : 'Add to Cart'}
               </button>
-              <button className="p-4 border-2 border-gray-200 rounded-lg hover:border-pink-300 transition-colors">
+              <button className="p-4 border-2 border-gray-200 rounded-lg hover:border-yellow-300 transition-colors">
                 <HeartIcon className="w-6 h-6" />
               </button>
             </div>
@@ -299,7 +299,7 @@ export default function ProductDetailPage() {
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`pb-4 font-medium capitalize transition-colors ${activeTab === tab
-                    ? 'text-pink-600 border-b-2 border-pink-600'
+                    ? 'text-yellow-600 border-b-2 border-yellow-600'
                     : 'text-gray-500 hover:text-gray-700'
                     }`}
                 >

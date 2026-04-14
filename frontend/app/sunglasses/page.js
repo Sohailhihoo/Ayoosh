@@ -40,28 +40,28 @@ const splitSectionConfig = {
     },
     rightPanel: {
         imageOnly: true,
-        backgroundImage: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769691023/Why_choose_ayoosh_bjb1af.jpg'
+        backgroundImage: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769691023/Why_choose_ayoosh_bjb1af.jpg'
     }
 };
 
 const sunglassesVideos = [
     {
         id: 1,
-        thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/so_0/v1770308098/1_bexn7a.jpg",
-        videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1770308098/1_bexn7a.mov",
+        thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/f_auto,q_auto,so_0/v1770308098/1_bexn7a.jpg",
+        videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/q_auto/v1770308098/1_bexn7a.mov",
         
     },
     {
         id: 2,
-        thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/so_0/v1770308099/2_victgs.jpg",
-        videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1770308099/2_victgs.mp4",
+        thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/f_auto,q_auto,so_0/v1770308099/2_victgs.jpg",
+        videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/q_auto/v1770308099/2_victgs.mp4",
         featured: true,
        
     },
     {
         id: 3,
-        thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/so_0/v1770308086/3_xzzogy.jpg",
-        videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/v1770308086/3_xzzogy.mp4",
+        thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/f_auto,q_auto,so_0/v1770308086/3_xzzogy.jpg",
+        videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/q_auto/v1770308086/3_xzzogy.mp4",
         
     }
 ];
@@ -71,7 +71,7 @@ export default function SunglassesPage() {
         <div className="min-h-screen bg-[#d9d9d9]">
             {/* Hero Section */}
             <HeroSection
-                videoSrc="https://res.cloudinary.com/dpdg462fb/video/upload/v1770179525/sunglasses_ocnfon.mp4"
+                videoSrc="https://res.cloudinary.com/dpdg462fb/video/upload/q_auto/v1770179525/sunglasses_ocnfon.mp4"
                 title="The Perspective Range"
                 titleStyle={heroTitleStyle}
                 buttons={heroButtons}

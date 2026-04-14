@@ -107,7 +107,7 @@ function OrderConfirmationContent() {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-4 border-pink-500 border-t-transparent mx-auto mb-4"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-4 border-yellow-500 border-t-transparent mx-auto mb-4"></div>
                     <p className="text-gray-600">Verifying your order...</p>
                 </div>
             </div>
@@ -123,7 +123,7 @@ function OrderConfirmationContent() {
                     </div>
                     <h1 className="text-2xl font-bold text-gray-900 mb-2">Something went wrong</h1>
                     <p className="text-gray-600 mb-6">{error}</p>
-                    <Link href="/" className="text-pink-600 hover:underline">Return to Home</Link>
+                    <Link href="/" className="text-yellow-600 hover:underline">Return to Home</Link>
                 </div>
             </div>
         );
@@ -139,7 +139,7 @@ function OrderConfirmationContent() {
                     <h1 className="text-2xl font-bold text-gray-900 mb-2">Payment Cancelled</h1>
                     <p className="text-gray-600 mb-6">Your payment was cancelled. Your order has not been processed.</p>
                     <div className="space-y-3">
-                        <Link href="/checkout" className="block w-full bg-pink-600 text-white px-6 py-3 rounded-lg hover:bg-pink-700 transition-colors">Try Again</Link>
+                        <Link href="/checkout" className="block w-full bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition-colors">Try Again</Link>
                         <Link href="/" className="block w-full border border-gray-300 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors">Return to Home</Link>
                     </div>
                 </div>
@@ -275,7 +275,7 @@ export default function OrderConfirmationPage() {
     return (
         <Suspense fallback={
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-4 border-pink-500 border-t-transparent"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-4 border-yellow-500 border-t-transparent"></div>
             </div>
         }>
             <OrderConfirmationContent />

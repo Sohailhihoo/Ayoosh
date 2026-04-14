@@ -44,7 +44,7 @@ const splitSectionConfig = {
     },
     rightPanel: {
         imageOnly: true,
-        backgroundImage: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769691023/Why_choose_ayoosh_bjb1af.jpg'
+        backgroundImage: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769691023/Why_choose_ayoosh_bjb1af.jpg'
     }
 };
 
@@ -56,7 +56,7 @@ export default function BeautyPage() {
             name: 'Centella Cica Glow Sun Cream',
             variant: '50ml Tube',
             price: 525.95,
-            image: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769715388/Sun_Tube_cmxezs.png',
+            image: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769715388/Sun_Tube_cmxezs.png',
             rating: 5.0
         },
         {
@@ -64,7 +64,7 @@ export default function BeautyPage() {
             name: 'Centella Cica Glow Sun Cream',
             variant: '10 x 5ml Sachet',
             price: 515.95,
-            image: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769748802/Pouch_and_Sachet_bjidrn.png',
+            image: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769748802/Pouch_and_Sachet_bjidrn.png',
             rating: 5.0,
             imageScale: 1.4
         }
@@ -74,7 +74,7 @@ export default function BeautyPage() {
         <div className="min-h-screen bg-[#f4f2f0]">
             {/* Hero Section */}
             <HeroSection
-                videoSrc="https://res.cloudinary.com/dpdg462fb/video/upload/v1770179476/hero_utjppl.mp4"
+                videoSrc="https://res.cloudinary.com/dpdg462fb/video/upload/q_auto/v1770179476/hero_utjppl.mp4"
                 title="AYOOSH SUN CREAM"
                 titleStyle={heroTitleStyle}
                 buttons={heroButtons}

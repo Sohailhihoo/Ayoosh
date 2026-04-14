@@ -5,16 +5,16 @@
  * Update these URLs if assets are re-uploaded or moved.
  */
 
-const CLOUDINARY_BASE = 'https://res.cloudinary.com/dpdg462fb/image/upload';
+const CLOUDINARY_BASE = 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto';
 
 export const ASSETS = {
     // Brand Logos
     logos: {
-        main: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769784376/Black-color-Logo_zxn3hh.png',
-        loading: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769514667/ayoosh-beauty/brand/logos/loading.png',
-        final: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769784376/Black-color-Logo_zxn3hh.png',
+        main: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769784376/Black-color-Logo_zxn3hh.png',
+        loading: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769514667/ayoosh-beauty/brand/logos/loading.png',
+        final: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769784376/Black-color-Logo_zxn3hh.png',
         alt: `${CLOUDINARY_BASE}/v1/ayoosh-beauty/brand/logos/alt`,
-        light: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769783995/White-color-Logo_tre0tf.png',
+        light: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769783995/White-color-Logo_tre0tf.png',
         yellow: `${CLOUDINARY_BASE}/v1/ayoosh-beauty/brand/logos/yellow`,
         yellowAccent: `${CLOUDINARY_BASE}/v1/ayoosh-beauty/brand/logos/yellow-accent`,
     },
@@ -57,8 +57,10 @@ export function getOptimizedUrl(url, options = {}) {
     if (width) transforms += `,w_${width}`;
     if (height) transforms += `,h_${height}`;
 
-    // Insert transforms into URL
-    return url.replace('/upload/', `/upload/${transforms}/`);
+    // Replace any existing base transforms, else insert after /upload/
+    return url
+        .replace('/upload/f_auto,q_auto/', `/upload/${transforms}/`)
+        .replace(/\/upload\/(?!f_auto,q_auto\/|[a-z]+_)/, `/upload/${transforms}/`);
 }
 
 export default ASSETS;

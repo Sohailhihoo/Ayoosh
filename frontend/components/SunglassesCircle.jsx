@@ -23,7 +23,7 @@ const sunglasses = [
         tagline: 'Confidence',
         description: 'Ayoosh The Confidence sunglasses feature yellow polarized lenses and a lightweight metal aviator frame. They are an ideal choice for everyday wear and a bold presence.',
         specs: ['Yellow Tint', 'UV400', 'Lightweight'],
-        image: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769767397/Yellow-Glasses_faznsr.png',
+        image: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769767397/Yellow-Glasses_faznsr.png',
         color: '#DEA835'
     },
     {
@@ -34,7 +34,7 @@ const sunglasses = [
         tagline: 'Focus',
         description: 'The Focus sunglasses feature Coffee Brown polarized lenses and a lightweight metal aviator frame, delivering everyday comfort and timeless style.',
         specs: ['Brown Lens', 'Acetate', 'Anti-Glare'],
-        image: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769767395/Brown-Glasses_u6obla.png',
+        image: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769767395/Brown-Glasses_u6obla.png',
         color: '#A87E5A'
     },
     {
@@ -45,7 +45,7 @@ const sunglasses = [
         tagline: 'Leadership',
         description: 'Ayoosh The Leadership sunglasses feature blue polarized lenses and a metal aviator frame. It\'s perfect for a confident presence and unisex everyday style.',
         specs: ['Blue Gradient', 'Polarized', 'Impact Resistant'],
-        image: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1769767393/Blue-Glasses_fky8v9.png',
+        image: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769767393/Blue-Glasses_fky8v9.png',
         color: '#649BC3'
     },
     {
@@ -56,7 +56,7 @@ const sunglasses = [
         tagline: 'RoseView',
         description: "Ayoosh The Roseview pink aviator sunglasses feature a gold metal frame and soft pink lenses. They are designed for elegant presence and unisex daily wear.",
         specs: ['Pink Tint', 'Gold Frame', 'Adjustable'],
-        image: 'https://res.cloudinary.com/dpdg462fb/image/upload/v1770582888/Pink-Glasses_1_egtenl.png',
+        image: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1770582888/Pink-Glasses_1_egtenl.png',
         color: '#D47E9C'
     }
 ];

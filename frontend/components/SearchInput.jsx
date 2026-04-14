@@ -115,7 +115,7 @@ export default function SearchInput({
                 onKeyDown={handleKeyDown}
                 placeholder={placeholder}
                 className="w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-lg 
-                   focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent
+                   focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent
                    placeholder-gray-400 text-gray-900"
                 aria-label="Search products"
             />

@@ -91,7 +91,7 @@ function ProductsContent() {
                 {hasActiveFilters && (
                   <button
                     onClick={clearFilters}
-                    className="text-sm text-pink-600 hover:text-pink-700"
+                    className="text-sm text-yellow-600 hover:text-yellow-700"
                   >
                     Clear All
                   </button>
@@ -114,7 +114,7 @@ function ProductsContent() {
                       name="productType"
                       checked={!filters.productType}
                       onChange={() => setFilter('productType', null)}
-                      className="text-pink-600 focus:ring-pink-500"
+                      className="text-yellow-600 focus:ring-yellow-500"
                     />
                     <span>All</span>
                   </label>
@@ -125,7 +125,7 @@ function ProductsContent() {
                         name="productType"
                         checked={filters.productType === type}
                         onChange={() => setFilter('productType', type)}
-                        className="text-pink-600 focus:ring-pink-500"
+                        className="text-yellow-600 focus:ring-yellow-500"
                       />
                       <span className="capitalize">{categoryLabels[type]}</span>
                     </label>
@@ -161,7 +161,7 @@ function ProductsContent() {
                     type="checkbox"
                     checked={filters.inStock === 'true'}
                     onChange={(e) => setFilter('inStock', e.target.checked ? 'true' : null)}
-                    className="text-pink-600 focus:ring-pink-500 rounded"
+                    className="text-yellow-600 focus:ring-yellow-500 rounded"
                   />
                   <span>In Stock Only</span>
                 </label>
@@ -180,7 +180,7 @@ function ProductsContent() {
                 <AdjustmentsIcon className="w-5 h-5" />
                 Filters
                 {hasActiveFilters && (
-                  <span className="bg-pink-600 text-white text-xs px-2 py-0.5 rounded-full">
+                  <span className="bg-yellow-600 text-white text-xs px-2 py-0.5 rounded-full">
                     Active
                   </span>
                 )}
@@ -189,7 +189,7 @@ function ProductsContent() {
               <select
                 value={filters.sort}
                 onChange={(e) => setFilter('sort', e.target.value)}
-                className="px-4 py-2 bg-white border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                className="px-4 py-2 bg-white border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
               >
                 {sortOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -264,7 +264,7 @@ function ProductsContent() {
                       key={pageNum}
                       onClick={() => setFilter('page', pageNum)}
                       className={`w-10 h-10 rounded-lg font-medium transition-colors ${filters.page === pageNum
-                        ? 'bg-pink-600 text-white'
+                        ? 'bg-yellow-600 text-white'
                         : 'bg-white hover:bg-gray-100'
                         }`}
                     >
@@ -315,7 +315,7 @@ function ProductsContent() {
                     name="productType-mobile"
                     checked={!filters.productType}
                     onChange={() => setFilter('productType', null)}
-                    className="text-pink-600 focus:ring-pink-500"
+                    className="text-yellow-600 focus:ring-yellow-500"
                   />
                   <span>All</span>
                 </label>
@@ -326,7 +326,7 @@ function ProductsContent() {
                       name="productType-mobile"
                       checked={filters.productType === type}
                       onChange={() => setFilter('productType', type)}
-                      className="text-pink-600 focus:ring-pink-500"
+                      className="text-yellow-600 focus:ring-yellow-500"
                     />
                     <span className="capitalize">{categoryLabels[type]}</span>
                   </label>
@@ -362,7 +362,7 @@ function ProductsContent() {
                   type="checkbox"
                   checked={filters.inStock === 'true'}
                   onChange={(e) => setFilter('inStock', e.target.checked ? 'true' : null)}
-                  className="text-pink-600 focus:ring-pink-500 rounded"
+                  className="text-yellow-600 focus:ring-yellow-500 rounded"
                 />
                 <span>In Stock Only</span>
               </label>
@@ -393,7 +393,7 @@ export default function ProductsPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-pink-500 border-t-transparent"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-yellow-500 border-t-transparent"></div>
       </div>
     }>
       <ProductsContent />

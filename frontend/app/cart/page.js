@@ -121,7 +121,7 @@ export default function CartPage() {
                             {item.variant.name}: {item.variant.value}
                           </p>
                         )}
-                        <p className="text-pink-600 font-medium mt-1">
+                        <p className="text-yellow-600 font-medium mt-1">
                           R{item.price?.toFixed(2)}
                         </p>
                       </div>
@@ -196,7 +196,7 @@ export default function CartPage() {
               {!isAuthenticated && (
                 <div className="mt-4 text-center">
                   <p className="text-sm text-gray-500">
-                    <Link href="/login?redirect=/checkout" className="text-pink-600 hover:underline">Login</Link>
+                    <Link href="/login?redirect=/checkout" className="text-yellow-600 hover:underline">Login</Link>
                     {' '}for faster checkout, or continue as guest
                   </p>
                 </div>
@@ -204,7 +204,7 @@ export default function CartPage() {
 
               <Link
                 href="/products"
-                className="block text-center text-pink-600 hover:underline mt-4"
+                className="block text-center text-yellow-600 hover:underline mt-4"
               >
                 Continue Shopping
               </Link>

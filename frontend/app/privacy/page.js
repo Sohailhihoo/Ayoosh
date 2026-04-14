@@ -25,7 +25,7 @@ export default function PrivacyPage() {
             {/* Hero Header */}
             <div className="bg-[#faf7f5] border-b border-gray-100">
                 <div className="max-w-4xl mx-auto px-6 py-16 md:py-24 text-center">
-                    <p className="text-xs uppercase tracking-[0.3em] text-[#e8a4b8] mb-4 font-medium">Legal</p>
+                    <p className="text-xs uppercase tracking-[0.3em] text-[#F6C811] mb-4 font-medium">Legal</p>
                     <h1 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl text-[#333] mb-4">
                         Privacy Policy
                     </h1>
@@ -63,7 +63,7 @@ export default function PrivacyPage() {
                                 <a
                                     key={section.id}
                                     href={`#${section.id}`}
-                                    className="block py-1.5 text-sm text-gray-500 hover:text-[#e8a4b8] transition-colors break-inside-avoid"
+                                    className="block py-1.5 text-sm text-gray-500 hover:text-[#F6C811] transition-colors break-inside-avoid"
                                 >
                                     {section.title}
                                 </a>
@@ -80,7 +80,7 @@ export default function PrivacyPage() {
                         <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Contact Information</h2>
                         <div className="space-y-4">
                             <p>If you have any questions about this Privacy Policy, would like more information about our privacy practices, or wish to submit a complaint, you can contact us using the details below:</p>
-                            <div className="bg-[#faf7f5] border-l-2 border-[#e8a4b8] px-5 py-4 text-sm">
+                            <div className="bg-[#faf7f5] border-l-2 border-[#F6C811] px-5 py-4 text-sm">
                                 <p>Email: support@ayooshonline.com</p>
                             </div>
                         </div>
@@ -108,7 +108,7 @@ export default function PrivacyPage() {
 
                             <h3 className="text-lg font-medium text-[#333] mb-3 mt-8">User-Generated content</h3>
                             <p>You may make your personal information visible to others if you do so publicly via interactive features on the Site. Please be aware that we have no control over how third parties may use the information you choose.</p>
-                            <p className="bg-[#faf7f5] border-l-2 border-[#e8a4b8] px-4 py-3 text-sm italic">Note: We will not monitor your private communications or gain access to them.</p>
+                            <p className="bg-[#faf7f5] border-l-2 border-[#F6C811] px-4 py-3 text-sm italic">Note: We will not monitor your private communications or gain access to them.</p>
 
                             <h3 className="text-lg font-medium text-[#333] mb-3 mt-8">Email Marketing</h3>
                             <p>You may receive marketing emails from us about our products, updates, or promotions if you choose to opt-in. You can withdraw consent at any time using the unsubscribe button in our emails, or by contacting us directly.</p>
@@ -198,7 +198,7 @@ export default function PrivacyPage() {
                         <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Section 7 &ndash; Links</h2>
                         <div className="space-y-4">
                             <p>Our Site may include links to other websites. You may be redirected to an external website when you click on these links.</p>
-                            <p className="bg-[#faf7f5] border-l-2 border-[#e8a4b8] px-4 py-3 text-sm italic">Note: Please review the privacy policies of any third-party sites before you provide any personal information.</p>
+                            <p className="bg-[#faf7f5] border-l-2 border-[#F6C811] px-4 py-3 text-sm italic">Note: Please review the privacy policies of any third-party sites before you provide any personal information.</p>
                         </div>
                     </section>
 
@@ -255,7 +255,7 @@ export default function PrivacyPage() {
                 <div className="mt-16 pt-8 border-t border-gray-100 text-center">
                     <a
                         href="#contact"
-                        className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-[#e8a4b8] transition-colors"
+                        className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-[#F6C811] transition-colors"
                     >
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
