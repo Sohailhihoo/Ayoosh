@@ -21,7 +21,7 @@ export default function ProductCard({ product }) {
   };
 
   const productColors = {
-    suncream: 'from-[#ffe082] to-[#ffcc80]', // Warm sun colors
+    suncream: 'from-[#e0e0e0] to-[#f5f5f5]',
     sunglasses: 'from-[#e0e0e0] to-[#f5f5f5]',
     accessories: 'from-[#e8d4c4] to-[#f5e6d8]',
   };
