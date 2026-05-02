@@ -53,6 +53,7 @@ export default function BeautyPage() {
     const featuredProducts = [
         {
             _id: '69825dab2d01b1efb437017c',
+            slug: 'ayoosh-sun-cream-50ml-tube-daily-sun-protection',
             name: 'Centella Cica Glow Sun Cream',
             variant: '50ml Tube',
             price: 525.95,
@@ -61,6 +62,7 @@ export default function BeautyPage() {
         },
         {
             _id: '69825dab2d01b1efb4370176',
+            slug: 'radiant-glow-face-oil',
             name: 'Centella Cica Glow Sun Cream',
             variant: '10 x 5ml Sachet',
             price: 515.95,
