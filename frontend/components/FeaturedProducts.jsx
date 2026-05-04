@@ -34,7 +34,7 @@ export default function FeaturedProducts({
                 </motion.h2>
 
                 {/* Products Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-2 gap-4 md:gap-8">
                     {displayProducts.map((product, idx) => (
                         <FeaturedProductCard key={product._id || idx} product={product} index={idx} />
                     ))}
@@ -153,7 +153,7 @@ function FeaturedProductCard({ product, index }) {
                             R{product.price?.toFixed(2) || '0.00'}
                         </p>
                     </div>
-                    <div className="flex-shrink-0">
+                    <div className="flex-shrink-0 hidden md:block">
                         {renderStars(product.rating)}
                     </div>
                 </div>

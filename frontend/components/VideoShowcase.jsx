@@ -55,7 +55,7 @@ export default function VideoShowcase({ videos: propVideos, bgColor = '#f4f2f0' 
     return (
         <section ref={sectionRef} className="py-20 overflow-hidden" style={{ backgroundColor: bgColor }}>
             <div className="max-w-7xl mx-auto px-6 md:px-12">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-center justify-center">
+                <div className="grid grid-cols-3 gap-2 md:gap-8 items-center justify-center">
                     {videos.map((video, index) => (
                         <VideoCard key={video.id} video={video} index={index} sectionInView={isInView} />
                     ))}
@@ -105,7 +105,7 @@ function VideoCard({ video, index, sectionInView }) {
             className={`
                 relative group rounded-3xl overflow-hidden shadow-2xl bg-gray-100
                 aspect-[9/16]
-                ${video.featured ? 'md:scale-110 z-10' : 'opacity-90 hover:opacity-100'}
+                ${video.featured ? 'scale-105 md:scale-110 z-10' : 'opacity-90 hover:opacity-100'}
                 transition-all duration-500 ease-out transform
             `}
         >

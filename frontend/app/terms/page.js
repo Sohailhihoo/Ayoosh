@@ -36,10 +36,10 @@ export default function TermsPage() {
     return (
         <div className="bg-white min-h-screen">
             {/* Hero Header */}
-            <div className="bg-[#faf7f5] border-b border-gray-100">
+            <div className="bg-[#fefce8] border-b border-gray-100">
                 <div className="max-w-4xl mx-auto px-6 py-16 md:py-24 text-center">
                     <p className="text-xs uppercase tracking-[0.3em] text-[#F6C811] mb-4 font-medium">Legal</p>
-                    <h1 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl text-[#333] mb-4">
+                    <h1 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl text-black mb-4">
                         Terms &amp; Conditions
                     </h1>
                     <p className="text-sm text-gray-400 tracking-wide">Ayoosh PTY Ltd</p>
@@ -51,9 +51,9 @@ export default function TermsPage() {
                 <div className="mb-12 border border-gray-100 rounded-lg overflow-hidden">
                     <button
                         onClick={() => setTocOpen(!tocOpen)}
-                        className="w-full flex items-center justify-between px-6 py-4 bg-[#faf7f5] text-left md:cursor-default"
+                        className="w-full flex items-center justify-between px-6 py-4 bg-[#fefce8] text-left md:cursor-default"
                     >
-                        <span className="text-xs uppercase tracking-[0.2em] text-[#4a4a4a] font-medium">
+                        <span className="text-xs uppercase tracking-[0.2em] text-black font-medium">
                             Table of Contents
                         </span>
                         <svg
@@ -81,11 +81,11 @@ export default function TermsPage() {
                 </div>
 
                 {/* Content */}
-                <div className="space-y-12 text-[#4a4a4a] text-[15px] leading-relaxed">
+                <div className="space-y-12 text-black text-[15px] leading-relaxed">
 
                     {/* Overview */}
                     <section id="overview">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Overview</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-black mb-6">Overview</h2>
                         <div className="space-y-4">
                             <p>This website is owned and operated by Ayoosh PTY Ltd. Ayoosh PTY Ltd is referred to as &ldquo;we&rdquo;, &ldquo;us&rdquo; and &ldquo;our&rdquo; throughout this website and in these Terms &amp; Conditions. Ayoosh PTY Ltd offers this website, including all the information, tools and services that are available on it, subject to you accepting the terms, policies, and conditions set forth here. These Terms &amp; Condition govern your relationship with Ayoosh.</p>
                             <p>By using this website or purchasing our products and services, you agree to these Terms &amp; Conditions, as well as any other terms, conditions or policies that are referenced in the site or accessible via hyperlink. The Terms &amp; Conditions applies to all website users, including but without limitation of browsers, customers and merchants.</p>
@@ -100,12 +100,12 @@ export default function TermsPage() {
 
                     {/* Section 1 */}
                     <section id="section-1">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Section 1 &ndash; Online Store Terms and Prohibitions</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-black mb-6">Section 1 &ndash; Online Store Terms and Prohibitions</h2>
 
-                        <h3 className="text-lg font-medium text-[#333] mb-3 mt-8">Eligibility and Consent</h3>
+                        <h3 className="text-lg font-medium text-black mb-3 mt-8">Eligibility and Consent</h3>
                         <p className="mb-4">You confirm that you have reached the age of 18 by accessing or using our website. You represent further that you have obtained consent for any minor dependents who are under your supervision to access this website.</p>
 
-                        <h3 className="text-lg font-medium text-[#333] mb-3 mt-8">Prohibited Uses</h3>
+                        <h3 className="text-lg font-medium text-black mb-3 mt-8">Prohibited Uses</h3>
                         <p className="mb-4">You agree not to misuse this website or any of our services. You must not:</p>
                         <ul className="list-disc pl-6 space-y-2 mb-4">
                             <li>Promote, engage in or facilitate criminal activity.</li>
@@ -119,7 +119,7 @@ export default function TermsPage() {
                         </ul>
                         <p className="mb-4">A violation of these provisions can be a crime. Ayoosh retains the right to report any violations of these Terms to law enforcement authorities, and to provide relevant information about users as needed. If you violate these Terms, your access to the Service may be immediately suspended or terminated.</p>
 
-                        <h3 className="text-lg font-medium text-[#333] mb-3 mt-8">Limitation of Liability</h3>
+                        <h3 className="text-lg font-medium text-black mb-3 mt-8">Limitation of Liability</h3>
                         <p className="mb-4">Ayoosh is not responsible for any damage or loss caused by viruses, distributed denial of service attacks, or other harmful materials that could affect your computer system, software, data or other proprietary material because of using our website.</p>
                         <p>You agree to refrain from using our products and services for any illegal or unauthorized purposes. You must follow all laws and regulations when using the Service. This includes, but is not limited to, copyright laws and intellectual property laws.</p>
                     </section>
@@ -128,7 +128,7 @@ export default function TermsPage() {
 
                     {/* Section 2 */}
                     <section id="section-2">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Section 2 &ndash; General Conditions</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-black mb-6">Section 2 &ndash; General Conditions</h2>
                         <div className="space-y-4">
                             <p>We reserve the right to refuse service at any time to anyone for any reason.</p>
                             <p>You acknowledge that the content you transmit or submit through the Service (excluding credit card data) may be transmitted without encryption. This may include:</p>
@@ -145,13 +145,13 @@ export default function TermsPage() {
 
                     {/* Section 3 */}
                     <section id="section-3">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Section 3 &ndash; Accuracy, Completeness and Timeliness of Information</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-black mb-6">Section 3 &ndash; Accuracy, Completeness and Timeliness of Information</h2>
                         <div className="space-y-4">
                             <p>No representations are made or warranties given regarding the accuracy, timeliness, completeness or correctness of any information available on our website.</p>
                             <p>The content on this site is only for informational purposes and not to be used as a basis for decisions. You should consult primary, independent, or more current sources of information before acting on any material provided on this site.</p>
                             <p>You are solely responsible for any reliance you place on information obtained through our website.</p>
                             <p>This site contains information that may be outdated. It is only provided for reference.</p>
-                            <p className="bg-[#faf7f5] border-l-2 border-[#F6C811] px-4 py-3 text-sm italic">Note: We reserve the right to remove, modify, or update content on this site without prior notice. We are not required to update information. You agree to regularly check out this site for updates.</p>
+                            <p className="bg-[#fefce8] border-l-2 border-[#F6C811] px-4 py-3 text-sm italic">Note: We reserve the right to remove, modify, or update content on this site without prior notice. We are not required to update information. You agree to regularly check out this site for updates.</p>
                         </div>
                     </section>
 
@@ -159,15 +159,15 @@ export default function TermsPage() {
 
                     {/* Section 4 */}
                     <section id="section-4">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Section 4 &ndash; Modifications to the Service and Pricing</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-black mb-6">Section 4 &ndash; Modifications to the Service and Pricing</h2>
 
-                        <h3 className="text-lg font-medium text-[#333] mb-3 mt-6">Price changes</h3>
+                        <h3 className="text-lg font-medium text-black mb-3 mt-6">Price changes</h3>
                         <p className="mb-4">Our prices may change at any time, without prior notice.</p>
 
-                        <h3 className="text-lg font-medium text-[#333] mb-3 mt-6">Service Modifications &amp; Availability</h3>
+                        <h3 className="text-lg font-medium text-black mb-3 mt-6">Service Modifications &amp; Availability</h3>
                         <p className="mb-4">At any time, we reserve the right to change, suspend or discontinue any portion of the Service or its content.</p>
 
-                        <h3 className="text-lg font-medium text-[#333] mb-3 mt-6">Liability Wavier</h3>
+                        <h3 className="text-lg font-medium text-black mb-3 mt-6">Liability Wavier</h3>
                         <p>We shall not be responsible for any modifications, price adjustments, suspensions, or discontinuations of the Service.</p>
                     </section>
 
@@ -175,19 +175,19 @@ export default function TermsPage() {
 
                     {/* Section 5 */}
                     <section id="section-5">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Section 5 &ndash; Products and Services</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-black mb-6">Section 5 &ndash; Products and Services</h2>
                         <div className="space-y-4">
                             <p>Certain products and services may only be available online via the website. Products and Services may only be available in limited quantities. Our products and Services are subject to return or exchange only in accordance with our Return Policy.</p>
 
-                            <h3 className="text-lg font-medium text-[#333] mb-3 mt-6">Product Descriptions and Display</h3>
+                            <h3 className="text-lg font-medium text-black mb-3 mt-6">Product Descriptions and Display</h3>
                             <p>We do our best to display the product images, descriptions, and colors accurately. We do not guarantee the accuracy of your device&rsquo;s display or that it will reflect the actual product.</p>
 
-                            <h3 className="text-lg font-medium text-[#333] mb-3 mt-6">Sales Limitations and Availability</h3>
+                            <h3 className="text-lg font-medium text-black mb-3 mt-6">Sales Limitations and Availability</h3>
                             <p>We reserve the right to limit sales of our products and Services to a particular person, geographical region or jurisdiction. This can be done on a case-by-case basis. We also reserve the right to limit quantities, modify product descriptions, or change pricing at any time without prior notice.</p>
 
                             <p>We reserve the right to make changes in product descriptions or pricing at any time, without prior notice. We reserve the right to discontinue any Service or product at any time. Any offer on this website is void in any jurisdiction where it&rsquo;s prohibited by law.</p>
 
-                            <h3 className="text-lg font-medium text-[#333] mb-3 mt-6">No Warranty of Satisfaction</h3>
+                            <h3 className="text-lg font-medium text-black mb-3 mt-6">No Warranty of Satisfaction</h3>
                             <p>We do not warrant or guarantee that the quality of any products, Services, information, or other materials purchased or obtained through the Service will meet your expectations, nor do we warrant that any errors in the Service will be corrected.</p>
                         </div>
                     </section>
@@ -196,18 +196,18 @@ export default function TermsPage() {
 
                     {/* Section 6 */}
                     <section id="section-6">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Section 6 &ndash; Delivery</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-black mb-6">Section 6 &ndash; Delivery</h2>
 
-                        <h3 className="text-lg font-medium text-[#333] mb-3 mt-6">Order Processing and Shipping</h3>
+                        <h3 className="text-lg font-medium text-black mb-3 mt-6">Order Processing and Shipping</h3>
                         <p className="mb-4">Orders will be processed in two (2) working days, subject to the availability of stock and payment. They will then be handed to a delivery company. Orders above R750 are delivered free of charge. Orders below R750 will be charged with a courier fee.</p>
 
-                        <h3 className="text-lg font-medium text-[#333] mb-3 mt-6">Delivery Addresses and Acceptance</h3>
+                        <h3 className="text-lg font-medium text-black mb-3 mt-6">Delivery Addresses and Acceptance</h3>
                         <p className="mb-4">PO Boxes will not be accepted for delivery addresses. It is your responsibility to ensure that someone will be available to receive delivery at the address you provided during checkout.</p>
 
-                        <h3 className="text-lg font-medium text-[#333] mb-3 mt-6">Condition of the Goods</h3>
+                        <h3 className="text-lg font-medium text-black mb-3 mt-6">Condition of the Goods</h3>
                         <p className="mb-4">The Provider must ensure that all goods are delivered to the courier in good condition and take reasonable measures to make sure they arrive at the User&rsquo;s chosen delivery address.</p>
 
-                        <h3 className="text-lg font-medium text-[#333] mb-3 mt-6">Order Cancellation and Refunds</h3>
+                        <h3 className="text-lg font-medium text-black mb-3 mt-6">Order Cancellation and Refunds</h3>
                         <p>Refunds for cancelled orders through the online facility are subject to a 10% administrative cost. The Provider reserves its right to cancel orders for which payment has been made. If the stock is not available or the quality of the products does not meet Provider standards, this may happen. If the Provider cancels a purchase, the User receives a refund in full.</p>
                     </section>
 
@@ -215,15 +215,15 @@ export default function TermsPage() {
 
                     {/* Section 7 */}
                     <section id="section-7">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Section 7 &ndash; Accuracy of Billing and Account Information</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-black mb-6">Section 7 &ndash; Accuracy of Billing and Account Information</h2>
                         <div className="space-y-4">
                             <p>This section outlines our rights regarding order acceptance and your obligations to ensure the accuracy of billing and account information.</p>
 
-                            <h3 className="text-lg font-medium text-[#333] mb-3 mt-6">Order Acceptance and Limitations</h3>
+                            <h3 className="text-lg font-medium text-black mb-3 mt-6">Order Acceptance and Limitations</h3>
                             <p>We reserve the right not to accept any orders. We reserve the right to limit or cancel orders at our discretion. These restrictions may apply to orders placed by the same customer, with the same payment method or at the same billing address.</p>
                             <p>We may try to contact you via the details provided during the purchase process, such as your email address, billing information, or telephone number, if we need to modify or cancel an order. We reserve the right, at our discretion, to limit or prevent orders placed by resellers, distributors, or dealers.</p>
 
-                            <h3 className="text-lg font-medium text-[#333] mb-3 mt-6">Accuracy of Account Information</h3>
+                            <h3 className="text-lg font-medium text-black mb-3 mt-6">Accuracy of Account Information</h3>
                             <p>You agree to provide accurate, current, and complete information about your account and purchases for all transactions you make through our store. You agree to update your account details promptly, including your payment information and email address, so we can process your transactions and contact you when necessary.</p>
                             <p>Please review our Returns policy for more information on returns and refunds.</p>
                         </div>
@@ -233,7 +233,7 @@ export default function TermsPage() {
 
                     {/* Section 8 */}
                     <section id="section-8">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Section 8 &ndash; Optional Tools</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-black mb-6">Section 8 &ndash; Optional Tools</h2>
                         <div className="space-y-4">
                             <p>You may be given access to tools provided by third parties that we don&rsquo;t monitor or control.</p>
                             <p>You agree and acknowledge that such tools are provided &ldquo;as-is&rdquo; and &ldquo;as-available&rdquo; without warranties, representations or conditions of any kind. We will not be liable for any damages arising out of or related to the use of optional third-party software.</p>
@@ -246,7 +246,7 @@ export default function TermsPage() {
 
                     {/* Section 9 */}
                     <section id="section-9">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Section 9 &ndash; Third-Party Links</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-black mb-6">Section 9 &ndash; Third-Party Links</h2>
                         <div className="space-y-4">
                             <p>Certain content, products, and Services made available through our Service may include materials provided by third parties.</p>
                             <p>You may be directed to third-party websites by clicking on links on our site. You acknowledge that:</p>
@@ -269,7 +269,7 @@ export default function TermsPage() {
 
                     {/* Section 10 */}
                     <section id="section-10">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Section 10 &ndash; Cookies</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-black mb-6">Section 10 &ndash; Cookies</h2>
                         <div className="space-y-4">
                             <p>A cookie is an anonymous text file that is stored by the server of a website on your device. This could be a computer, tablet, phone, or any other type of device. Each cookie is unique for your web browser, and it contains anonymous information, including a unique identification and the name of the website. Cookies are used to store information on a website, such as preferences, items in your basket, and products that you may be interested in.</p>
                             <p>We use both first-party cookies and third-party cookies on our website. These cookies allow us to:</p>
@@ -279,9 +279,9 @@ export default function TermsPage() {
                                 <li>Use Google Analytics Remarketing to deliver more relevant ads to previous website visitors.</li>
                             </ul>
 
-                            <h3 className="text-lg font-medium text-[#333] mb-3 mt-6">Cookie Opt Out</h3>
+                            <h3 className="text-lg font-medium text-black mb-3 mt-6">Cookie Opt Out</h3>
                             <p>Most web browsers allow you to block all or certain types of cookies if you choose to do so. Users may also opt out of the Google Display Network through the Google Ads Preferences Manager.</p>
-                            <p className="bg-[#faf7f5] border-l-2 border-[#F6C811] px-4 py-3 text-sm italic">Note: Please be aware that our website relies on cookies for many of its features to work properly. Blocking cookies can limit your experience with the site.</p>
+                            <p className="bg-[#fefce8] border-l-2 border-[#F6C811] px-4 py-3 text-sm italic">Note: Please be aware that our website relies on cookies for many of its features to work properly. Blocking cookies can limit your experience with the site.</p>
                         </div>
                     </section>
 
@@ -289,7 +289,7 @@ export default function TermsPage() {
 
                     {/* Section 11 */}
                     <section id="section-11">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Section 11 &ndash; User Comments, Feedback and Other Submissions</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-black mb-6">Section 11 &ndash; User Comments, Feedback and Other Submissions</h2>
                         <div className="space-y-4">
                             <p>You agree to allow us to use your comments in any way we choose. This includes the rights to:</p>
                             <ul className="list-disc pl-6 space-y-2">
@@ -319,7 +319,7 @@ export default function TermsPage() {
 
                     {/* Section 12 */}
                     <section id="section-12">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Section 12 &ndash; Personal Information</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-black mb-6">Section 12 &ndash; Personal Information</h2>
                         <p>Our Privacy Policy governs your submission of personal data through our store. By using this site, you consent to your personal information being collected, used, and processed as described in the policy. You also warrant that any information you provide is accurate, up-to-date, and complete.</p>
                     </section>
 
@@ -327,7 +327,7 @@ export default function TermsPage() {
 
                     {/* Section 13 */}
                     <section id="section-13">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Section 13 &ndash; Errors, Inaccuracies and Omissions</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-black mb-6">Section 13 &ndash; Errors, Inaccuracies and Omissions</h2>
                         <div className="space-y-4">
                             <p>Information on our website, or in the Service, may occasionally contain typographical mistakes, inaccuracies or omissions that relate to:</p>
                             <ul className="list-disc pl-6 space-y-2">
@@ -353,7 +353,7 @@ export default function TermsPage() {
 
                     {/* Section 14 */}
                     <section id="section-14">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Section 14 &ndash; Prohibited Uses</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-black mb-6">Section 14 &ndash; Prohibited Uses</h2>
                         <div className="space-y-4">
                             <p>You are prohibited from using our site or its contents for the following reasons:</p>
                             <ol className="list-decimal pl-6 space-y-2">
@@ -376,21 +376,21 @@ export default function TermsPage() {
 
                     {/* Section 15 */}
                     <section id="section-15">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Section 15 &ndash; Disclaimer of Warranties; Limitation of Liability</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-black mb-6">Section 15 &ndash; Disclaimer of Warranties; Limitation of Liability</h2>
 
-                        <h3 className="text-lg font-medium text-[#333] mb-3 mt-6">No Guarantee of Service Availability or Performance</h3>
+                        <h3 className="text-lg font-medium text-black mb-3 mt-6">No Guarantee of Service Availability or Performance</h3>
                         <div className="space-y-4 mb-6">
                             <p>We cannot guarantee that the Service is error-free, uninterrupted, timely, or secure. We do not guarantee that the results you get from using the Service or products will be accurate or reliable or that they will meet your expectations.</p>
                             <p>You agree that we can, at any time and without notice, discontinue the Service or remove it for an indefinite period.</p>
                         </div>
 
-                        <h3 className="text-lg font-medium text-[#333] mb-3 mt-6">Use at your Own Risk</h3>
+                        <h3 className="text-lg font-medium text-black mb-3 mt-6">Use at your Own Risk</h3>
                         <div className="space-y-4 mb-6">
                             <p>You agree to accept sole responsibility for your use or inability to use the Service. Except as explicitly stated by us, the Service, and all products or Services delivered through it, are provided on an &ldquo;as-is&rdquo; and &ldquo;as-available&rdquo; basis.</p>
                             <p>This includes the exclusion from any representation, warranty, or condition of any kind, whether express or implied, including implied warranties and conditions of merchantability or merchantable quality, fitness to a specific purpose, durability, title or non-infringement.</p>
                         </div>
 
-                        <h3 className="text-lg font-medium text-[#333] mb-3 mt-6">Limitation of Liability</h3>
+                        <h3 className="text-lg font-medium text-black mb-3 mt-6">Limitation of Liability</h3>
                         <div className="space-y-4">
                             <p>Ayoosh PTY Ltd and its affiliates are not responsible for any injuries, losses, claims, or damages. This includes directors, officers&rsquo; employees, contractors, interns&rsquo; suppliers, service providers, content providers, advertisers.</p>
                             <p>It includes all damages, such as direct, indirect, or punitive damage. This can include lost profits, revenue, savings, data loss, replacement costs, or other damages.</p>
@@ -402,7 +402,7 @@ export default function TermsPage() {
 
                     {/* Section 16 */}
                     <section id="section-16">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Section 16 &ndash; Indemnification</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-black mb-6">Section 16 &ndash; Indemnification</h2>
                         <p>You agree to indemnify, defend, and hold harmless Ayoosh, including its parent companies, subsidiaries, affiliates, partners, officers, directors, agents, contractors, licensors, service providers, subcontractors, suppliers, consultants, interns, and employees, from and against any and all third-party claims, liabilities, damages, losses, and costs, including reasonable legal fees, arising out of or relating to your use of this website or the Service, your breach of these Terms &amp; Conditions or any documents incorporated by reference, or your violation of any applicable law or the rights of any third party.</p>
                     </section>
 
@@ -410,7 +410,7 @@ export default function TermsPage() {
 
                     {/* Section 17 */}
                     <section id="section-17">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Section 17 &ndash; Severability</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-black mb-6">Section 17 &ndash; Severability</h2>
                         <p>If a provision of these Terms and Conditions is found to be illegal, null, or unenforceable, it will be enforced to the maximum extent allowed by law. The unenforceable portion of these Terms &amp; Conditions will be removed, but this determination does not affect the validity and enforceability of the remaining provisions.</p>
                     </section>
 
@@ -418,7 +418,7 @@ export default function TermsPage() {
 
                     {/* Section 18 */}
                     <section id="section-18">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Section 18 &ndash; Termination</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-black mb-6">Section 18 &ndash; Termination</h2>
                         <div className="space-y-4">
                             <p>All obligations and liabilities incurred by the parties prior to the termination date will survive termination.</p>
                             <p>The Terms &amp; Conditions remain in force until either you or we terminate them. You can terminate these Terms and Conditions at any point by notifying us of your desire to no longer use our services or by ceasing use of the site.</p>
@@ -430,7 +430,7 @@ export default function TermsPage() {
 
                     {/* Section 19 */}
                     <section id="section-19">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Section 19 &ndash; Entire Agreement</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-black mb-6">Section 19 &ndash; Entire Agreement</h2>
                         <div className="space-y-4">
                             <p>This section confirms the Terms &amp; Conditions as the entire and controlling agreement between you and us.</p>
                             <ul className="list-disc pl-6 space-y-2">
@@ -446,7 +446,7 @@ export default function TermsPage() {
 
                     {/* Section 20 */}
                     <section id="section-20">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Section 20 &ndash; Governing Law</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-black mb-6">Section 20 &ndash; Governing Law</h2>
                         <p>These Terms &amp; Conditions, together with any separate agreements through which we provide Services, shall be governed by and construed in accordance with the laws of the Republic of South Africa.</p>
                     </section>
 
@@ -454,7 +454,7 @@ export default function TermsPage() {
 
                     {/* Section 21 */}
                     <section id="section-21">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Section 21 &ndash; Changes to Terms &amp; Conditions</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-black mb-6">Section 21 &ndash; Changes to Terms &amp; Conditions</h2>
                         <p>This page will always show the latest version of these Terms and Conditions. By posting any changes on our website, we reserve the right to amend, update or replace these Terms &amp; Conditions at our discretion. You are responsible for checking the website regularly for any updates. Acceptance of the new Terms &amp; Conditions is implied by your continued use or access of the website or Service after any changes have been posted.</p>
                     </section>
 
@@ -462,7 +462,7 @@ export default function TermsPage() {
 
                     {/* Section 22 */}
                     <section id="section-22">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Section 22 &ndash; Gift Vouchers</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-black mb-6">Section 22 &ndash; Gift Vouchers</h2>
                         <div className="space-y-4">
                             <p>Ayoosh gift vouchers are not redeemable in cash. They will also not be replaced for lost, stolen or destroyed vouchers, nor if they have been used without authorization.</p>
                             <p>Gift Vouchers cannot be sold, transferred, or exchanged to a third party. Ayoosh Gift Vouchers cannot be used to buy another Ayoosh Gift Voucher.</p>
@@ -474,11 +474,11 @@ export default function TermsPage() {
 
                     {/* Section 23 */}
                     <section id="section-23">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Section 23 &ndash; Returns</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-black mb-6">Section 23 &ndash; Returns</h2>
                         <div className="space-y-4">
                             <p>The policy of returns is valid for 30 days after the date of purchase. We are unable to offer refunds or exchanges if more than 30 days have passed since the purchase.</p>
 
-                            <h3 className="text-lg font-medium text-[#333] mb-3 mt-6">Returns Eligibility</h3>
+                            <h3 className="text-lg font-medium text-black mb-3 mt-6">Returns Eligibility</h3>
                             <p>For an item to qualify for a refund, it must meet the following requirements:</p>
                             <ul className="list-disc pl-6 space-y-2">
                                 <li>The item must not be used, and in the original condition it was received.</li>
@@ -487,11 +487,11 @@ export default function TermsPage() {
                             </ul>
                             <p>Certain items, such as health and personal care items, are exempted from returns.</p>
 
-                            <h3 className="text-lg font-medium text-[#333] mb-3 mt-6">Refunds</h3>
+                            <h3 className="text-lg font-medium text-black mb-3 mt-6">Refunds</h3>
                             <p>We will send you an email once your returned item is received. You will be informed if your refund is approved or not.</p>
                             <p>Your refund will be processed via EFT, or, where possible, to your original payment method, within a reasonable time frame.</p>
 
-                            <h3 className="text-lg font-medium text-[#333] mb-3 mt-6">Late or Missing Refunds</h3>
+                            <h3 className="text-lg font-medium text-black mb-3 mt-6">Late or Missing Refunds</h3>
                             <p>If you do not receive your refund:</p>
                             <ul className="list-disc pl-6 space-y-2">
                                 <li>First, check your bank account again</li>
@@ -500,15 +500,15 @@ export default function TermsPage() {
                             </ul>
                             <p>Please contact us at support@ayooshonline.com if you still haven&rsquo;t received your refund after completing all the steps above.</p>
 
-                            <h3 className="text-lg font-medium text-[#333] mb-3 mt-6">Sale Items</h3>
+                            <h3 className="text-lg font-medium text-black mb-3 mt-6">Sale Items</h3>
                             <p>Refunds are only available on items purchased at the regular price. Sale items are not refundable.</p>
 
-                            <h3 className="text-lg font-medium text-[#333] mb-3 mt-6">Exchanges</h3>
+                            <h3 className="text-lg font-medium text-black mb-3 mt-6">Exchanges</h3>
                             <p>Only defective or damaged items are exchanged. Please contact us if you wish to exchange an item for the same product at support@ayooshonline.com.</p>
 
-                            <h3 className="text-lg font-medium text-[#333] mb-3 mt-6">Shipping Address and Returns Address</h3>
+                            <h3 className="text-lg font-medium text-black mb-3 mt-6">Shipping Address and Returns Address</h3>
                             <p>Please return the product to:</p>
-                            <address className="not-italic bg-[#faf7f5] px-5 py-4 my-3 border-l-2 border-[#F6C811] text-sm leading-relaxed">
+                            <address className="not-italic bg-[#fefce8] px-5 py-4 my-3 border-l-2 border-[#F6C811] text-sm leading-relaxed">
                                 Ayoosh (Pty) Ltd<br />
                                 
                             </address>
@@ -522,7 +522,7 @@ export default function TermsPage() {
 
                     {/* Section 24 */}
                     <section id="section-24">
-                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-[#333] mb-6">Section 24 &ndash; Contact Information</h2>
+                        <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl text-black mb-6">Section 24 &ndash; Contact Information</h2>
                         <p>Questions or enquiries regarding these Terms &amp; Conditions should be directed to us at www.ayooshonline.com.</p>
                     </section>
                 </div>

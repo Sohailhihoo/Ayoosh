@@ -41,10 +41,10 @@ export default function PromoBar({ bgColor = '#f8cb19', hoverTextColor = '#f8cb1
         {
             id: 1,
             icon: GiftBoxIcon,
-            subtitle: 'Loyalty Program',
+            subtitle: 'Join the Ayoosh Community',
             title: 'For Happy Skin',
-            buttonText: 'Join the program',
-            href: '/loyalty'
+            buttonText: 'Sign Up',
+            href: '/register'
         },
         {
             id: 2,
