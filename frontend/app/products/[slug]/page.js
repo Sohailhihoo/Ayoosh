@@ -40,14 +40,138 @@ const StarIcon = ({ className, filled }) => (
   </svg>
 );
 
-const ACCORDION_ITEMS = [
-  { id: 'ingredients', title: 'Ingredients' },
-  { id: 'key-benefits', title: 'Key Benefits' },
-  { id: 'how-to-use', title: 'How to Use' },
-  { id: 'key-ingredients', title: 'Key Ingredients' },
+// Product-specific accordion content
+const SUNCREAM_ACCORDION = [
+  {
+    id: 'ingredients',
+    title: 'Ingredients',
+    content: (
+      <p className="text-gray-500 text-sm leading-relaxed">
+        Water, Ethylhexyl Methoxycinnamate, Propanediol, Ethylhexyl Triazone, Bis-Ethylhexyloxyphenol Methoxyphenyl Triazine, Diethylamino Hydroxybenzoyl Hexyl Benzoate, C12-15 Alkyl Benzoate, Neopentyl Glycol Dicaprylate/Dicaprate, Betaine, Polyglyceryl-3 Methylglucose Distearate, Silica, Cetearyl Alcohol, Glyceryl Stearate, Cetearyl Olivate, 1,2-Hexanediol, Hydroxyacetophenone, Dimethicone, Sorbitan Olivate, Polyacrylate Crosspolymer-6, Dipotassium Glycyrrhizate, Allantoin, Glycerin, Polyhydroxystearic Acid, Butylene Glycol, Sorbitan Stearate, Tocopheryl Acetate, Polyglyceryl-10 Stearate, Lecithin, Isostearic Acid, Isopropyl Myristate, Ethylhexyl Palmitate, Disodium EDTA, Ammonium Acryloyldimethyltaurate/VP Copolymer, Polyglyceryl-3 Polyricinoleate, Lavandula Angustifolia (Lavender) Oil, Dimethicone/Vinyl Dimethicone Crosspolymer, Linalool, t-Butyl Alcohol, Centella Asiatica Extract, Asiaticoside, BHT, Madecassic Acid, Asiatic Acid, Polygonum Cuspidatum Root Extract, Scutellaria Baicalensis Root Extract, Camellia Sinensis Leaf Extract, Glycyrrhiza Glabra (Licorice) Root Extract, Rosmarinus Officinalis (Rosemary) Leaf Extract, Chamomilla Recutita (Matricaria) Flower Extract.
+      </p>
+    ),
+  },
+  {
+    id: 'key-benefits',
+    title: 'Key Benefits',
+    content: (
+      <ul className="space-y-3 text-gray-500 text-sm leading-relaxed">
+        <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">SPF 50+ PA++++</strong> — Maximum broad-spectrum UVA and UVB protection</span></li>
+        <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Zero white cast</strong> — Invisible on all skin tones, from fair to deep</span></li>
+        <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Centella Cica Complex</strong> — Soothes irritation, calms redness, repairs the skin barrier</span></li>
+        <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">6 Botanical Antioxidants</strong> — Fights free radical damage and premature ageing</span></li>
+        <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Lightweight glow finish</strong> — Non-greasy, dewy, lit-from-within look</span></li>
+        <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Skin barrier support</strong> — Betaine and Allantoin lock in moisture all day</span></li>
+        <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Works under makeup</strong> — Sits perfectly as a primer base, no pilling</span></li>
+        <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Dermatologically tested</strong> — Suitable for all skin types including sensitive</span></li>
+        <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Made in Korea</strong> — Formulated and manufactured to the highest K-beauty standards</span></li>
+        <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span>A portion of proceeds goes to the Ayoosh Foundation</span></li>
+      </ul>
+    ),
+  },
+  {
+    id: 'how-to-use',
+    title: 'How to Use',
+    content: (
+      <div className="space-y-5">
+        <ol className="space-y-3 text-gray-500 text-sm leading-relaxed">
+          <li className="flex gap-3"><span className="flex-shrink-0 w-6 h-6 rounded-full bg-yellow-100 text-yellow-700 text-xs font-bold flex items-center justify-center">1</span><span>Apply as the final step of your morning skincare routine, after moisturiser.</span></li>
+          <li className="flex gap-3"><span className="flex-shrink-0 w-6 h-6 rounded-full bg-yellow-100 text-yellow-700 text-xs font-bold flex items-center justify-center">2</span><span>Use approximately two finger-lengths for the face and neck.</span></li>
+          <li className="flex gap-3"><span className="flex-shrink-0 w-6 h-6 rounded-full bg-yellow-100 text-yellow-700 text-xs font-bold flex items-center justify-center">3</span><span>Smooth evenly across all exposed areas 15 minutes before sun exposure.</span></li>
+          <li className="flex gap-3"><span className="flex-shrink-0 w-6 h-6 rounded-full bg-yellow-100 text-yellow-700 text-xs font-bold flex items-center justify-center">4</span><span>Reapply every 2-3 hours, or after swimming, sweating, or towel-drying.</span></li>
+        </ol>
+        <p className="text-sm text-yellow-700 bg-yellow-50 rounded-lg px-4 py-3 border border-yellow-100">
+          <strong>Tip:</strong> Don&apos;t forget your ears, neck, and upper chest (the spots that age fastest).
+        </p>
+      </div>
+    ),
+  },
+  {
+    id: 'key-ingredients',
+    title: 'Key Ingredients',
+    content: (
+      <div className="space-y-5 text-sm">
+        <div>
+          <h4 className="font-semibold text-gray-900 mb-1">Centella Asiatica Complex</h4>
+          <p className="text-gray-500 leading-relaxed">Pure Centella Extract + Asiaticoside + Madecassic Acid + Asiatic Acid. A therapeutic-level &quot;Cica&quot; blend that repairs the skin barrier, reduces inflammation, and accelerates healing.</p>
+        </div>
+        <div>
+          <h4 className="font-semibold text-gray-900 mb-1">6-Botanical Antioxidant Shield</h4>
+          <p className="text-gray-500 leading-relaxed">Green Tea &bull; Licorice Root &bull; Rosemary &bull; Chamomile &bull; Scutellaria Baicalensis &bull; Polygonum Cuspidatum. Neutralises free radicals and prevents premature ageing from environmental stress.</p>
+        </div>
+        <div>
+          <h4 className="font-semibold text-gray-900 mb-1">4-Filter Photostable UV System</h4>
+          <p className="text-gray-500 leading-relaxed">A modern combination of UV filters (including Tinosorb S and Uvinul A Plus) that remains stable under sunlight — providing consistent, all-day protection without degrading.</p>
+        </div>
+        <div>
+          <h4 className="font-semibold text-gray-900 mb-1">Betaine</h4>
+          <p className="text-gray-500 leading-relaxed">A natural humectant that draws moisture into the skin and keeps it hydrated throughout the day.</p>
+        </div>
+        <div>
+          <h4 className="font-semibold text-gray-900 mb-1">Allantoin</h4>
+          <p className="text-gray-500 leading-relaxed">Soothes irritation, promotes healing, and softens the skin&apos;s surface.</p>
+        </div>
+        <div>
+          <h4 className="font-semibold text-gray-900 mb-1">Vitamin E (Tocopheryl Acetate)</h4>
+          <p className="text-gray-500 leading-relaxed">An antioxidant that protects cells from oxidative damage and supports skin repair.</p>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 'faqs',
+    title: 'FAQs',
+    content: (
+      <div className="space-y-4 text-sm">
+        {[
+          { q: 'Will this leave a white cast on dark skin?', a: 'No. Engineered to be invisible on all skin tones, including deep and very deep complexions. Zero white cast, guaranteed.' },
+          { q: 'Can I wear this under makeup?', a: 'Yes. Works beautifully as a primer base. Makeup applies smoothly without pilling or separation.' },
+          { q: 'Is this suitable for sensitive skin?', a: 'Yes. Dermatologically tested and infused with Centella Asiatica, which actively calms and soothes reactive skin.' },
+          { q: 'How much should I apply?', a: 'Two finger-lengths (approximately 1/4 teaspoon) for face and neck. This is the amount needed for full SPF 50+ protection.' },
+          { q: 'How often should I reapply?', a: 'Every 2-3 hours, or immediately after swimming, sweating, or towel-drying.' },
+          { q: 'What does PA++++ mean?', a: 'PA++++ is the highest UVA protection rating. It means maximum defence against the rays that cause premature ageing and pigmentation.' },
+          { q: 'Where is this made?', a: 'Manufactured in South Korea.' },
+          { q: 'Is this reef-safe?', a: 'This formula does not contain Oxybenzone or Octinoxate, the two filters most commonly linked to coral reef damage.' },
+        ].map((faq, i) => (
+          <div key={i} className="pb-4 border-b border-gray-100 last:border-0 last:pb-0">
+            <p className="font-semibold text-gray-900 mb-1">Q: {faq.q}</p>
+            <p className="text-gray-500 leading-relaxed">A: {faq.a}</p>
+          </div>
+        ))}
+      </div>
+    ),
+  },
+  {
+    id: 'disclaimer',
+    title: 'Disclaimer',
+    content: (
+      <div className="text-gray-500 text-sm leading-relaxed space-y-2">
+        <p>Dermatologically tested for all skin types. Patch-test prior to use is recommended.</p>
+        <p>This product is not intended to diagnose, treat, cure, or prevent any medical condition.</p>
+        <p>For external use only. Avoid contact with eyes. If contact occurs, rinse thoroughly with water. Do not apply to broken or irritated skin. Discontinue use if irritation, rash, or redness occurs.</p>
+        <p>Avoid excessive sun exposure, even when using sunscreen. Keep out of reach of children. Store in a cool, dry place below 30&deg;C, away from direct sunlight.</p>
+      </div>
+    ),
+  },
 ];
 
-function AccordionItem({ title, isOpen, onToggle }) {
+const DEFAULT_ACCORDION = [
+  { id: 'ingredients', title: 'Ingredients', content: <p className="text-gray-500 text-sm leading-relaxed">Content coming soon.</p> },
+  { id: 'key-benefits', title: 'Key Benefits', content: <p className="text-gray-500 text-sm leading-relaxed">Content coming soon.</p> },
+  { id: 'how-to-use', title: 'How to Use', content: <p className="text-gray-500 text-sm leading-relaxed">Content coming soon.</p> },
+  { id: 'key-ingredients', title: 'Key Ingredients', content: <p className="text-gray-500 text-sm leading-relaxed">Content coming soon.</p> },
+];
+
+// Map product slugs to their accordion content
+const PRODUCT_ACCORDION_MAP = {
+  'ayoosh-sun-cream-50ml-tube-daily-sun-protection': SUNCREAM_ACCORDION,
+};
+
+function getAccordionItems(slug) {
+  return PRODUCT_ACCORDION_MAP[slug] || DEFAULT_ACCORDION;
+}
+
+function AccordionItem({ title, isOpen, onToggle, children }) {
   return (
     <div className="border-b border-gray-200">
       <button
@@ -62,11 +186,9 @@ function AccordionItem({ title, isOpen, onToggle }) {
         </span>
       </button>
       <div
-        className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96 pb-6' : 'max-h-0'}`}
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[2000px] pb-6' : 'max-h-0'}`}
       >
-        <p className="text-gray-500 text-sm leading-relaxed">
-          Content coming soon.
-        </p>
+        {children}
       </div>
     </div>
   );
@@ -328,13 +450,15 @@ export default function ProductDetailPage() {
 
         {/* Product Details Accordion */}
         <div className="mt-16 border-t border-gray-200">
-          {ACCORDION_ITEMS.map((item) => (
+          {getAccordionItems(slug).map((item) => (
             <AccordionItem
               key={item.id}
               title={item.title}
               isOpen={openAccordion === item.id}
               onToggle={() => setOpenAccordion(openAccordion === item.id ? null : item.id)}
-            />
+            >
+              {item.content}
+            </AccordionItem>
           ))}
         </div>
 
