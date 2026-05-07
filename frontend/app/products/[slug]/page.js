@@ -40,6 +40,38 @@ const StarIcon = ({ className, filled }) => (
   </svg>
 );
 
+const ACCORDION_ITEMS = [
+  { id: 'ingredients', title: 'Ingredients' },
+  { id: 'key-benefits', title: 'Key Benefits' },
+  { id: 'how-to-use', title: 'How to Use' },
+  { id: 'key-ingredients', title: 'Key Ingredients' },
+];
+
+function AccordionItem({ title, isOpen, onToggle }) {
+  return (
+    <div className="border-b border-gray-200">
+      <button
+        onClick={onToggle}
+        className="w-full flex items-center justify-between py-5 text-left group"
+      >
+        <span className="text-sm font-semibold uppercase tracking-wider text-gray-900 group-hover:text-yellow-600 transition-colors">
+          {title}
+        </span>
+        <span className={`ml-4 flex-shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-45' : ''}`}>
+          <PlusIcon className="w-5 h-5 text-gray-400 group-hover:text-yellow-600 transition-colors" />
+        </span>
+      </button>
+      <div
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96 pb-6' : 'max-h-0'}`}
+      >
+        <p className="text-gray-500 text-sm leading-relaxed">
+          Content coming soon.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function ProductDetailPage() {
   const { slug } = useParams();
   const [product, setProduct] = useState(null);
@@ -47,7 +79,7 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState(null);
-  const [activeTab, setActiveTab] = useState('description');
+  const [openAccordion, setOpenAccordion] = useState(null);
   const { addToCart } = useCartStore();
 
   useEffect(() => {
@@ -217,7 +249,10 @@ export default function ProductDetailPage() {
               )}
             </div>
 
-            <p className="text-gray-600 mb-6">{product.shortDescription || product.description}</p>
+            {/* Short Description */}
+            <p className="text-gray-600 mb-6 leading-relaxed">
+              {product.shortDescription || 'Experience the pinnacle of Korean sun care with a formula that does more than just protect. The Ayoosh Centella Cica Glow Sun Cream is a weightless, broad-spectrum SPF 50+ PA++++ treatment that seamlessly blends advanced UV defense with therapeutic skin-soothing botanicals. Designed to melt into the skin without a trace, it delivers a refined, natural glow while strengthening your skin\'s resilience against environmental stressors.'}
+            </p>
 
             {/* Variants */}
             {product.hasVariants && product.variants?.length > 0 && (
@@ -291,63 +326,22 @@ export default function ProductDetailPage() {
           </div>
         </div>
 
-        {/* Tabs */}
+        {/* Product Details Accordion */}
+        <div className="mt-16 border-t border-gray-200">
+          {ACCORDION_ITEMS.map((item) => (
+            <AccordionItem
+              key={item.id}
+              title={item.title}
+              isOpen={openAccordion === item.id}
+              onToggle={() => setOpenAccordion(openAccordion === item.id ? null : item.id)}
+            />
+          ))}
+        </div>
+
+        {/* Reviews Section */}
         <div className="mt-16">
-          <div className="border-b">
-            <div className="flex gap-8">
-              {['description', 'reviews'].map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`pb-4 font-medium capitalize transition-colors ${activeTab === tab
-                    ? 'text-yellow-600 border-b-2 border-yellow-600'
-                    : 'text-gray-500 hover:text-gray-700'
-                    }`}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="py-8">
-            {activeTab === 'description' && (
-              <div className="prose max-w-none">
-                {product.description && product.description.includes('<') ? (
-                  <div
-                    className="product-description text-gray-600"
-                    dangerouslySetInnerHTML={{ __html: product.description }}
-                  />
-                ) : (
-                  <div className="text-gray-600 whitespace-pre-line">{product.description}</div>
-                )}
-
-                {product.ingredients?.length > 0 && (
-                  <div className="mt-6">
-                    <h3 className="font-semibold text-lg mb-2">Ingredients</h3>
-                    <p className="text-gray-600">{product.ingredients.join(', ')}</p>
-                  </div>
-                )}
-
-                {product.skinType?.length > 0 && (
-                  <div className="mt-6">
-                    <h3 className="font-semibold text-lg mb-2">Suitable for</h3>
-                    <div className="flex gap-2">
-                      {product.skinType.map((type, i) => (
-                        <span key={i} className="px-3 py-1 bg-gray-100 rounded-full text-sm capitalize">
-                          {type} skin
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {activeTab === 'reviews' && (
-              <ProductReviews productId={product._id} />
-            )}
-          </div>
+          <h2 className="text-2xl font-bold mb-8">Customer Reviews</h2>
+          <ProductReviews productId={product._id} />
         </div>
 
         {/* Related Products */}
