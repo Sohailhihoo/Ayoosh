@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { reviewAPI } from '@/lib/api';
+import toast from 'react-hot-toast';
 
 /**
  * ReviewForm - Submit reviews for pages or products
@@ -48,7 +49,7 @@ export default function ReviewForm({ page, productId, isModal = false, onClose, 
             }, 2000);
         } catch (error) {
             console.error('Review submission failed:', error);
-            alert('Failed to submit review. Please try again.');
+            toast.error('Failed to submit review. Please try again.');
         } finally {
             setIsSubmitting(false);
         }

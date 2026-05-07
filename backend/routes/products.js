@@ -196,12 +196,10 @@ router.get('/:id', async (req, res) => {
     // Check if it's an ObjectId or slug
     if (req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
       product = await Product.findById(req.params.id)
-        .populate('category', 'name slug')
-        .populate('reviews.user', 'firstName lastName');
+        .populate('category', 'name slug');
     } else {
       product = await Product.findOne({ slug: req.params.id, status: 'active' })
-        .populate('category', 'name slug')
-        .populate('reviews.user', 'firstName lastName');
+        .populate('category', 'name slug');
     }
 
     if (!product) {
