@@ -49,7 +49,14 @@ router.get('/', async (req, res) => {
     try {
         const { page, productId } = req.query;
         const filter = { status: 'approved' };
-        if (page) filter.page = page;
+        if (page) {
+            // Show page-specific reviews + general reviews (no page, no product)
+            filter.$or = [
+                { page },
+                { page: 'general', productId: null },
+                { page: null, productId: null }
+            ];
+        }
         if (productId) filter.productId = productId;
 
         const reviews = await Review.find(filter).sort({ createdAt: -1 }).select('-email');
