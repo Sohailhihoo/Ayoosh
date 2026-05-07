@@ -18,6 +18,10 @@ const reviewSchema = new mongoose.Schema({
         min: 1,
         max: 5
     },
+    title: {
+        type: String,
+        trim: true
+    },
     review: {
         type: String,
         required: [true, 'Review text is required'],
@@ -25,12 +29,22 @@ const reviewSchema = new mongoose.Schema({
     },
     page: {
         type: String,
-        default: 'general'
+        enum: ['suncream', 'sunglasses', null],
+        default: null
     },
-    approved: {
-        type: Boolean,
-        default: false
+    productId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+        default: null
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'approved', 'rejected'],
+        default: 'pending'
     }
 }, { timestamps: true });
+
+reviewSchema.index({ status: 1, page: 1 });
+reviewSchema.index({ status: 1, productId: 1 });
 
 module.exports = mongoose.model('Review', reviewSchema);
