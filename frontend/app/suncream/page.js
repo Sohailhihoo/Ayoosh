@@ -10,6 +10,7 @@ import FeaturedProducts from '@/components/FeaturedProducts';
 import VideoShowcase from '@/components/VideoShowcase';
 import BrandLogos from '@/components/BrandLogos';
 import ReviewForm from '@/components/ReviewForm';
+import ReviewCarousel from '@/components/ReviewCarousel';
 import PromoBar from '@/components/PromoBar';
 
 // Title style for hero section
@@ -111,8 +112,11 @@ export default function BeautyPage() {
             {/* Brand Logos (Partners) */}
             <BrandLogos />
 
+            {/* Customer Reviews Carousel */}
+            <ReviewCarousel page="suncream" />
+
             {/* Review Form */}
-            <ReviewForm />
+            <ReviewForm page="suncream" />
         </div>
     );
 }

@@ -7,6 +7,7 @@ import SunglassesCircle from '@/components/SunglassesCircle';
 import SplitFeatureSection from '@/components/SplitFeatureSection';
 import BrandLogos from '@/components/BrandLogos';
 import ReviewForm from '@/components/ReviewForm';
+import ReviewCarousel from '@/components/ReviewCarousel';
 import PromoBar from '@/components/PromoBar';
 import VideoShowcase from '@/components/VideoShowcase';
 
@@ -101,8 +102,11 @@ export default function SunglassesPage() {
             {/* Brand Logos */}
             <BrandLogos bgColor="#d9d9d9" />
 
+            {/* Customer Reviews Carousel */}
+            <ReviewCarousel page="sunglasses" />
+
             {/* Review Form */}
-            <ReviewForm />
+            <ReviewForm page="sunglasses" />
         </div>
     );
 }
