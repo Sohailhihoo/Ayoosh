@@ -9,23 +9,6 @@ const variantSchema = new mongoose.Schema({
   images: [String]
 });
 
-const reviewSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  rating: {
-    type: Number,
-    required: true,
-    min: 1,
-    max: 5
-  },
-  title: String,
-  comment: String,
-  isVerifiedPurchase: { type: Boolean, default: false }
-}, { timestamps: true });
-
 const productSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -106,8 +89,7 @@ const productSchema = new mongoose.Schema({
   hasVariants: { type: Boolean, default: false },
   variants: [variantSchema],
 
-  // Reviews
-  reviews: [reviewSchema],
+  // Reviews (cached fields - updated by review routes)
   averageRating: { type: Number, default: 0 },
   reviewCount: { type: Number, default: 0 },
 
@@ -150,19 +132,6 @@ productSchema.pre('save', function (next) {
   }
   next();
 });
-
-// Calculate average rating when reviews change
-productSchema.methods.calculateAverageRating = function () {
-  if (this.reviews.length === 0) {
-    this.averageRating = 0;
-    this.reviewCount = 0;
-  } else {
-    const sum = this.reviews.reduce((acc, review) => acc + review.rating, 0);
-    this.averageRating = Math.round((sum / this.reviews.length) * 10) / 10;
-    this.reviewCount = this.reviews.length;
-  }
-  return this.save();
-};
 
 // Check if product is in stock
 productSchema.virtual('inStock').get(function () {
