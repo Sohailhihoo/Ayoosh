@@ -100,7 +100,11 @@ export const paymentAPI = {
 // Review APIs
 export const reviewAPI = {
   submit: (data) => api.post('/reviews', data),
-  getApproved: (page) => api.get('/reviews', { params: { page } }),
+  getApproved: (params) => api.get('/reviews', { params }),
+  getAll: (params) => api.get('/reviews/all', { params }),
+  approve: (id) => api.put(`/reviews/${id}/approve`),
+  reject: (id) => api.put(`/reviews/${id}/reject`),
+  delete: (id) => api.delete(`/reviews/${id}`),
 };
 
 // Admin APIs
