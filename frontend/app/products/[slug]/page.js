@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { productAPI } from '@/lib/api';
 import { useCartStore } from '@/lib/store';
 import ProductCard from '@/components/ProductCard';
+import ProductReviews from '@/components/ProductReviews';
 import toast from 'react-hot-toast';
 
 // Inline SVG icons to avoid react-icons module issues
@@ -344,25 +345,7 @@ export default function ProductDetailPage() {
             )}
 
             {activeTab === 'reviews' && (
-              <div>
-                {product.reviews?.length > 0 ? (
-                  <div className="space-y-6">
-                    {product.reviews.map((review, i) => (
-                      <div key={i} className="border-b pb-6">
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="flex text-yellow-400">
-                            {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
-                          </div>
-                          <span className="font-medium">{review.title}</span>
-                        </div>
-                        <p className="text-gray-600">{review.comment}</p>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-gray-500">No reviews yet. Be the first to review this product!</p>
-                )}
-              </div>
+              <ProductReviews productId={product._id} />
             )}
           </div>
         </div>
