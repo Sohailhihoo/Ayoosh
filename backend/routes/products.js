@@ -389,54 +389,6 @@ router.delete('/:id', protect, authorize('admin'), async (req, res) => {
   }
 });
 
-// @route   POST /api/products/:id/reviews
-// @desc    Add a review to product
-// @access  Private
-router.post('/:id/reviews', protect, async (req, res) => {
-  try {
-    const { rating, title, comment } = req.body;
-    const product = await Product.findById(req.params.id);
-
-    if (!product) {
-      return res.status(404).json({
-        success: false,
-        message: 'Product not found'
-      });
-    }
-
-    // Check if user already reviewed
-    const alreadyReviewed = product.reviews.find(
-      r => r.user.toString() === req.user._id.toString()
-    );
-
-    if (alreadyReviewed) {
-      return res.status(400).json({
-        success: false,
-        message: 'You have already reviewed this product'
-      });
-    }
-
-    product.reviews.push({
-      user: req.user._id,
-      rating,
-      title,
-      comment
-    });
-
-    await product.calculateAverageRating();
-
-    res.status(201).json({
-      success: true,
-      message: 'Review added successfully'
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
-});
-
 // @route   GET /api/products/:id/related
 // @desc    Get related products
 // @access  Public
