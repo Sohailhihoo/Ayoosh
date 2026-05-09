@@ -57,12 +57,12 @@ export default function ReviewCarousel({ page }) {
     if (reviews.length === 0) return null;
 
     return (
-        <section className="py-16 px-6 md:px-12 bg-white">
+        <section className="py-10 md:py-16 px-4 md:px-12 bg-white">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
-                <motion.div className="text-center mb-10" initial={{ opacity: 0, y: 20 }}
+                <motion.div className="text-center mb-8 md:mb-10" initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, amount: 0.5 }} transition={{ duration: 0.5 }}>
-                    <h2 className="text-3xl md:text-4xl font-bold mb-4 tracking-wider">What Our Customers Say</h2>
+                    <h2 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4 tracking-wider">What Our Customers Say</h2>
                     <div className="flex items-center justify-center gap-3">
                         <StarRating rating={Math.round(averageRating)} size="w-6 h-6" />
                         <span className="text-xl font-semibold">{averageRating.toFixed(1)}</span>
@@ -86,7 +86,7 @@ export default function ReviewCarousel({ page }) {
                         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                         {reviews.map((review) => (
                             <motion.div key={review._id}
-                                className="flex-shrink-0 w-[300px] md:w-[350px] snap-start bg-[#fefce8] rounded-xl p-6 shadow-sm"
+                                className="flex-shrink-0 w-[260px] md:w-[350px] snap-start bg-[#fefce8] rounded-xl p-5 md:p-6 shadow-sm"
                                 initial={{ opacity: 0, y: 20 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: false, amount: 0.3 }}

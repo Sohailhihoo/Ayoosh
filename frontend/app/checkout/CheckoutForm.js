@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useCartStore, useAuthStore } from '@/lib/store';
-import { orderAPI, couponAPI, shippingAPI } from '@/lib/api';
+import { orderAPI, couponAPI } from '@/lib/api';
 import { initiatePayFastPayment } from '@/lib/payfast';
 import toast from 'react-hot-toast';
 
@@ -39,12 +39,6 @@ export default function CheckoutForm() {
     // Coupon State
     const [couponInput, setCouponInput] = useState('');
     const [validatingCoupon, setValidatingCoupon] = useState(false);
-
-    // Shipping rates state
-    const [shippingRates, setShippingRates] = useState([]);
-    const [selectedRate, setSelectedRate] = useState(null);
-    const [ratesLoading, setRatesLoading] = useState(false);
-    const [ratesError, setRatesError] = useState('');
 
     // Form state
     const [formData, setFormData] = useState({
@@ -95,44 +89,8 @@ export default function CheckoutForm() {
         }
     }, [user]);
 
-    // Dynamic shipping cost from selected Bob Go rate
-    const currentShippingCost = selectedRate ? Number(selectedRate.total_price) : 0;
-
-    // Fetch Bob Go rates when city & zipCode are ready (debounced)
-    useEffect(() => {
-        const { city, zipCode } = formData;
-        if (!city?.trim() || !zipCode?.trim() || items.length === 0) {
-            setShippingRates([]);
-            setSelectedRate(null);
-            return;
-        }
-        const handle = setTimeout(async () => {
-            setRatesLoading(true);
-            setRatesError('');
-            try {
-                const payload = {
-                    destination: { city, zip: zipCode, country: 'ZA' },
-                    items: items
-                        .map(i => ({ productId: i.product?._id, quantity: i.quantity }))
-                        .filter(i => i.productId),
-                };
-                const { data } = await shippingAPI.getRates(payload.destination, payload.items);
-                if (data.success) {
-                    setShippingRates(data.rates || []);
-                    setSelectedRate(prev =>
-                        (data.rates || []).find(r => r.service_code === prev?.service_code) || data.rates?.[0] || null
-                    );
-                }
-            } catch (e) {
-                setRatesError('Could not load shipping rates. Please try again.');
-                setShippingRates([]);
-                setSelectedRate(null);
-            } finally {
-                setRatesLoading(false);
-            }
-        }, 500);
-        return () => clearTimeout(handle);
-    }, [formData.city, formData.zipCode, items]);
+    // Shipping is free (included in product price)
+    const currentShippingCost = 0;
 
     const calculateDiscount = () => {
         if (!coupon) return 0;
@@ -198,10 +156,6 @@ export default function CheckoutForm() {
             toast.error('Please enter a valid email address');
             return false;
         }
-        if (!selectedRate) {
-            toast.error('Please select a shipping option');
-            return false;
-        }
         return true;
     };
 
@@ -237,16 +191,7 @@ export default function CheckoutForm() {
                 },
                 paymentMethod: formData.paymentMethod,
                 shippingMethod: formData.shippingMethod,
-                shippingCost: currentShippingCost,
-                shippingService: selectedRate && {
-                    provider: 'bobgo',
-                    service_code: selectedRate.service_code,
-                    service_name: selectedRate.service_name,
-                    courier: selectedRate.courier,
-                    price: selectedRate.total_price,
-                    min_delivery_date: selectedRate.min_delivery_date,
-                    max_delivery_date: selectedRate.max_delivery_date,
-                },
+                shippingCost: 0,
                 customerNote: formData.customerNote,
                 // Coupon Data
                 couponCode: coupon?.code,
@@ -453,59 +398,6 @@ export default function CheckoutForm() {
                             </div>
 
 
-
-                            {/* Shipping Method */}
-                            <div className="bg-white rounded-xl p-6 shadow-sm">
-                                <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                                    <span className="w-8 h-8 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center text-sm font-bold">3</span>
-                                    Shipping Method
-                                </h2>
-                                {!formData.city?.trim() || !formData.zipCode?.trim() ? (
-                                    <p className="text-sm text-gray-500">Enter city and postal code above to see delivery options.</p>
-                                ) : ratesLoading ? (
-                                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-yellow-500 border-t-transparent"></div>
-                                        Fetching shipping rates...
-                                    </div>
-                                ) : ratesError ? (
-                                    <p className="text-sm text-red-600">{ratesError}</p>
-                                ) : shippingRates.length === 0 ? (
-                                    <p className="text-sm text-gray-500">No shipping options available for this address.</p>
-                                ) : (
-                                    <div className="space-y-3">
-                                        {shippingRates.map(rate => {
-                                            const checked = selectedRate?.service_code === rate.service_code;
-                                            return (
-                                                <label
-                                                    key={rate.service_code}
-                                                    className={`flex items-start gap-3 p-4 border rounded-lg cursor-pointer transition-colors ${checked ? 'border-yellow-500 bg-yellow-50' : 'border-gray-200 hover:border-gray-300'
-                                                        }`}
-                                                >
-                                                    <input
-                                                        type="radio"
-                                                        name="shippingRate"
-                                                        checked={checked}
-                                                        onChange={() => setSelectedRate(rate)}
-                                                        className="mt-1 accent-yellow-600"
-                                                    />
-                                                    <div className="flex-1">
-                                                        <div className="flex items-center justify-between">
-                                                            <span className="font-medium">{rate.service_name}</span>
-                                                            <span className="font-semibold">R{Number(rate.total_price).toFixed(2)}</span>
-                                                        </div>
-                                                        <p className="text-xs text-gray-500 mt-1">
-                                                            {rate.courier}
-                                                            {rate.min_delivery_date && rate.max_delivery_date && (
-                                                                <> · {rate.min_delivery_date} – {rate.max_delivery_date}</>
-                                                            )}
-                                                        </p>
-                                                    </div>
-                                                </label>
-                                            );
-                                        })}
-                                    </div>
-                                )}
-                            </div>
 
                             {/* Order Notes */}
                             <div className="bg-white rounded-xl p-6 shadow-sm">
