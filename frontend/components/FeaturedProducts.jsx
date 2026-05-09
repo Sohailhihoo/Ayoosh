@@ -149,9 +149,19 @@ function FeaturedProductCard({ product, index }) {
                                 <span className="text-gray-400 font-normal"> | {product.variant}</span>
                             )}
                         </h3>
-                        <p className="text-xl font-semibold text-yellow-500 mt-1">
-                            R{product.price?.toFixed(2) || '0.00'}
-                        </p>
+                        <div className="mt-1 flex items-center gap-2 flex-wrap">
+                            <p className="text-xl font-semibold text-yellow-500">
+                                R{product.price?.toFixed(2) || '0.00'}
+                            </p>
+                            {product.compareAtPrice && (
+                                <p className="text-sm text-gray-400 line-through">
+                                    R{product.compareAtPrice.toFixed(2)}
+                                </p>
+                            )}
+                            {product.priceNote && (
+                                <span className="text-xs text-gray-500">{product.priceNote}</span>
+                            )}
+                        </div>
                     </div>
                     <div className="flex-shrink-0 hidden md:block">
                         {renderStars(product.rating)}

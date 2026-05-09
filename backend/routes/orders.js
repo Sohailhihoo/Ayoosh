@@ -142,6 +142,8 @@ router.post('/', optionalAuth, async (req, res) => {
     billingAddress,
     paymentMethod,
     shippingMethod = 'standard',
+    shippingCost: bodyShippingCost,
+    shippingService,
     customerNote,
     couponCode: bodyCouponCode,
     affiliateCode
@@ -234,7 +236,9 @@ router.post('/', optionalAuth, async (req, res) => {
       pickup: 0
     };
 
-    const shippingCost = shippingCosts[shippingMethod] || 0;
+    const shippingCost = Number.isFinite(Number(bodyShippingCost))
+      ? Number(bodyShippingCost)
+      : (shippingCosts[shippingMethod] || 0);
     const taxRate = 0.08;
     const tax = Math.round(cart.subtotal * taxRate * 100) / 100;
 
@@ -295,6 +299,8 @@ router.post('/', optionalAuth, async (req, res) => {
       total: cart.subtotal + shippingCost + tax - discountAmount,
       paymentMethod,
       shippingMethod,
+      shippingService: shippingService || undefined,
+      carrier: shippingService?.courier,
       customerNote,
       statusHistory: [{
         status: 'pending',

@@ -5,7 +5,11 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
+const dns = require('dns');
 require('dotenv').config();
+
+// Use Google DNS for MongoDB SRV resolution (some routers can't resolve SRV records)
+dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
 
 // Initialize Redis client (connects on import)
 require('./lib/redis');
@@ -97,6 +101,7 @@ const authLimiter = rateLimit({
 const allowedOrigins = [
   // Development
   'http://localhost:3000',
+  'http://localhost:3002',
   'http://127.0.0.1:3000',
   'http://localhost:5000',
   // Production domains (all variations)
@@ -162,6 +167,7 @@ app.use('/api/coupons', couponRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/newsletter', require('./routes/newsletter'));
 app.use('/api/affiliates', require('./routes/affiliates'));
+app.use('/api/shipping', require('./routes/shipping'));
 
 // Health check
 app.get('/api/health', (req, res) => {

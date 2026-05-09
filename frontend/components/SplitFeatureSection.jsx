@@ -27,15 +27,15 @@ export default function SplitFeatureSection({ leftPanel, rightPanel }) {
             <div className="grid grid-cols-1 md:grid-cols-2 min-h-[55vh]">
                 {/* Left Panel */}
                 <motion.div
-                    className="relative flex items-center justify-center p-12 md:p-16 bg-[#f8f5f2] overflow-hidden"
+                    className="relative flex items-center justify-center p-12 md:p-16 bg-white overflow-hidden"
                     {...panelAnimation('left')}
                 >
-                    <div className="absolute top-0 left-0 w-48 h-48 bg-[#b87c6b]/10 rounded-full -translate-x-1/3 -translate-y-1/3" />
-                    <div className="absolute bottom-0 right-0 w-48 h-48 bg-[#d4a574]/10 rounded-full translate-x-1/3 translate-y-1/3" />
+                    <div className="absolute top-0 left-0 w-48 h-48 bg-[#F6C811]/10 rounded-full -translate-x-1/3 -translate-y-1/3" />
+                    <div className="absolute bottom-0 right-0 w-48 h-48 bg-[#F6C811]/10 rounded-full translate-x-1/3 translate-y-1/3" />
 
                     <div className="relative z-10 max-w-md">
                         <motion.span
-                            className="inline-block text-sm tracking-[0.3em] text-[#b87c6b] mb-4"
+                            className="inline-block text-sm tracking-[0.3em] text-[#F6C811] mb-4"
                             {...contentAnimation(0.2)}
                         >
                             {leftPanel.subtitle}
@@ -45,7 +45,7 @@ export default function SplitFeatureSection({ leftPanel, rightPanel }) {
                             {...contentAnimation(0.3)}
                         >
                             {leftPanel.title}<br />
-                            <span className="text-[#b87c6b] italic">{leftPanel.titleHighlight}</span>
+                            <span className="text-[#F6C811] italic">{leftPanel.titleHighlight}</span>
                         </motion.h3>
                         <motion.p
                             className="text-gray-600 leading-relaxed mb-8"
@@ -58,7 +58,7 @@ export default function SplitFeatureSection({ leftPanel, rightPanel }) {
                                 {leftPanel.tags.map((tag, idx) => (
                                     <span
                                         key={idx}
-                                        className="px-4 py-2 bg-[#f4f2f0]/80 backdrop-blur-sm text-sm text-gray-700 rounded-full border border-[#b87c6b]/20 shadow-sm"
+                                        className="px-4 py-2 bg-white/80 backdrop-blur-sm text-sm text-gray-700 rounded-full border border-[#F6C811]/20 shadow-sm"
                                     >
                                         {tag}
                                     </span>
@@ -100,8 +100,8 @@ export default function SplitFeatureSection({ leftPanel, rightPanel }) {
                     {/* Decorative elements - only show if not imageOnly */}
                     {!rightPanel.imageOnly && (
                         <>
-                            <div className="absolute top-1/4 right-0 w-72 h-72 bg-[#b87c6b]/20 rounded-full blur-3xl" />
-                            <div className="absolute bottom-1/4 left-0 w-56 h-56 bg-[#d4a574]/15 rounded-full blur-2xl" />
+                            <div className="absolute top-1/4 right-0 w-72 h-72 bg-[#F6C811]/20 rounded-full blur-3xl" />
+                            <div className="absolute bottom-1/4 left-0 w-56 h-56 bg-[#F6C811]/15 rounded-full blur-2xl" />
                         </>
                     )}
 
@@ -109,7 +109,7 @@ export default function SplitFeatureSection({ leftPanel, rightPanel }) {
                     {!rightPanel.imageOnly && (
                         <div className="relative z-10 max-w-md">
                             <motion.span
-                                className="inline-block text-sm tracking-[0.3em] text-[#d4a574] mb-4"
+                                className="inline-block text-sm tracking-[0.3em] text-[#F6C811] mb-4"
                                 {...contentAnimation(0.2)}
                             >
                                 {rightPanel.subtitle}
@@ -119,7 +119,7 @@ export default function SplitFeatureSection({ leftPanel, rightPanel }) {
                                 {...contentAnimation(0.3)}
                             >
                                 {rightPanel.title}<br />
-                                <span className="text-[#d4a574] italic">{rightPanel.titleHighlight}</span>
+                                <span className="text-[#F6C811] italic">{rightPanel.titleHighlight}</span>
                             </motion.h3>
                             <motion.p
                                 className="text-gray-300 leading-relaxed mb-8"
@@ -134,7 +134,7 @@ export default function SplitFeatureSection({ leftPanel, rightPanel }) {
                                 >
                                     {rightPanel.stats.map((stat, idx) => (
                                         <div key={idx}>
-                                            <span className="block text-3xl font-light text-[#d4a574]">{stat.value}</span>
+                                            <span className="block text-3xl font-light text-[#F6C811]">{stat.value}</span>
                                             <span className="text-xs text-gray-400 tracking-wider">{stat.label}</span>
                                         </div>
                                     ))}

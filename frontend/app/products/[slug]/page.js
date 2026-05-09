@@ -369,6 +369,9 @@ export default function ProductDetailPage() {
                   </span>
                 </>
               )}
+              {product.productType === 'suncream' && (
+                <span className="text-sm text-gray-500">(incl delivery)</span>
+              )}
             </div>
 
             {/* Short Description */}

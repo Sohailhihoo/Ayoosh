@@ -105,6 +105,15 @@ const orderSchema = new mongoose.Schema({
   trackingNumber: String,
   carrier: String,
   estimatedDelivery: Date,
+  shippingService: {
+    provider: String,
+    service_code: String,
+    service_name: String,
+    courier: String,
+    price: Number,
+    min_delivery_date: String,
+    max_delivery_date: String,
+  },
 
   // Status
   status: {
