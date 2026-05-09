@@ -98,13 +98,8 @@ const verifyITNSignature = (receivedSignature, rawBody, pfData, passphrase = nul
     return true;
 };
 
-// PayFast-specific prices for suncream products (different from display prices)
-// Display prices (in DB): Tube = R525.95, Pouch = R515.95
-// PayFast charge prices:  Tube = R529.07, Pouch = R518.68
-const PAYFAST_PRICE_OVERRIDES = {
-    'SUN CREAM': 529.07,
-    'SUN CREAM POUCH': 518.68,
-};
+// No price overrides — PayFast charges the same price as displayed
+const PAYFAST_PRICE_OVERRIDES = {};
 
 // @desc    Initiate PayFast payment
 // @route   POST /api/payfast/initiate
