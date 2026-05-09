@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import LoadingScreen from '@/components/LoadingScreen';
+import NewsletterPopup from '@/components/NewsletterPopup';
 
 /**
  * LayoutWrapper Component
@@ -32,6 +33,7 @@ export default function LayoutWrapper({ children }) {
                 {children}
             </main>
             {!hideFooter && <Footer />}
+            <NewsletterPopup />
         </>
     );
 }

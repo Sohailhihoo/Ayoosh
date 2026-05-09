@@ -239,8 +239,7 @@ router.post('/', optionalAuth, async (req, res) => {
     const shippingCost = Number.isFinite(Number(bodyShippingCost))
       ? Number(bodyShippingCost)
       : (shippingCosts[shippingMethod] || 0);
-    const taxRate = 0.08;
-    const tax = Math.round(cart.subtotal * taxRate * 100) / 100;
+    const tax = 0;
 
     // Build customer details (from user or request body)
     const orderCustomerDetails = userId && req.user ? {
@@ -267,8 +266,8 @@ router.post('/', optionalAuth, async (req, res) => {
           discountAmount = (cart.subtotal * coupon.amount) / 100;
         }
 
-        // Ensure discount doesn't exceed total (subtotal + shipping + tax)
-        const grossTotal = cart.subtotal + shippingCost + tax;
+        // Ensure discount doesn't exceed total
+        const grossTotal = cart.subtotal + shippingCost;
         if (discountAmount > grossTotal) {
           discountAmount = grossTotal;
         }
