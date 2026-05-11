@@ -164,7 +164,7 @@ const DEFAULT_ACCORDION = [
 
 // Map product slugs to their accordion content
 const PRODUCT_ACCORDION_MAP = {
-  'ayoosh-sun-cream-50ml-tube-daily-sun-protection': SUNCREAM_ACCORDION,
+  'sun-cream-50ml-tube': SUNCREAM_ACCORDION,
 };
 
 function getAccordionItems(slug) {
