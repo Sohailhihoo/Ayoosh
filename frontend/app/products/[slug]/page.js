@@ -202,6 +202,7 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [openAccordion, setOpenAccordion] = useState(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const { addToCart } = useCartStore();
 
   useEffect(() => {
@@ -211,6 +212,7 @@ export default function ProductDetailPage() {
   const fetchProduct = async () => {
     try {
       setLoading(true);
+      setSelectedImageIndex(0);
       const { data } = await productAPI.getOne(slug);
       setProduct(data.data);
 
@@ -290,12 +292,12 @@ export default function ProductDetailPage() {
       {/* Product Details */}
       <div className="container-custom py-8">
         <div className="grid md:grid-cols-2 gap-12">
-          {/* Product Image */}
-          <div className="space-y-4">
+          {/* Product Image Slider */}
+          <div className="relative">
             <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl flex items-center justify-center overflow-hidden">
-              {(product.images?.[0]?.url || product.image) ? (
+              {(product.images?.[selectedImageIndex]?.url || product.images?.[0]?.url || product.image) ? (
                 <img
-                  src={product.images?.[0]?.url || product.image}
+                  src={product.images?.[selectedImageIndex]?.url || product.images?.[0]?.url || product.image}
                   alt={product.name}
                   className="w-full h-full object-contain p-4"
                 />
@@ -308,19 +310,32 @@ export default function ProductDetailPage() {
                 </span>
               )}
             </div>
-            {/* Thumbnail Gallery */}
+            {/* Slider Controls */}
             {product.images?.length > 1 && (
-              <div className="grid grid-cols-4 gap-2">
-                {product.images.map((img, i) => (
-                  <div key={i} className="aspect-square bg-gray-100 rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-yellow-500 transition-all">
-                    <img
-                      src={img.url}
-                      alt={`${product.name} - ${i + 1}`}
-                      className="w-full h-full object-contain p-2"
+              <>
+                <button
+                  onClick={() => setSelectedImageIndex(i => i === 0 ? product.images.length - 1 : i - 1)}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-all"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                </button>
+                <button
+                  onClick={() => setSelectedImageIndex(i => i === product.images.length - 1 ? 0 : i + 1)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-all"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                </button>
+                {/* Dots Indicator */}
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                  {product.images.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setSelectedImageIndex(i)}
+                      className={`w-2 h-2 rounded-full transition-all ${selectedImageIndex === i ? 'bg-yellow-500 w-4' : 'bg-gray-400/60'}`}
                     />
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              </>
             )}
           </div>
 
