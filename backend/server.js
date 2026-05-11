@@ -167,7 +167,6 @@ app.use('/api/coupons', couponRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/newsletter', require('./routes/newsletter'));
 app.use('/api/affiliates', require('./routes/affiliates'));
-app.use('/api/shipping', require('./routes/shipping'));
 
 // Health check
 app.get('/api/health', (req, res) => {
