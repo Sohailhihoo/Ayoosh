@@ -19,8 +19,8 @@ const updateImages = async () => {
 
         const newImages = [
             { url: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_800/v1769748802/Pouch_and_Sachet_bjidrn.png', alt: 'Ayoosh Sun Cream Pouch', isPrimary: true },
-            { url: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_800/v1778477287/Ayoosh_Content_Ideas_3_lemndw.png', alt: 'Ayoosh Sun Cream Pouch - View 2', isPrimary: false },
-            { url: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_800/v1778477286/Ayoosh_Content_Ideas_2_lxxyed.png', alt: 'Ayoosh Sun Cream Pouch - View 3', isPrimary: false },
+            { url: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_800/v1778477286/Ayoosh_Content_Ideas_2_lxxyed.png', alt: 'Ayoosh Sun Cream Pouch - View 2', isPrimary: false },
+            { url: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_800/v1778477287/Ayoosh_Content_Ideas_3_lemndw.png', alt: 'Ayoosh Sun Cream Pouch - View 3', isPrimary: false },
             { url: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_800/v1778477285/Ayoosh_Content_Ideas_yemvv8.jpg', alt: 'Ayoosh Sun Cream Pouch - View 4', isPrimary: false },
         ];
 

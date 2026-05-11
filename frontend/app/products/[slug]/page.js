@@ -294,7 +294,7 @@ export default function ProductDetailPage() {
         <div className="grid md:grid-cols-2 gap-12">
           {/* Product Image Slider */}
           <div className="relative">
-            <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl flex items-center justify-center overflow-hidden">
+            <div className="aspect-square bg-white rounded-2xl flex items-center justify-center overflow-hidden">
               {(product.images?.[selectedImageIndex]?.url || product.images?.[0]?.url || product.image) ? (
                 <img
                   src={product.images?.[selectedImageIndex]?.url || product.images?.[0]?.url || product.image}
