@@ -4,6 +4,7 @@ import CheckoutForm from './CheckoutForm';
 export const metadata = {
     title: 'Checkout | Ayoosh Online',
     description: 'Secure checkout for your order',
+    robots: { index: false, follow: false },
 };
 
 export default function CheckoutPage() {
