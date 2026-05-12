@@ -60,7 +60,6 @@ export default function BeautyPage() {
             price: 484.99,
             priceNote: '(incl delivery)',
             image: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769715388/Sun_Tube_cmxezs.png',
-            rating: 5.0
         },
         {
             _id: '69825dab2d01b1efb4370176',
@@ -71,7 +70,6 @@ export default function BeautyPage() {
             compareAtPrice: 474.99,
             priceNote: '(incl delivery)',
             image: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769748802/Pouch_and_Sachet_bjidrn.png',
-            rating: 5.0,
             imageScale: 1.4
         }
     ];

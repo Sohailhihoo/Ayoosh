@@ -163,9 +163,11 @@ function FeaturedProductCard({ product, index }) {
                             )}
                         </div>
                     </div>
-                    <div className="flex-shrink-0 hidden md:block">
-                        {renderStars(product.rating)}
-                    </div>
+                    {product.rating > 0 && (
+                        <div className="flex-shrink-0 hidden md:block">
+                            {renderStars(product.rating)}
+                        </div>
+                    )}
                 </div>
             </Link>
 
