@@ -75,9 +75,16 @@ export default function ProductCard({ product }) {
         {/* Product Info */}
         <div className="text-center">
           <h3 className="font-medium text-gray-900 mb-1">{product.name}</h3>
-          <p className="text-sm text-gray-600">
-            R{product.price?.toFixed(2)}
-          </p>
+          <div className="text-sm">
+            {product.compareAtPrice && product.compareAtPrice > product.price ? (
+              <div className="flex items-center justify-center gap-2">
+                <span className="text-gray-400 line-through">R{product.compareAtPrice.toFixed(2)}</span>
+                <span className="text-red-600 font-medium">R{product.price.toFixed(2)}</span>
+              </div>
+            ) : (
+              <span className="text-gray-600">R{product.price?.toFixed(2)}</span>
+            )}
+          </div>
         </div>
       </div>
 

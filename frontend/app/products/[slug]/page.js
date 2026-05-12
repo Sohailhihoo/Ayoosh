@@ -395,9 +395,11 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Short Description */}
-            <p className="text-gray-600 mb-6 leading-relaxed">
-              {product.shortDescription || 'Experience the pinnacle of Korean sun care with a formula that does more than just protect. The Ayoosh Centella Cica Glow Sun Cream is a weightless, broad-spectrum SPF 50+ PA++++ treatment that seamlessly blends advanced UV defense with therapeutic skin-soothing botanicals. Designed to melt into the skin without a trace, it delivers a refined, natural glow while strengthening your skin\'s resilience against environmental stressors.'}
-            </p>
+            {product.productType !== 'sunglasses' && (
+              <p className="text-gray-600 mb-6 leading-relaxed">
+                {product.shortDescription || 'Experience the pinnacle of Korean sun care with a formula that does more than just protect. The Ayoosh Centella Cica Glow Sun Cream is a weightless, broad-spectrum SPF 50+ PA++++ treatment that seamlessly blends advanced UV defense with therapeutic skin-soothing botanicals. Designed to melt into the skin without a trace, it delivers a refined, natural glow while strengthening your skin\'s resilience against environmental stressors.'}
+              </p>
+            )}
 
             {/* Variants */}
             {product.hasVariants && product.variants?.length > 0 && (
@@ -472,18 +474,20 @@ export default function ProductDetailPage() {
         </div>
 
         {/* Product Details Accordion */}
-        <div className="mt-16 border-t border-gray-200">
-          {getAccordionItems(slug).map((item) => (
-            <AccordionItem
-              key={item.id}
-              title={item.title}
-              isOpen={openAccordion === item.id}
-              onToggle={() => setOpenAccordion(openAccordion === item.id ? null : item.id)}
-            >
-              {item.content}
-            </AccordionItem>
-          ))}
-        </div>
+        {product.productType !== 'sunglasses' && (
+          <div className="mt-16 border-t border-gray-200">
+            {getAccordionItems(slug).map((item) => (
+              <AccordionItem
+                key={item.id}
+                title={item.title}
+                isOpen={openAccordion === item.id}
+                onToggle={() => setOpenAccordion(openAccordion === item.id ? null : item.id)}
+              >
+                {item.content}
+              </AccordionItem>
+            ))}
+          </div>
+        )}
 
         {/* Reviews Section */}
         <div className="mt-16">

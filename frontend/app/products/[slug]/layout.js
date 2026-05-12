@@ -52,7 +52,7 @@ export default async function ProductLayout({ children, params }) {
     const { slug } = await params;
     const data = await getProduct(slug);
 
-    const jsonLd = data ? {
+    const jsonLd = data && data.productType !== 'sunglasses' ? {
         '@context': 'https://schema.org',
         '@type': 'Product',
         name: data.name,
