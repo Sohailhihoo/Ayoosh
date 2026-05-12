@@ -55,18 +55,22 @@ const SUNCREAM_ACCORDION = [
     id: 'key-benefits',
     title: 'Key Benefits',
     content: (
-      <ul className="space-y-3 text-gray-500 text-sm leading-relaxed">
-        <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">SPF 50+ PA++++</strong> — Maximum broad-spectrum UVA and UVB protection</span></li>
-        <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Zero white cast</strong> — Invisible on all skin tones, from fair to deep</span></li>
-        <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Centella Cica Complex</strong> — Soothes irritation, calms redness, repairs the skin barrier</span></li>
-        <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">6 Botanical Antioxidants</strong> — Fights free radical damage and premature ageing</span></li>
-        <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Lightweight glow finish</strong> — Non-greasy, dewy, lit-from-within look</span></li>
-        <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Skin barrier support</strong> — Betaine and Allantoin lock in moisture all day</span></li>
-        <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Works under makeup</strong> — Sits perfectly as a primer base, no pilling</span></li>
-        <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Dermatologically tested</strong> — Suitable for all skin types including sensitive</span></li>
-        <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Made in Korea</strong> — Formulated and manufactured to the highest K-beauty standards</span></li>
-        <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span>A portion of proceeds goes to the Ayoosh Foundation</span></li>
-      </ul>
+      <div>
+        <ul className="space-y-3 text-gray-500 text-sm leading-relaxed">
+          <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">SPF 50+ PA++++:</strong> Maximum broad-spectrum UVA and UVB protection</span></li>
+          <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Zero White Cast:</strong> Invisible on all skin tones, from fair to deep</span></li>
+          <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Centella Cica Complex:</strong> Soothes irritation, calms redness, and repairs the skin barrier</span></li>
+          <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">6 Botanical Antioxidants:</strong> Help fight free radical damage and premature aging</span></li>
+          <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Lightweight Glow Finish:</strong> Non-greasy, dewy, lit-from-within look</span></li>
+          <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Skin Barrier Support:</strong> Betaine and Allantoin lock in moisture all day</span></li>
+          <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Works Under Makeup:</strong> Sits perfectly as a primer base with no pilling</span></li>
+          <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Dermatologically Tested:</strong> Suitable for all skin types, including sensitive skin</span></li>
+          <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Made in Korea:</strong> Formulated and manufactured to the highest K-beauty standards</span></li>
+        </ul>
+        <p className="mt-4 text-sm text-yellow-700 bg-yellow-50 rounded-lg px-4 py-3 border border-yellow-100 font-medium">
+          A portion of the proceeds goes to the Ayoosh Foundation
+        </p>
+      </div>
     ),
   },
   {
@@ -165,6 +169,7 @@ const DEFAULT_ACCORDION = [
 // Map product slugs to their accordion content
 const PRODUCT_ACCORDION_MAP = {
   'sun-cream-50ml-tube': SUNCREAM_ACCORDION,
+  'sun-cream-pouch': SUNCREAM_ACCORDION,
 };
 
 function getAccordionItems(slug) {

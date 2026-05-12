@@ -46,19 +46,13 @@ export default function BrandLogos({ bgColor = '#fdf6f0' }) {
                     className="flex items-center justify-center gap-8 flex-wrap"
                 >
                     {partners.map((partner) => (
-                        <a
-                            key={partner.name}
-                            href={partner.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="group"
-                        >
+                        <div key={partner.name}>
                             <img
                                 src={partner.logo}
                                 alt={partner.name}
-                                className="h-14 md:h-20 w-auto object-contain opacity-80 transition-all duration-300 group-hover:opacity-100 group-hover:scale-105"
+                                className="h-14 md:h-20 w-auto object-contain"
                             />
-                        </a>
+                        </div>
                     ))}
                 </motion.div>
 
