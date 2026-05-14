@@ -36,7 +36,7 @@ const splitSectionConfig = {
         titleHighlight: 'Us?',
         description: 'Your skin deserves more than just SPF. Ayoosh sun care blends advanced Korean skincare with everyday protection to care for your skin while shielding it from the sun. Lightweight, breathable, and made to feel comfortable all day, it protects without the white cast, heaviness, or greasy finish, so your skin feels as good as it looks.',
         tags: [
-            'SPF 50+ PA+++ Lightweight',
+            'SPF 50+ PA++++ Lightweight',
             'Natural Glow, No White Cast',
             'All Skin Types',
             'UVA & UVB Protection',
