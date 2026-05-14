@@ -2,6 +2,7 @@
 const crypto = require('crypto');
 const Order = require('../models/Order');
 const { processAffiliateCommission } = require('../utils/affiliateCommission');
+const { sendOrderConfirmation } = require('../utils/klaviyo');
 
 // PayFast URLs
 const PAYFAST_SANDBOX_URL = 'https://sandbox.payfast.co.za/eng/process';
@@ -282,6 +283,9 @@ const handleITN = async (req, res) => {
 
             // Process affiliate commission
             await processAffiliateCommission(order);
+
+            // Send order confirmation email via Klaviyo
+            await sendOrderConfirmation(order);
 
             console.log(`Order ${orderId} marked as PAID via ITN`);
         }
