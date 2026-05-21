@@ -115,7 +115,7 @@ function FeaturedProductCard({ product, index }) {
                     </button>
 
                     {/* Product Image */}
-                    <div className="w-full h-full flex items-center justify-center p-8 group-hover:scale-105 transition-transform duration-500">
+                    <div className="relative w-full h-full flex items-center justify-center p-8 group-hover:scale-105 transition-transform duration-500">
                         {product.images?.[0] || product.image ? (
                             <Image
                                 src={product.images?.[0] || product.image}

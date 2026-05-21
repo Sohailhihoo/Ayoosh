@@ -563,7 +563,7 @@ export default function CheckoutForm() {
                                 <div className="space-y-4 mb-6 max-h-64 overflow-y-auto">
                                     {items.map(item => (
                                         <div key={item._id} className="flex gap-3">
-                                            <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
+                                            <div className="relative w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
                                                 {item.product?.images?.[0]?.url ? (
                                                     <Image
                                                         src={item.product.images[0].url}

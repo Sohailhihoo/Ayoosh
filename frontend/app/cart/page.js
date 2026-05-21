@@ -93,7 +93,7 @@ export default function CartPage() {
               <div key={item._id} className="bg-white rounded-xl p-6 shadow-sm">
                 <div className="flex gap-6">
                   {/* Product Image */}
-                  <div className="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
+                  <div className="relative w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
                     {item.product?.images?.[0]?.url ? (
                       <Image
                         src={item.product.images[0].url}

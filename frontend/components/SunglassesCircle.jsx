@@ -147,7 +147,7 @@ export default function SunglassesCircle() {
                                     rotate: useTransform(smoothRotate, (r) => -r)
                                 }}
                             >
-                                <Link href={`/products/${product.slug}`} className={`block transition-all duration-500 ease-out transform ${isActive
+                                <Link href={`/products/${product.slug}`} className={`relative block transition-all duration-500 ease-out transform ${isActive
                                     ? 'scale-[1.6] z-50 filter-none opacity-100 drop-shadow-2xl'
                                     : 'scale-90 z-0 grayscale opacity-60'
                                     }`}>
