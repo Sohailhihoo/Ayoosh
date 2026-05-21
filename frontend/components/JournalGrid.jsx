@@ -1,4 +1,5 @@
 'use client';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 // 1. Data Structure
@@ -66,10 +67,12 @@ export default function JournalGrid() {
                         >
                             {/* 3. Card Design - Image */}
                             <div className="aspect-[4/5] overflow-hidden rounded-lg mb-5 bg-gray-100 relative">
-                                <img
+                                <Image
                                     src={article.image}
                                     alt={article.title}
-                                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                                    fill
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                                 />
                                 {/* Subtle Overlay */}
                                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300" />

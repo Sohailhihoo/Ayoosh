@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, Fragment } from 'react';
+import Image from 'next/image';
 import { adminAPI } from '@/lib/api';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
@@ -321,7 +322,7 @@ function OrderDetail({ order }) {
                         <div key={idx} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
                             <div className="flex items-center gap-3">
                                 {item.image && (
-                                    <img src={item.image} alt={item.name} className="w-10 h-10 rounded object-cover bg-gray-100" />
+                                    <Image src={item.image} alt={item.name} width={40} height={40} className="w-10 h-10 rounded object-cover bg-gray-100" />
                                 )}
                                 <div>
                                     <p className="text-sm font-medium text-gray-900">{item.name}</p>

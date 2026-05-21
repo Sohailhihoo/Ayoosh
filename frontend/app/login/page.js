@@ -2,7 +2,9 @@
 
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 import Link from 'next/link';
+import cloudinaryLoader from '@/lib/cloudinary-loader';
 import { useAuthStore } from '@/lib/store';
 import toast from 'react-hot-toast';
 
@@ -121,10 +123,13 @@ function LoginForm() {
       {/* RIGHT SIDE - IMAGE */}
       <div className="hidden lg:flex w-1/2 relative bg-[#f4f2f0] p-0 border-none">
         <div className="absolute inset-0">
-          <img
+          <Image
+            loader={cloudinaryLoader}
             src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_1280/v1769770501/Group_49_1_hsbwkx.png"
             alt="Ayoosh Beauty"
-            className="w-full h-full object-contain object-left-bottom"
+            fill
+            sizes="50vw"
+            className="object-contain object-left-bottom"
           />
 
         </div>

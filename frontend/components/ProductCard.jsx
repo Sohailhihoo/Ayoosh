@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useCartStore } from '@/lib/store';
@@ -44,10 +45,12 @@ export default function ProductCard({ product }) {
           {/* Product Visual */}
           <div className="absolute inset-0 flex items-center justify-center">
             {(product.images?.[0]?.url || product.image) ? (
-              <img
+              <Image
                 src={product.images?.[0]?.url || product.image}
                 alt={product.name}
-                className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500"
+                fill
+                sizes="(max-width: 768px) 50vw, 25vw"
+                className="object-contain p-4 group-hover:scale-105 transition-transform duration-500"
               />
             ) : (
               <span className={`text-6xl transition-transform duration-300 ${isHovered ? 'scale-110' : ''}`}>

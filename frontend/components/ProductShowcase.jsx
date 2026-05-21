@@ -2,7 +2,9 @@
 
 import { useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useSpring, useMotionValue, useMotionTemplate } from 'framer-motion';
+import Image from 'next/image';
 import { ASSETS } from '@/lib/cloudinary-assets';
+import cloudinaryLoader from '@/lib/cloudinary-loader';
 
 export default function ProductScrollShowcase() {
     const containerRef = useRef(null);
@@ -99,9 +101,13 @@ export default function ProductScrollShowcase() {
                         >
                             {/* Glow behind bottle */}
                             <div className="absolute inset-0 bg-white/40 backdrop-blur-3xl rounded-full blur-xl -z-10" />
-                            <img
+                            <Image
+                                loader={cloudinaryLoader}
                                 src={ASSETS.homepage.rejoosh}
                                 alt="Rejoosh Cream"
+                                width={380}
+                                height={500}
+                                sizes="(max-width: 768px) 100vw, 380px"
                                 className="w-full h-auto drop-shadow-2xl object-contain"
                             />
                         </motion.div>

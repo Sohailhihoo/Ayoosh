@@ -1,6 +1,6 @@
-'use client';
-
 import Link from 'next/link';
+import Image from 'next/image';
+import cloudinaryLoader from '@/lib/cloudinary-loader';
 
 /**
  * HeroSection - Reusable video/image hero with overlay and CTAs
@@ -34,9 +34,12 @@ export default function HeroSection({
             {logoSrc && (
                 <header className="absolute top-0 left-0 right-0 z-20 flex justify-center py-6">
                     <Link href={logoHref}>
-                        <img
+                        <Image
+                            loader={cloudinaryLoader}
                             src={logoSrc}
                             alt="Logo"
+                            width={160}
+                            height={80}
                             className="h-16 md:h-20 w-auto object-contain"
                         />
                     </Link>
@@ -55,10 +58,14 @@ export default function HeroSection({
                     <source src={videoSrc} type="video/mp4" />
                 </video>
             ) : imageSrc ? (
-                <img
+                <Image
+                    loader={cloudinaryLoader}
                     src={imageSrc}
                     alt="Hero background"
-                    className="absolute inset-0 w-full h-full object-cover"
+                    fill
+                    sizes="100vw"
+                    className="object-cover"
+                    priority
                 />
             ) : null}
 

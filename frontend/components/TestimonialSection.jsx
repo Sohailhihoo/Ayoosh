@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useRef } from 'react';
 
@@ -98,7 +99,7 @@ function ReviewCard({ review }) {
                 {/* Avatar */}
                 <div className="w-10 h-10 rounded-full bg-[#fdf6f0] flex items-center justify-center overflow-hidden shrink-0 text-[#b87c6b] font-bold text-sm">
                     {review.avatar ? (
-                        <img src={review.avatar} alt={review.name} className="w-full h-full object-cover" />
+                        <Image src={review.avatar} alt={review.name} width={40} height={40} className="w-full h-full object-cover" />
                     ) : (
                         <span>{initials}</span>
                     )}

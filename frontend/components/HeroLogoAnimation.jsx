@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
+import cloudinaryLoader from '@/lib/cloudinary-loader';
 
 /**
  * HeroLogoAnimation Component
@@ -134,9 +136,12 @@ export default function HeroLogoAnimation() {
                             ease: [0.43, 0.13, 0.23, 0.96]
                         }}
                     >
-                        <img
+                        <Image
+                            loader={cloudinaryLoader}
                             src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_1280/v1769514667/ayoosh-beauty/brand/logos/loading.png"
                             alt="Ayoosh Logo"
+                            width={96}
+                            height={96}
                             className="w-20 h-20 md:w-24 md:h-24 object-contain"
                         />
                     </motion.div>
@@ -151,9 +156,12 @@ export default function HeroLogoAnimation() {
                         initial={{ opacity: 1 }}
                         animate={{ opacity: 1 }}
                     >
-                        <img
+                        <Image
+                            loader={cloudinaryLoader}
                             src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_1280/v1769514667/ayoosh-beauty/brand/logos/loading.png"
                             alt="Ayoosh Logo"
+                            width={96}
+                            height={96}
                             className="w-20 h-20 md:w-24 md:h-24 object-contain"
                         />
                     </motion.div>
@@ -170,9 +178,12 @@ export default function HeroLogoAnimation() {
                             animate={{ opacity: 0 }}
                             transition={{ duration: 0.8 }}
                         >
-                            <img
+                            <Image
+                                loader={cloudinaryLoader}
                                 src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_1280/v1769514667/ayoosh-beauty/brand/logos/loading.png"
                                 alt="Ayoosh Logo"
+                                width={96}
+                                height={96}
                                 className="w-20 h-20 md:w-24 md:h-24 object-contain"
                             />
                         </motion.div>
@@ -185,9 +196,12 @@ export default function HeroLogoAnimation() {
                             animate={{ opacity: 1 }}
                             transition={{ duration: 0.8 }}
                         >
-                            <img
+                            <Image
+                                loader={cloudinaryLoader}
                                 src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_1280/v1769783995/White-color-Logo_tre0tf.png"
                                 alt="Ayoosh"
+                                width={200}
+                                height={200}
                                 className="object-contain w-20 h-20 md:w-[200px] md:h-[200px]"
                             />
                         </motion.div>
@@ -202,9 +216,12 @@ export default function HeroLogoAnimation() {
                         style={{ x: '-50%' }}
                         initial={{ opacity: 1 }}
                     >
-                        <img
+                        <Image
+                            loader={cloudinaryLoader}
                             src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_1280/v1769783995/White-color-Logo_tre0tf.png"
                             alt="Ayoosh"
+                            width={200}
+                            height={200}
                             className="object-contain w-20 h-20 md:w-[200px] md:h-[200px]"
                         />
                     </motion.div>

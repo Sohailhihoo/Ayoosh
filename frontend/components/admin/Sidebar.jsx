@@ -3,7 +3,9 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import Image from 'next/image';
 import { ASSETS } from '@/lib/cloudinary-assets';
+import cloudinaryLoader from '@/lib/cloudinary-loader';
 
 // Inline SVG icons to avoid react-icons module issues
 const HomeIcon = ({ className }) => (
@@ -99,7 +101,7 @@ export default function AdminSidebar({ isOpen, onClose }) {
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-gray-700">
                     <Link href="/admin/dashboard" className="flex items-center space-x-2">
-                        <img src={ASSETS.logos.main} alt="Admin" className="h-8 w-auto" />
+                        <Image loader={cloudinaryLoader} src={ASSETS.logos.main} alt="Admin" width={80} height={32} className="h-8 w-auto" />
                         <span className="text-xl font-semibold">Admin</span>
                     </Link>
                     <button

@@ -4,6 +4,16 @@ const nextConfig = {
   output: 'standalone',
   allowedDevOrigins: ['192.168.1.18', 'localhost', '127.0.0.1'],
 
+  images: {
+    remotePatterns: [
+      { hostname: 'res.cloudinary.com' },
+      { hostname: 'images.unsplash.com' },
+      { hostname: 'i.pravatar.cc' },
+      { hostname: 'upload.wikimedia.org' },
+    ],
+    formats: ['image/avif', 'image/webp'],
+  },
+
   async headers() {
     // Security headers applied to all routes
     const securityHeaders = [

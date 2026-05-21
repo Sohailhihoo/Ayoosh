@@ -1,5 +1,7 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { ASSETS } from '@/lib/cloudinary-assets';
+import cloudinaryLoader from '@/lib/cloudinary-loader';
 
 // Inline SVG icons to avoid react-icons module issues
 const XIcon = ({ className }) => (
@@ -36,9 +38,12 @@ export default function Footer() {
           {/* Brand - Full width on mobile */}
           <div className="col-span-2 md:col-span-4 lg:col-span-1 flex flex-col items-center mb-8 lg:mb-0">
             <Link href="/">
-              <img
+              <Image
+                loader={cloudinaryLoader}
                 src={ASSETS.logos.light}
                 alt="Ayoosh Logo"
+                width={120}
+                height={96}
                 className="h-24 w-auto object-contain"
               />
             </Link>

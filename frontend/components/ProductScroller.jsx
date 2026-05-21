@@ -1,7 +1,9 @@
 'use client';
 
 import { useRef } from 'react';
+import Image from 'next/image';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import cloudinaryLoader from '@/lib/cloudinary-loader';
 
 /**
  * ProductScroller - 3D Scroll Animation with Progressive Spec Components
@@ -193,13 +195,13 @@ export default function ProductScroller() {
                         {/* Product Glow */}
                         <div className="absolute inset-0 top-1/2 -translate-y-1/2 bg-white/40 blur-3xl rounded-full scale-110 pointer-events-none" />
 
-                        <img
+                        <Image
+                            loader={cloudinaryLoader}
                             src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_1280/v1769715388/Sun_Tube_cmxezs.png"
                             alt="Ayoosh Sun Cream"
+                            width={400}
+                            height={750}
                             className="w-auto h-[750px] object-contain relative z-10"
-                            style={{
-                                filter: 'none'
-                            }}
                         />
                     </motion.div>
                 </div>
