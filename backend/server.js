@@ -47,7 +47,7 @@ app.use(helmet({
       mediaSrc: ["'self'", "blob:"],
       workerSrc: ["'self'", "blob:"],
       childSrc: ["'self'", "blob:"],
-      formAction: ["'self'", "https://sandbox.payfast.co.za", "https://www.payfast.co.za", "https://secure.paygate.co.za"],
+      formAction: ["'self'", "https://sandbox.payfast.co.za", "https://www.payfast.co.za"],
       frameAncestors: ["'none'"],
       baseUri: ["'self'"],
       upgradeInsecureRequests: [],
@@ -167,6 +167,7 @@ app.use('/api/coupons', couponRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/newsletter', require('./routes/newsletter'));
 app.use('/api/affiliates', require('./routes/affiliates'));
+app.use('/api/shipping', require('./routes/shipping'));
 
 // Health check
 app.get('/api/health', (req, res) => {

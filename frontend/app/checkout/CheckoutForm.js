@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useCartStore, useAuthStore } from '@/lib/store';
-import { orderAPI, couponAPI } from '@/lib/api';
+import { orderAPI, couponAPI, shippingAPI } from '@/lib/api';
 import { initiatePayFastPayment } from '@/lib/payfast';
 import toast from 'react-hot-toast';
 
@@ -39,6 +39,12 @@ export default function CheckoutForm() {
     // Coupon State
     const [couponInput, setCouponInput] = useState('');
     const [validatingCoupon, setValidatingCoupon] = useState(false);
+
+    // Shipping State
+    const [shippingRates, setShippingRates] = useState([]);
+    const [selectedRate, setSelectedRate] = useState(null);
+    const [fetchingRates, setFetchingRates] = useState(false);
+    const [shippingError, setShippingError] = useState('');
 
     // Form state
     const [formData, setFormData] = useState({
@@ -89,8 +95,57 @@ export default function CheckoutForm() {
         }
     }, [user]);
 
-    // Shipping is free (included in product price)
-    const currentShippingCost = 0;
+    // Fetch shipping rates when address is complete
+    const fetchShippingRates = async () => {
+        if (!formData.city.trim() || !formData.zipCode.trim() || items.length === 0) return;
+
+        setFetchingRates(true);
+        setShippingError('');
+        setShippingRates([]);
+        setSelectedRate(null);
+
+        try {
+            const destination = {
+                street: formData.street,
+                city: formData.city,
+                zip: formData.zipCode,
+                country: 'ZA',
+            };
+            const shippingItems = items.map(item => ({
+                productId: item.product?._id || item.productId,
+                quantity: item.quantity,
+            }));
+
+            const { data } = await shippingAPI.getRates(destination, shippingItems);
+
+            if (data.success && data.rates?.length > 0) {
+                // Sort by price ascending
+                const sorted = [...data.rates].sort((a, b) => a.total_price - b.total_price);
+                setShippingRates(sorted);
+                setSelectedRate(sorted[0]); // Auto-select cheapest
+            } else {
+                setShippingError('No shipping options available for this address');
+            }
+        } catch (error) {
+            console.error('Shipping rates error:', error);
+            setShippingError('Could not fetch shipping rates. Please check your address.');
+        } finally {
+            setFetchingRates(false);
+        }
+    };
+
+    // Trigger rate fetch when city + zipCode change (debounced)
+    useEffect(() => {
+        if (!formData.city.trim() || !formData.zipCode.trim() || items.length === 0) return;
+
+        const timer = setTimeout(() => {
+            fetchShippingRates();
+        }, 800);
+
+        return () => clearTimeout(timer);
+    }, [formData.city, formData.zipCode, formData.street, items.length]);
+
+    const currentShippingCost = selectedRate?.total_price || 0;
 
     const calculateDiscount = () => {
         if (!coupon) return 0;
@@ -156,6 +211,11 @@ export default function CheckoutForm() {
             toast.error('Please enter a valid email address');
             return false;
         }
+        // Shipping rate must be selected
+        if (!selectedRate) {
+            toast.error('Please select a shipping option');
+            return false;
+        }
         return true;
     };
 
@@ -190,8 +250,17 @@ export default function CheckoutForm() {
                     phone: formData.phone
                 },
                 paymentMethod: formData.paymentMethod,
-                shippingMethod: formData.shippingMethod,
-                shippingCost: 0,
+                shippingMethod: 'standard',
+                shippingCost: selectedRate?.total_price || 0,
+                shippingService: selectedRate ? {
+                    provider: 'bobgo',
+                    service_code: selectedRate.service_code,
+                    service_name: selectedRate.service_name,
+                    courier: selectedRate.courier,
+                    price: selectedRate.total_price,
+                    min_delivery_date: selectedRate.min_delivery_date || null,
+                    max_delivery_date: selectedRate.max_delivery_date || null,
+                } : undefined,
                 customerNote: formData.customerNote,
                 // Coupon Data
                 couponCode: coupon?.code,
@@ -399,6 +468,77 @@ export default function CheckoutForm() {
 
 
 
+                            {/* Shipping Options */}
+                            <div className="bg-white rounded-xl p-6 shadow-sm">
+                                <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                                    <span className="w-8 h-8 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                                    Shipping Method
+                                </h2>
+
+                                {fetchingRates && (
+                                    <div className="flex items-center gap-3 py-4">
+                                        <div className="animate-spin rounded-full h-5 w-5 border-2 border-yellow-500 border-t-transparent"></div>
+                                        <span className="text-sm text-gray-600">Fetching shipping rates...</span>
+                                    </div>
+                                )}
+
+                                {shippingError && (
+                                    <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-600">
+                                        {shippingError}
+                                    </div>
+                                )}
+
+                                {!fetchingRates && !shippingError && shippingRates.length === 0 && (
+                                    <p className="text-sm text-gray-500 py-2">
+                                        Enter your city and postal code above to see shipping options.
+                                    </p>
+                                )}
+
+                                {shippingRates.length > 0 && (
+                                    <div className="space-y-3">
+                                        {shippingRates.map((rate) => (
+                                            <label
+                                                key={rate.service_code}
+                                                className={`flex items-start gap-3 p-4 border rounded-lg cursor-pointer transition-colors ${
+                                                    selectedRate?.service_code === rate.service_code
+                                                        ? 'border-yellow-500 bg-yellow-50'
+                                                        : 'border-gray-200 hover:border-gray-300'
+                                                }`}
+                                            >
+                                                <input
+                                                    type="radio"
+                                                    name="shippingRate"
+                                                    checked={selectedRate?.service_code === rate.service_code}
+                                                    onChange={() => setSelectedRate(rate)}
+                                                    className="mt-1 accent-yellow-500"
+                                                />
+                                                <div className="flex-1">
+                                                    <div className="flex justify-between items-start">
+                                                        <div>
+                                                            <p className="font-medium text-sm">{rate.service_name}</p>
+                                                            <p className="text-xs text-gray-500">{rate.courier}</p>
+                                                            {(rate.min_delivery_date || rate.max_delivery_date) && (
+                                                                <p className="text-xs text-gray-500 mt-1">
+                                                                    Est. delivery: {rate.min_delivery_date && rate.max_delivery_date
+                                                                        ? `${new Date(rate.min_delivery_date).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short' })} – ${new Date(rate.max_delivery_date).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short' })}`
+                                                                        : rate.max_delivery_date
+                                                                            ? `by ${new Date(rate.max_delivery_date).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short' })}`
+                                                                            : ''
+                                                                    }
+                                                                </p>
+                                                            )}
+                                                        </div>
+                                                        <span className="font-semibold text-sm whitespace-nowrap">
+                                                            R{rate.total_price.toFixed(2)}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
                             {/* Order Notes */}
                             <div className="bg-white rounded-xl p-6 shadow-sm">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Order Notes (Optional)</label>
@@ -457,8 +597,10 @@ export default function CheckoutForm() {
                                     <span>
                                         {coupon?.discountType === 'free_shipping' ? (
                                             <span className="text-green-600 font-medium">FREE (Coupon)</span>
+                                        ) : selectedRate ? (
+                                            `R${shipping.toFixed(2)}`
                                         ) : (
-                                            shipping === 0 ? 'FREE' : `R${shipping.toFixed(2)}`
+                                            <span className="text-gray-400 text-xs">Select address</span>
                                         )}
                                     </span>
                                 </div>

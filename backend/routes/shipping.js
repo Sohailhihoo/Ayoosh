@@ -41,7 +41,9 @@ router.post('/rates', async (req, res, next) => {
       };
     });
 
+    console.log(`[Shipping] Fetching rates: ${destination.city}, ${destination.zip} | ${parcelItems.length} parcels | MOCK: ${bobgo.MOCK}`);
     const rates = await bobgo.getRates({ origin: ORIGIN, destination, items: parcelItems });
+    console.log(`[Shipping] Got ${rates.length} rates`);
     res.json({ success: true, rates, mock: bobgo.MOCK });
   } catch (err) { next(err); }
 });

@@ -91,12 +91,6 @@ export const shippingAPI = {
   track: (ref) => api.get(`/shipping/track/${ref}`),
 };
 
-// Payment APIs
-export const paymentAPI = {
-  createIntent: (orderId) => api.post('/payments/create-intent', { orderId }),
-  confirm: (orderId, paymentIntentId) => api.post('/payments/confirm', { orderId, paymentIntentId }),
-};
-
 // Review APIs
 export const reviewAPI = {
   submit: (data) => api.post('/reviews', data),
