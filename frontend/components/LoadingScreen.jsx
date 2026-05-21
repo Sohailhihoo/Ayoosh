@@ -9,7 +9,10 @@ import { ASSETS } from '@/lib/cloudinary-assets';
  * Does NOT show on subsequent page navigations.
  */
 export default function LoadingScreen() {
-    const [isVisible, setIsVisible] = useState(true);
+    const [isVisible, setIsVisible] = useState(() => {
+        if (typeof window === 'undefined') return false;
+        return !sessionStorage.getItem('siteLoaded');
+    });
     const hasRun = useRef(false);
 
     useEffect(() => {
