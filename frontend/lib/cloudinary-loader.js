@@ -6,8 +6,8 @@
  * Next.js <Image> component.
  */
 export default function cloudinaryLoader({ src, width, quality }) {
-  const q = quality || 'auto';
-  const transforms = `f_auto,q_auto:${q},w_${width}`;
+  const q = quality ? `q_${quality}` : 'q_auto';
+  const transforms = `f_auto,${q},w_${width}`;
 
   // If the URL already contains /upload/<transforms>/, replace the transform segment
   const withTransforms = src.replace(
