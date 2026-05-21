@@ -1,7 +1,3 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import { ASSETS } from '@/lib/cloudinary-assets';
 import ProductScroller from '@/components/ProductScroller';
 import HeroSection from '@/components/HeroSection';
 

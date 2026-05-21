@@ -1,7 +1,3 @@
-'use client';
-
-import React from 'react';
-
 export default function AboutPage() {
     return (
         <div className="bg-white min-h-screen font-[family-name:var(--font-montserrat)]">
