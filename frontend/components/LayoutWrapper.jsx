@@ -30,7 +30,9 @@ export default function LayoutWrapper({ children }) {
             {!hideLoadingScreen && <LoadingScreen />}
             {!hideNavbar && <Navbar />}
             <main className="min-h-screen">
-                {children}
+                <div key={pathname} style={{ animation: 'fadeIn 300ms ease-in' }}>
+                    {children}
+                </div>
             </main>
             {!hideFooter && <Footer />}
             <NewsletterPopup />
