@@ -41,7 +41,7 @@ const splitSectionConfig = {
     },
     rightPanel: {
         imageOnly: true,
-        backgroundImage: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769691023/Why_choose_ayoosh_bjb1af.jpg'
+        backgroundImage: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_1280/v1769691023/Why_choose_ayoosh_bjb1af.jpg'
     }
 };
 

@@ -45,7 +45,7 @@ const splitSectionConfig = {
     },
     rightPanel: {
         imageOnly: true,
-        backgroundImage: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769691023/Why_choose_ayoosh_bjb1af.jpg'
+        backgroundImage: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_1280/v1769691023/Why_choose_ayoosh_bjb1af.jpg'
     }
 };
 
@@ -59,7 +59,7 @@ export default function BeautyPage() {
             variant: '50ml Tube',
             price: 484.99,
             priceNote: '(incl delivery)',
-            image: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769715388/Sun_Tube_cmxezs.png',
+            image: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_1280/v1769715388/Sun_Tube_cmxezs.png',
         },
         {
             _id: '69825dab2d01b1efb4370176',
@@ -69,7 +69,7 @@ export default function BeautyPage() {
             price: 424.99,
             compareAtPrice: 474.99,
             priceNote: '(incl delivery)',
-            image: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769748802/Pouch_and_Sachet_bjidrn.png',
+            image: 'https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_1280/v1769748802/Pouch_and_Sachet_bjidrn.png',
             imageScale: 1.4
         }
     ];

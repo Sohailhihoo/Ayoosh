@@ -188,7 +188,7 @@ export default function RegisterPage() {
       <div className="hidden lg:flex w-1/2 relative bg-[#f4f2f0] p-0 border-none">
         <div className="absolute inset-0">
           <img
-            src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto/v1769770501/Group_49_1_hsbwkx.png"
+            src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_1280/v1769770501/Group_49_1_hsbwkx.png"
             alt="Ayoosh Beauty"
             className="w-full h-full object-contain object-left-bottom"
           />
