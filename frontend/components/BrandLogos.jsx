@@ -1,4 +1,5 @@
 'use client';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 /**
@@ -47,9 +48,11 @@ export default function BrandLogos({ bgColor = '#fdf6f0' }) {
                 >
                     {partners.map((partner) => (
                         <div key={partner.name}>
-                            <img
+                            <Image
                                 src={partner.logo}
                                 alt={partner.name}
+                                width={160}
+                                height={80}
                                 className="h-14 md:h-20 w-auto object-contain"
                             />
                         </div>

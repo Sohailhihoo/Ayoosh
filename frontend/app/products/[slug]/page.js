@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import Image from 'next/image';
 import Link from 'next/link';
 import { productAPI } from '@/lib/api';
 import { useCartStore } from '@/lib/store';
@@ -301,10 +302,12 @@ export default function ProductDetailPage() {
           <div className="relative">
             <div className="aspect-square bg-white rounded-2xl flex items-center justify-center overflow-hidden">
               {(product.images?.[selectedImageIndex]?.url || product.images?.[0]?.url || product.image) ? (
-                <img
+                <Image
                   src={product.images?.[selectedImageIndex]?.url || product.images?.[0]?.url || product.image}
                   alt={product.name}
-                  className="w-full h-full object-contain p-4"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-contain p-4"
                 />
               ) : (
                 <span className="text-8xl">

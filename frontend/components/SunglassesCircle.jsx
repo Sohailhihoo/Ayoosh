@@ -4,6 +4,7 @@
 import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
 import { Montserrat } from 'next/font/google';
+import Image from 'next/image';
 import Link from 'next/link';
 
 const montserrat = Montserrat({
@@ -150,10 +151,12 @@ export default function SunglassesCircle() {
                                     ? 'scale-[1.6] z-50 filter-none opacity-100 drop-shadow-2xl'
                                     : 'scale-90 z-0 grayscale opacity-60'
                                     }`}>
-                                    <img
+                                    <Image
                                         src={product.image}
                                         alt={product.name}
-                                        className="w-full h-full object-contain"
+                                        fill
+                                        sizes="200px"
+                                        className="object-contain"
                                     />
                                 </Link>
                             </motion.div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useCartStore, useAuthStore } from '@/lib/store';
 import { orderAPI, couponAPI, shippingAPI } from '@/lib/api';
@@ -564,10 +565,12 @@ export default function CheckoutForm() {
                                         <div key={item._id} className="flex gap-3">
                                             <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
                                                 {item.product?.images?.[0]?.url ? (
-                                                    <img
+                                                    <Image
                                                         src={item.product.images[0].url}
                                                         alt={item.product.name}
-                                                        className="w-full h-full object-cover"
+                                                        fill
+                                                        sizes="64px"
+                                                        className="object-cover"
                                                     />
                                                 ) : (
                                                     <span className="text-xl">📦</span>

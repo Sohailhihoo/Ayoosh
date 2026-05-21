@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { productAPI, adminAPI } from '@/lib/api';
 import toast from 'react-hot-toast';
@@ -173,9 +174,11 @@ export default function AdminProducts() {
                                     <tr key={product._id} className="hover:bg-gray-50">
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center">
-                                                <img
+                                                <Image
                                                     src={product.images?.[0]?.url || product.images?.[0] || '/placeholder.png'}
                                                     alt={product.name}
+                                                    width={40}
+                                                    height={40}
                                                     className="h-10 w-10 rounded object-cover"
                                                 />
                                                 <div className="ml-4">

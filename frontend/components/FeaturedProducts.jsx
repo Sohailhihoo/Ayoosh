@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useCartStore } from '@/lib/store';
 import toast from 'react-hot-toast';
@@ -116,10 +117,12 @@ function FeaturedProductCard({ product, index }) {
                     {/* Product Image */}
                     <div className="w-full h-full flex items-center justify-center p-8 group-hover:scale-105 transition-transform duration-500">
                         {product.images?.[0] || product.image ? (
-                            <img
+                            <Image
                                 src={product.images?.[0] || product.image}
                                 alt={product.name}
-                                className="max-w-full max-h-full object-contain"
+                                fill
+                                sizes="(max-width: 768px) 100vw, 50vw"
+                                className="object-contain"
                                 style={{ transform: `scale(${product.imageScale || 1})` }}
                             />
                         ) : (

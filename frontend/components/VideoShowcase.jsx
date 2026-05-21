@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
+import Image from 'next/image';
 import { motion, useInView } from 'framer-motion';
 
 export default function VideoShowcase({ videos: propVideos, bgColor = '#f4f2f0' }) {
@@ -118,7 +119,7 @@ function VideoCard({ video, index, sectionInView }) {
                     z-20
                 `}
             >
-                <img src={video.thumbnail} alt={video.alt} className="w-full h-full object-cover" />
+                <Image src={video.thumbnail} alt={video.alt || ''} fill sizes="(max-width: 768px) 33vw, 400px" className="object-cover" />
 
                 {/* Loader Spinner */}
                 {!isLoaded && (

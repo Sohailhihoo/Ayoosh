@@ -2,6 +2,7 @@
 
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useCartStore } from '@/lib/store';
 import { verifyPayFastPayment } from '@/lib/payfast';
@@ -188,7 +189,7 @@ function OrderConfirmationContent() {
                                     {order.items.map((item, idx) => (
                                         <div key={idx} className="flex items-center gap-3">
                                             {item.image && typeof item.image === 'string' && item.image.startsWith('http') && (
-                                                <img src={item.image} alt={item.name} className="w-12 h-12 rounded-lg object-cover bg-gray-100 flex-shrink-0" />
+                                                <Image src={item.image} alt={item.name} width={48} height={48} className="w-12 h-12 rounded-lg object-cover bg-gray-100 flex-shrink-0" />
                                             )}
                                             <div className="flex-1 min-w-0">
                                                 <p className="text-sm font-medium text-gray-900 truncate">{item.name}</p>

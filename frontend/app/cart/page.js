@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useCartStore, useAuthStore } from '@/lib/store';
 import toast from 'react-hot-toast';
@@ -94,10 +95,12 @@ export default function CartPage() {
                   {/* Product Image */}
                   <div className="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
                     {item.product?.images?.[0]?.url ? (
-                      <img
+                      <Image
                         src={item.product.images[0].url}
                         alt={item.product?.name}
-                        className="w-full h-full object-cover"
+                        fill
+                        sizes="96px"
+                        className="object-cover"
                       />
                     ) : (
                       <span className="text-3xl">

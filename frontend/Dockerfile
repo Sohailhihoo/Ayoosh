@@ -27,6 +27,9 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
+# Cache bust - change this value to force a fresh build
+ARG CACHEBUST=1
+
 # Pass Environment Variables to Build
 ARG NEXT_PUBLIC_API_URL
 ARG NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME

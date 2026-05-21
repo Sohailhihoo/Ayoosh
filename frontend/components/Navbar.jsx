@@ -4,7 +4,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
 import { useCartStore, useAuthStore, useUIStore } from '@/lib/store';
+import Image from 'next/image';
 import { ASSETS } from '@/lib/cloudinary-assets';
+import cloudinaryLoader from '@/lib/cloudinary-loader';
 
 // Inline SVG icons to avoid react-icons module issues
 const MenuIcon = ({ className }) => (
@@ -246,12 +248,13 @@ export default function Navbar() {
                 className="block"
                 aria-label="Ayoosh home"
               >
-                <img
+                <Image
+                  loader={cloudinaryLoader}
                   src={getLogoSrc()}
                   alt="Ayoosh logo"
+                  width={160}
+                  height={80}
                   className={`w-auto object-contain transition-all duration-300 ${getLogoSize()}`}
-                  width="auto"
-                  height="80"
                 />
               </Link>
             </div>
