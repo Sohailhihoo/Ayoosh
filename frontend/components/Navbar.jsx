@@ -4,9 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
 import { useCartStore, useAuthStore, useUIStore } from '@/lib/store';
-import Image from 'next/image';
 import { ASSETS } from '@/lib/cloudinary-assets';
-import cloudinaryLoader from '@/lib/cloudinary-loader';
 
 // Inline SVG icons to avoid react-icons module issues
 const MenuIcon = ({ className }) => (
@@ -68,6 +66,9 @@ export default function Navbar() {
 
   // Check if on homepage
   const isHomePage = pathname === '/' || pathname === '/home';
+
+  // Never render navbar on homepage — it has its own logo animation
+  if (isHomePage) return null;
 
   // Determine navbar styles based on scroll state and current page
   const getNavClasses = () => {
@@ -192,7 +193,6 @@ export default function Navbar() {
   /**
    * Handles user logout
    */
-
   const handleLogout = useCallback(async () => {
     await logout();
     closeMenu();
@@ -200,8 +200,6 @@ export default function Navbar() {
 
   return (
     <>
-
-
       {/* Main Navigation */}
       <nav
         className={`transition-all duration-300 z-50 ${navClasses}`}
@@ -248,12 +246,10 @@ export default function Navbar() {
                 className="block"
                 aria-label="Ayoosh home"
               >
-                <Image
-                  loader={cloudinaryLoader}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
                   src={getLogoSrc()}
                   alt="Ayoosh logo"
-                  width={160}
-                  height={80}
                   className={`w-auto object-contain transition-all duration-300 ${getLogoSize()}`}
                 />
               </Link>
@@ -262,7 +258,7 @@ export default function Navbar() {
             {/* Right Section: Icons */}
             <div className="flex items-center space-x-6">
               <button
-                className="hover:opacity-70 transition-opacity hidden md:block" // Removed text tracking classes
+                className="hover:opacity-70 transition-opacity hidden md:block"
                 aria-label="Search products"
               >
                 <SearchIcon className="w-6 h-6" />

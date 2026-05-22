@@ -7,7 +7,7 @@ import cloudinaryLoader from '@/lib/cloudinary-loader';
 
 /**
  * HeroLogoAnimation Component
- * 
+ *
  * Logic:
  * - First visit: Shows full animation (rotate → move → pause → fade to white)
  * - Subsequent visits: Shows white logo immediately (permanent brand logo)

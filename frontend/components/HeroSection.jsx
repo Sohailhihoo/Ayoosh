@@ -29,7 +29,7 @@ export default function HeroSection({
     align = 'center' // 'center' | 'bottom-left'
 }) {
     return (
-        <section className="relative h-screen overflow-hidden">
+        <section className="relative h-screen overflow-hidden bg-black">
             {/* Logo Header */}
             {logoSrc && (
                 <header className="absolute top-0 left-0 right-0 z-20 flex justify-center py-6">

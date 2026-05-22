@@ -99,6 +99,7 @@ export const reviewAPI = {
   approve: (id) => api.put(`/reviews/${id}/approve`),
   reject: (id) => api.put(`/reviews/${id}/reject`),
   delete: (id) => api.delete(`/reviews/${id}`),
+  updatePage: (id, page) => api.put(`/reviews/${id}/page`, { page }),
 };
 
 // Admin APIs

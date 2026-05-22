@@ -10,6 +10,12 @@ const STATUS_COLORS = {
     rejected: 'bg-red-100 text-red-800',
 };
 
+const PAGE_OPTIONS = [
+    { value: '', label: '— Hidden from all carousels —' },
+    { value: 'suncream', label: 'Suncream page only' },
+    { value: 'sunglasses', label: 'Sunglasses page only' },
+];
+
 const TABS = ['all', 'pending', 'approved', 'rejected'];
 
 function StarDisplay({ rating }) {
@@ -75,14 +81,29 @@ export default function AdminReviews() {
         }
     };
 
+    const handlePageChange = async (id, page) => {
+        try {
+            await reviewAPI.updatePage(id, page || null);
+            toast.success('Review page updated');
+            setReviews((prev) => prev.map((r) => r._id === id ? { ...r, page: page || null } : r));
+        } catch (error) {
+            toast.error('Failed to update page');
+        }
+    };
+
     const getSourceLabel = (review) => {
-        if (review.productId) {
-            return review.productId.name || 'Product';
-        }
-        if (review.page) {
-            return review.page.charAt(0).toUpperCase() + review.page.slice(1) + ' Page';
-        }
-        return 'General';
+        if (review.productId) return review.productId.name || 'Product';
+        if (review.page === 'suncream') return 'Suncream Page';
+        if (review.page === 'sunglasses') return 'Sunglasses Page';
+        if (review.page === 'general') return 'Both Pages';
+        return 'Unassigned';
+    };
+
+    const getSourceColor = (review) => {
+        if (review.page === 'suncream') return 'bg-orange-100 text-orange-700';
+        if (review.page === 'sunglasses') return 'bg-blue-100 text-blue-700';
+        if (review.page === 'general') return 'bg-purple-100 text-purple-700';
+        return 'bg-gray-100 text-gray-500';
     };
 
     return (
@@ -115,7 +136,7 @@ export default function AdminReviews() {
                                         <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[review.status]}`}>
                                             {review.status}
                                         </span>
-                                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getSourceColor(review)}`}>
                                             {getSourceLabel(review)}
                                         </span>
                                     </div>
@@ -125,6 +146,20 @@ export default function AdminReviews() {
                                     <p className="text-xs text-gray-400 mt-2">
                                         {new Date(review.createdAt).toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                                     </p>
+
+                                    {/* Page Assignment */}
+                                    <div className="mt-3 flex items-center gap-2">
+                                        <span className="text-xs text-gray-500 font-medium whitespace-nowrap">Show on:</span>
+                                        <select
+                                            value={review.page || ''}
+                                            onChange={(e) => handlePageChange(review._id, e.target.value)}
+                                            className="text-xs border border-gray-200 rounded px-2 py-1 bg-white text-gray-700 focus:outline-none focus:border-yellow-400 cursor-pointer"
+                                        >
+                                            {PAGE_OPTIONS.map((opt) => (
+                                                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                            ))}
+                                        </select>
+                                    </div>
                                 </div>
 
                                 <div className="flex gap-2 flex-shrink-0">

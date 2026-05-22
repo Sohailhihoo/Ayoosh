@@ -49,19 +49,27 @@ router.get('/', async (req, res) => {
     try {
         const { page, productId } = req.query;
         const filter = { status: 'approved' };
+
         if (page) {
-            // Show page-specific reviews + general reviews (no page, no product)
+            // Page maps to a productType (suncream → suncream products, sunglasses → sunglasses products)
+            const productTypeMap = { suncream: 'suncream', sunglasses: 'sunglasses' };
+            const productType = productTypeMap[page];
+
+            // Find all product IDs of this type so we can include their reviews
+            const productIds = productType
+                ? (await Product.find({ productType }).select('_id').lean()).map(p => p._id)
+                : [];
+
             filter.$or = [
                 { page },
-                { page: 'general', productId: null },
-                { page: null, productId: null }
+                ...(productIds.length > 0 ? [{ productId: { $in: productIds } }] : [])
             ];
         }
+
         if (productId) filter.productId = productId;
 
         const reviews = await Review.find(filter).sort({ createdAt: -1 }).select('-email');
 
-        // Calculate aggregate rating
         const count = reviews.length;
         const averageRating = count > 0
             ? Math.round((reviews.reduce((sum, r) => sum + r.rating, 0) / count) * 10) / 10
@@ -84,6 +92,26 @@ router.get('/all', protect, authorize('admin'), async (req, res) => {
         res.json({ success: true, reviews });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Failed to fetch reviews' });
+    }
+});
+
+// PUT /api/reviews/:id/page — Update which page a review appears on (admin)
+router.put('/:id/page', protect, authorize('admin'), async (req, res) => {
+    try {
+        const { page } = req.body;
+        const allowed = ['suncream', 'sunglasses', 'general', null];
+        if (!allowed.includes(page)) {
+            return res.status(400).json({ success: false, message: 'Invalid page value' });
+        }
+        const review = await Review.findByIdAndUpdate(
+            req.params.id,
+            { page: page || null },
+            { new: true }
+        );
+        if (!review) return res.status(404).json({ success: false, message: 'Review not found' });
+        res.json({ success: true, message: 'Review page updated', review });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to update review page' });
     }
 });
 

@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import NewsletterPopup from '@/components/NewsletterPopup';
+import LoadingScreen from '@/components/LoadingScreen';
 
 /**
  * LayoutWrapper Component
@@ -23,6 +24,7 @@ export default function LayoutWrapper({ children }) {
 
     return (
         <>
+            <LoadingScreen />
             {!hideNavbar && <Navbar />}
             <main className="min-h-screen">
                 <div key={pathname} style={{ animation: 'fadeIn 300ms ease-in' }}>

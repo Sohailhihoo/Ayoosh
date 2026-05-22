@@ -142,7 +142,7 @@ export default function HomePage() {
     }, []);
 
     return (
-        <div className="bg-white">
+        <div className="bg-black">
             {/* Hero Logo Animation (shows after loading screen on first visit) */}
             {showLogoAnimation && (
                 <HeroLogoAnimation />
@@ -169,7 +169,7 @@ export default function HomePage() {
             {/* Split-Screen Hero Section - 2 Panels */}
             <section
                 ref={heroRef}
-                className="relative h-screen min-h-[600px] flex flex-col md:flex-row"
+                className="relative h-screen min-h-[600px] flex flex-col md:flex-row bg-black"
                 aria-label="Hero section"
             >
                 {/* Left Panel - Suncream */}
@@ -189,7 +189,7 @@ export default function HomePage() {
                         className="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110 brightness-[0.3] group-hover:brightness-110 grayscale group-hover:grayscale-0"
                         aria-label="Skincare collection video"
                     >
-                        <source src="https://res.cloudinary.com/dpdg462fb/video/upload/q_auto/v1770179502/1_pdu3jc.mp4" type="video/mp4" />
+                        <source src="https://res.cloudinary.com/dpdg462fb/video/upload/q_auto:low,vc_auto,w_1280/v1770179502/1_pdu3jc.mp4" type="video/mp4" />
                         Your browser does not support the video tag.
                     </video>
 
@@ -231,7 +231,7 @@ export default function HomePage() {
                         className="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110 brightness-[0.3] group-hover:brightness-110 grayscale group-hover:grayscale-0"
                         aria-label="SkinBooster collection video"
                     >
-                        <source src="https://res.cloudinary.com/dpdg462fb/video/upload/q_auto/v1770179502/2_m0puzp.mp4" type="video/mp4" />
+                        <source src="https://res.cloudinary.com/dpdg462fb/video/upload/q_auto:low,vc_auto,w_1280/v1770179502/2_m0puzp.mp4" type="video/mp4" />
                         Your browser does not support the video tag.
                     </video>
 

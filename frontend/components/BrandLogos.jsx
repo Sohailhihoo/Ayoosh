@@ -11,7 +11,6 @@ const partners = [
     {
         name: 'Pick n Pay',
         logo: 'https://upload.wikimedia.org/wikipedia/commons/f/f8/Pick_n_Pay_logo.svg',
-        url: 'https://www.pnp.co.za',
     },
 ];
 
@@ -31,10 +30,10 @@ export default function BrandLogos({ bgColor = '#fdf6f0' }) {
                     className="text-center mb-10"
                 >
                     <span className="text-sm tracking-[0.3em] text-[#b87c6b] uppercase font-medium">
-                        Now Available At
+                        Available In-Store At
                     </span>
                     <h2 className="text-3xl md:text-4xl font-sans text-gray-900 mt-3">
-                        Our <span className="text-[#b87c6b] italic">Partners</span>
+                        Find Us <span className="text-[#b87c6b] italic">In Store</span>
                     </h2>
                 </motion.div>
 
@@ -47,7 +46,7 @@ export default function BrandLogos({ bgColor = '#fdf6f0' }) {
                     className="flex items-center justify-center gap-8 flex-wrap"
                 >
                     {partners.map((partner) => (
-                        <div key={partner.name}>
+                        <div key={partner.name} className="flex flex-col items-center gap-2">
                             <Image
                                 src={partner.logo}
                                 alt={partner.name}
@@ -55,6 +54,7 @@ export default function BrandLogos({ bgColor = '#fdf6f0' }) {
                                 height={80}
                                 className="h-14 md:h-20 w-auto object-contain"
                             />
+                            <p className="text-xs text-gray-400 tracking-wide">In-store only · Not available online</p>
                         </div>
                     ))}
                 </motion.div>

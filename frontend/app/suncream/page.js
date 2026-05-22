@@ -74,7 +74,7 @@ export default function BeautyPage() {
         <div className="min-h-screen bg-[#f4f2f0]">
             {/* Hero Section */}
             <HeroSection
-                videoSrc="https://res.cloudinary.com/dpdg462fb/video/upload/q_auto/v1770179476/hero_utjppl.mp4"
+                videoSrc="https://res.cloudinary.com/dpdg462fb/video/upload/q_auto:low,vc_auto,w_1280/v1770179476/hero_utjppl.mp4"
                 title="AYOOSH SUN CREAM"
                 titleStyle={heroTitleStyle}
                 buttons={heroButtons}

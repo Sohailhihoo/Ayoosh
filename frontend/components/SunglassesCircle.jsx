@@ -87,6 +87,9 @@ export default function SunglassesCircle() {
 
     const activeProduct = sunglasses[activeIndex];
 
+    // Counter-rotation to keep each card upright as the wheel spins
+    const counterRotate = useTransform(smoothRotate, (r) => -r);
+
     return (
         <section ref={containerRef} className="relative h-[400vh] bg-[#d9d9d9] z-10 overflow-clip">
             <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-visible">
@@ -144,19 +147,19 @@ export default function SunglassesCircle() {
                                 style={{
                                     x,
                                     y,
-                                    rotate: useTransform(smoothRotate, (r) => -r)
+                                    rotate: counterRotate
                                 }}
                             >
-                                <Link href={`/products/${product.slug}`} className={`relative block transition-all duration-500 ease-out transform ${isActive
+                                <Link href={`/products/${product.slug}`} className={`block transition-all duration-500 ease-out transform ${isActive
                                     ? 'scale-[1.6] z-50 filter-none opacity-100 drop-shadow-2xl'
                                     : 'scale-90 z-0 grayscale opacity-60'
                                     }`}>
                                     <Image
                                         src={product.image}
                                         alt={product.name}
-                                        fill
-                                        sizes="200px"
-                                        className="object-contain"
+                                        width={320}
+                                        height={320}
+                                        className="object-contain w-[320px] h-[320px]"
                                     />
                                 </Link>
                             </motion.div>

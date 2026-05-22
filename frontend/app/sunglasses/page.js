@@ -45,21 +45,18 @@ const sunglassesVideos = [
     {
         id: 1,
         thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/f_auto,q_auto,so_0/v1770308098/1_bexn7a.jpg",
-        videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/q_auto/v1770308098/1_bexn7a.mov",
-        
+        videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/q_auto:low,vc_auto,w_720/v1770308098/1_bexn7a.mp4",
     },
     {
         id: 2,
         thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/f_auto,q_auto,so_0/v1770308099/2_victgs.jpg",
-        videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/q_auto/v1770308099/2_victgs.mp4",
+        videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/q_auto:low,vc_auto,w_720/v1770308099/2_victgs.mp4",
         featured: true,
-       
     },
     {
         id: 3,
         thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/f_auto,q_auto,so_0/v1770308086/3_xzzogy.jpg",
-        videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/q_auto/v1770308086/3_xzzogy.mp4",
-        
+        videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/q_auto:low,vc_auto,w_720/v1770308086/3_xzzogy.mp4",
     }
 ];
 
@@ -68,7 +65,7 @@ export default function SunglassesPage() {
         <div className="min-h-screen bg-[#d9d9d9]">
             {/* Hero Section */}
             <HeroSection
-                videoSrc="https://res.cloudinary.com/dpdg462fb/video/upload/q_auto/v1770179525/sunglasses_ocnfon.mp4"
+                videoSrc="https://res.cloudinary.com/dpdg462fb/video/upload/q_auto:low,vc_auto,w_1280/v1770179525/sunglasses_ocnfon.mp4"
                 title="The Perspective Range"
                 titleStyle={heroTitleStyle}
                 buttons={heroButtons}
@@ -83,6 +80,7 @@ export default function SunglassesPage() {
             <SplitFeatureSection
                 leftPanel={splitSectionConfig.leftPanel}
                 rightPanel={splitSectionConfig.rightPanel}
+                accentColor="#649BC3"
             />
 
             {/* Promo Bar (Yellow Feature Section) */}

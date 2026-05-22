@@ -25,21 +25,18 @@ export default function VideoShowcase({ videos: propVideos, bgColor = '#f4f2f0' 
         {
             id: 1,
             thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/f_auto,q_auto,so_0/v1770308098/1_bexn7a.jpg",
-            videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/q_auto/v1770308098/1_bexn7a.mov",
-            
+            videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/q_auto:low,vc_auto,w_720/v1770308098/1_bexn7a.mp4",
         },
         {
             id: 2,
             thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/f_auto,q_auto,so_0/v1770308099/2_victgs.jpg",
-            videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/q_auto/v1770308099/2_victgs.mp4",
+            videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/q_auto:low,vc_auto,w_720/v1770308099/2_victgs.mp4",
             featured: true,
-            
         },
         {
             id: 3,
             thumbnail: "https://res.cloudinary.com/dpdg462fb/video/upload/f_auto,q_auto,so_0/v1770308086/3_xzzogy.jpg",
-            videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/q_auto/v1770308086/3_xzzogy.mp4",
-            
+            videoUrl: "https://res.cloudinary.com/dpdg462fb/video/upload/q_auto:low,vc_auto,w_720/v1770308086/3_xzzogy.mp4",
         }
     ];
 
@@ -137,7 +134,7 @@ function VideoCard({ video, index, sectionInView }) {
                 muted={true}
                 loop
                 playsInline
-                preload="auto"
+                preload="metadata"
                 crossOrigin="anonymous"
                 onLoadedData={() => {
                     console.log('Video loaded:', video.alt);
