@@ -65,7 +65,7 @@ export default function NewsletterPopup() {
                 {/* Close Button */}
                 <button
                     onClick={handleClose}
-                    className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-black/10 text-black/70 hover:bg-black/20 hover:text-black transition-all"
+                    className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-black/30 text-white hover:bg-black/50 transition-all"
                     aria-label="Close popup"
                 >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -73,25 +73,13 @@ export default function NewsletterPopup() {
                     </svg>
                 </button>
 
-                {/* Header */}
-                <div
-                    className="relative py-10 px-8 text-center overflow-hidden"
-                    style={{ background: 'linear-gradient(135deg, #F6C811 0%, #e8b800 60%, #d4a800 100%)' }}
-                >
-
-                    <p className="relative text-sm tracking-[0.25em] text-black/60 uppercase mb-3 font-medium">
-                        The Ayoosh Circle
-                    </p>
-                    <h2
-                        className="relative text-3xl md:text-4xl text-black mb-2 leading-tight"
-                        style={{ fontFamily: "'Tan Pearl', serif" }}
-                    >
-                        Be Part of the<br />Ayoosh Circle
-                    </h2>
-                    <p className="relative text-black/60 text-sm mt-3 tracking-wide italic">
-                        Glow together. Grow together.
-                    </p>
-                </div>
+                {/* Header Image */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                    src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_800/v1779809171/THE_AYOOSH_CIRCLE_newsletter_ghg90k.png"
+                    alt="The Ayoosh Circle"
+                    className="w-full block"
+                />
 
                 {/* Content */}
                 <div className="bg-white px-8 py-8">

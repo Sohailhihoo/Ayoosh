@@ -1,7 +1,6 @@
 import HeroSection from '@/components/HeroSection';
 import SunglassesCircle from '@/components/SunglassesCircle';
 import SplitFeatureSection from '@/components/SplitFeatureSection';
-import BrandLogos from '@/components/BrandLogos';
 import ReviewForm from '@/components/ReviewForm';
 import ReviewCarousel from '@/components/ReviewCarousel';
 import PromoBar from '@/components/PromoBar';
@@ -92,9 +91,6 @@ export default function SunglassesPage() {
             <VideoShowcase videos={sunglassesVideos} bgColor="#d9d9d9" />
 
 
-
-            {/* Brand Logos */}
-            <BrandLogos bgColor="#d9d9d9" />
 
             {/* Customer Reviews Carousel */}
             <ReviewCarousel page="sunglasses" />
