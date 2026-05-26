@@ -19,20 +19,20 @@ export default function LayoutWrapper({ children }) {
     // Pages that should hide the global navbar
     const hideNavbar = pathname === '/home';
 
-    // Pages that should hide the global footer
-    const hideFooter = false;
+    // Forms page: standalone full-screen, hide all chrome
+    const isFormPage = pathname.startsWith('/forms/');
 
     return (
         <>
             <LoadingScreen />
-            {!hideNavbar && <Navbar />}
+            {!hideNavbar && !isFormPage && <Navbar />}
             <main className="min-h-screen">
                 <div key={pathname} style={{ animation: 'fadeIn 300ms ease-in' }}>
                     {children}
                 </div>
             </main>
-            {!hideFooter && <Footer />}
-            <NewsletterPopup />
+            {!isFormPage && <Footer />}
+            {!isFormPage && <NewsletterPopup />}
         </>
     );
 }
