@@ -92,6 +92,11 @@ export const shippingAPI = {
 };
 
 // Review APIs
+export const formSubmissionAPI = {
+  getAll: (params) => api.get('/form-submissions', { params }),
+  delete: (id) => api.delete(`/form-submissions/${id}`),
+};
+
 export const reviewAPI = {
   submit: (data) => api.post('/reviews', data),
   getApproved: (params) => api.get('/reviews', { params }),
