@@ -30,8 +30,8 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 403 });
     }
 
-    if (!name?.trim() || !email?.trim() || !contact?.trim() || !handle?.trim()) {
-      return NextResponse.json({ error: 'Name, email, contact number, and social handle are required' }, { status: 400 });
+    if (!name?.trim() || !email?.trim() || !contact?.trim()) {
+      return NextResponse.json({ error: 'Name, email, and contact number are required' }, { status: 400 });
     }
 
     // Basic email format check

@@ -13,8 +13,8 @@ router.post('/', async (req, res) => {
             return res.status(403).json({ error: 'Invalid token' });
         }
 
-        if (!name?.trim() || !email?.trim() || !contact?.trim() || !handle?.trim()) {
-            return res.status(400).json({ error: 'Name, email, contact number, and social handle are required' });
+        if (!name?.trim() || !email?.trim() || !contact?.trim()) {
+            return res.status(400).json({ error: 'Name, email, and contact number are required' });
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

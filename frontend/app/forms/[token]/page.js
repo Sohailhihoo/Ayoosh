@@ -519,7 +519,6 @@ export default function FormPage() {
                                         name="handle"
                                         value={formData.handle}
                                         onChange={handleChange}
-                                        required
                                         maxLength={100}
                                         className="gp-input"
                                         placeholder=" "
