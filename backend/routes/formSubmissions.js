@@ -3,6 +3,42 @@ const router = express.Router();
 const FormSubmission = require('../models/FormSubmission');
 const { protect, authorize } = require('../middleware/auth');
 
+// POST /api/form-submissions — Submit a giveaway entry (public, token-protected)
+router.post('/', async (req, res) => {
+    try {
+        const { token, name, email, contact, handle, offersConsent, termsConsent, message } = req.body;
+
+        const FORM_TOKEN = process.env.FORM_TOKEN;
+        if (!FORM_TOKEN || token !== FORM_TOKEN) {
+            return res.status(403).json({ error: 'Invalid token' });
+        }
+
+        if (!name?.trim() || !email?.trim() || !contact?.trim() || !handle?.trim()) {
+            return res.status(400).json({ error: 'Name, email, contact number, and social handle are required' });
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email.trim())) {
+            return res.status(400).json({ error: 'Invalid email address' });
+        }
+
+        await FormSubmission.create({
+            name:          name.trim(),
+            email:         email.trim(),
+            contact:       contact.trim(),
+            handle:        handle.trim(),
+            offersConsent: Boolean(offersConsent),
+            termsConsent:  Boolean(termsConsent),
+            message:       message?.trim() || '',
+        });
+
+        res.status(201).json({ success: true });
+    } catch (error) {
+        console.error('Form submission error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // GET /api/form-submissions — Get all giveaway entries (admin only)
 router.get('/', protect, authorize('admin'), async (req, res) => {
     try {
