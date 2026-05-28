@@ -2,8 +2,6 @@ import { NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import { connectToDatabase } from '@/lib/mongodb';
 
-const FORM_TOKEN = process.env.FORM_TOKEN;
-
 const formSubmissionSchema = new mongoose.Schema(
   {
     name:          { type: String, required: true, trim: true, maxlength: 200 },
@@ -26,6 +24,7 @@ export async function POST(request) {
   try {
     const body = await request.json();
     const { token, name, email, contact, handle, offersConsent, termsConsent, message } = body;
+    const FORM_TOKEN = process.env.FORM_TOKEN;
 
     if (!FORM_TOKEN || token !== FORM_TOKEN) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 403 });
