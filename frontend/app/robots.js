@@ -5,7 +5,7 @@
  * Blocks all crawlers on non-production environments (staging, preview).
  */
 export default function robots() {
-    const isProduction = process.env.NEXT_PUBLIC_SITE_URL === 'https://ayooshonline.com';
+    const isProduction = process.env.NODE_ENV === 'production';
 
     if (!isProduction) {
         return {
