@@ -18,7 +18,7 @@ export default function robots() {
             {
                 userAgent: '*',
                 allow: '/',
-                disallow: ['/api/', '/admin/', '/_next/'],
+                disallow: ['/api/', '/admin/', '/_next/', '/home'],
             },
         ],
         sitemap: 'https://ayooshonline.com/sitemap.xml',

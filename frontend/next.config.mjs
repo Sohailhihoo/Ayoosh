@@ -4,6 +4,18 @@ const nextConfig = {
   output: 'standalone',
   allowedDevOrigins: ['192.168.1.18', 'localhost', '127.0.0.1'],
 
+  async redirects() {
+    return [
+      // Redirect www → non-www (permanent, for canonical consistency)
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.ayooshonline.com' }],
+        destination: 'https://ayooshonline.com/:path*',
+        permanent: true,
+      },
+    ];
+  },
+
   images: {
     remotePatterns: [
       { hostname: 'res.cloudinary.com' },
