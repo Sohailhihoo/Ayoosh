@@ -46,6 +46,9 @@ const cartSchema = new mongoose.Schema({
   toObject: { virtuals: true }
 });
 
+cartSchema.index({ user: 1 });
+cartSchema.index({ sessionId: 1 });
+
 // Calculate subtotal
 cartSchema.virtual('subtotal').get(function () {
   return this.items.reduce((total, item) => {

@@ -85,9 +85,6 @@ export default function ProductReviews({ productId }) {
                         <div key={review._id} className="border-b pb-6">
                             <div className="flex items-center gap-3 mb-2">
                                 <StarRating rating={review.rating} size="w-4 h-4" />
-                                <span className="text-sm text-gray-400">
-                                    {new Date(review.createdAt).toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric' })}
-                                </span>
                             </div>
                             {review.title && <h4 className="font-semibold text-gray-900 mb-1">{review.title}</h4>}
                             <p className="text-gray-600">{review.review}</p>

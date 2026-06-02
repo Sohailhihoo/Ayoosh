@@ -75,8 +75,12 @@ router.post('/add', optionalAuth, async (req, res) => {
       });
     }
 
-    // Get product and verify stock
-    const product = await Product.findById(productId);
+    // Fetch product and cart in parallel
+    const [product, cart] = await Promise.all([
+      Product.findById(productId),
+      getOrCreateCart(userId, sessionId),
+    ]);
+
     if (!product) {
       return res.status(404).json({
         success: false,
@@ -111,8 +115,6 @@ router.post('/add', optionalAuth, async (req, res) => {
         message: `Only ${availableStock} items available in stock`
       });
     }
-
-    const cart = await getOrCreateCart(userId, sessionId);
     await cart.addItem(productId, quantity, variant, price);
 
     // Repopulate after update

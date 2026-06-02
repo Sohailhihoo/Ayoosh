@@ -96,7 +96,6 @@ export default function ReviewCarousel({ page }) {
                                 <p className="text-gray-600 mt-2 text-sm leading-relaxed line-clamp-4">{review.review}</p>
                                 <div className="mt-4 pt-3 border-t border-yellow-200">
                                     <p className="font-medium text-gray-900 text-sm">{review.name}</p>
-                                    <p className="text-xs text-gray-400">{new Date(review.createdAt).toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                                 </div>
                             </motion.div>
                         ))}
