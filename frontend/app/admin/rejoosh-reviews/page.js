@@ -10,13 +10,6 @@ const STATUS_COLORS = {
     rejected: 'bg-red-100 text-red-800',
 };
 
-const PAGE_OPTIONS = [
-    { value: '', label: '— Hidden from all carousels —' },
-    { value: 'suncream', label: 'Suncream page only' },
-    { value: 'sunglasses', label: 'Sunglasses page only' },
-    { value: 'rejoosh', label: 'Rejoosh page only' },
-];
-
 const TABS = ['all', 'pending', 'approved', 'rejected'];
 
 function StarDisplay({ rating }) {
@@ -31,10 +24,11 @@ function StarDisplay({ rating }) {
     );
 }
 
-export default function AdminReviews() {
+export default function RejooshReviews() {
     const [reviews, setReviews] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('pending');
+    const [stats, setStats] = useState({ total: 0, avgRating: 0 });
 
     useEffect(() => { fetchReviews(); }, [activeTab]);
 
@@ -42,9 +36,18 @@ export default function AdminReviews() {
         try {
             setLoading(true);
             const { data } = await reviewAPI.getAll({ status: activeTab });
-            setReviews(data.reviews || []);
-        } catch (error) {
-            console.error('Error fetching reviews:', error);
+            const rejooshReviews = (data.reviews || []).filter(r => r.page === 'rejoosh');
+            setReviews(rejooshReviews);
+
+            // Compute stats from all statuses for the header
+            const { data: allData } = await reviewAPI.getAll({ status: 'all' });
+            const allRejoosh = (allData.reviews || []).filter(r => r.page === 'rejoosh');
+            const approved = allRejoosh.filter(r => r.status === 'approved');
+            const avg = approved.length
+                ? Math.round((approved.reduce((s, r) => s + r.rating, 0) / approved.length) * 10) / 10
+                : 0;
+            setStats({ total: allRejoosh.length, avgRating: avg });
+        } catch {
             toast.error('Failed to load reviews');
         } finally {
             setLoading(false);
@@ -56,7 +59,7 @@ export default function AdminReviews() {
             await reviewAPI.approve(id);
             toast.success('Review approved');
             fetchReviews();
-        } catch (error) {
+        } catch {
             toast.error('Failed to approve review');
         }
     };
@@ -66,58 +69,53 @@ export default function AdminReviews() {
             await reviewAPI.reject(id);
             toast.success('Review rejected');
             fetchReviews();
-        } catch (error) {
+        } catch {
             toast.error('Failed to reject review');
         }
     };
 
     const handleDelete = async (id) => {
-        if (!confirm('Are you sure you want to permanently delete this review?')) return;
+        if (!confirm('Permanently delete this review?')) return;
         try {
             await reviewAPI.delete(id);
             toast.success('Review deleted');
             fetchReviews();
-        } catch (error) {
+        } catch {
             toast.error('Failed to delete review');
         }
     };
 
-    const handlePageChange = async (id, page) => {
-        try {
-            await reviewAPI.updatePage(id, page || null);
-            toast.success('Review page updated');
-            setReviews((prev) => prev.map((r) => r._id === id ? { ...r, page: page || null } : r));
-        } catch (error) {
-            toast.error('Failed to update page');
-        }
-    };
-
-    const getSourceLabel = (review) => {
-        if (review.productId) return review.productId.name || 'Product';
-        if (review.page === 'suncream') return 'Suncream Page';
-        if (review.page === 'sunglasses') return 'Sunglasses Page';
-        if (review.page === 'general') return 'Both Pages';
-        if (review.page === 'rejoosh') return 'Rejoosh Page';
-        return 'Unassigned';
-    };
-
-    const getSourceColor = (review) => {
-        if (review.page === 'suncream') return 'bg-orange-100 text-orange-700';
-        if (review.page === 'sunglasses') return 'bg-blue-100 text-blue-700';
-        if (review.page === 'general') return 'bg-purple-100 text-purple-700';
-        if (review.page === 'rejoosh') return 'bg-rose-100 text-rose-700';
-        return 'bg-gray-100 text-gray-500';
-    };
-
     return (
         <div>
-            <h1 className="text-2xl font-bold mb-6">Review Management</h1>
+            {/* Header */}
+            <div className="flex items-start justify-between mb-6">
+                <div>
+                    <h1 className="text-2xl font-bold text-gray-900">Rejoosh Reviews</h1>
+                    <p className="text-sm text-gray-500 mt-1">Reviews submitted on the Rejoosh page</p>
+                </div>
+                <div className="flex gap-4">
+                    <div className="bg-white border rounded-lg px-4 py-3 text-center shadow-sm">
+                        <p className="text-xs text-gray-500 mb-0.5">Total Reviews</p>
+                        <p className="text-xl font-bold text-gray-900">{stats.total}</p>
+                    </div>
+                    <div className="bg-white border rounded-lg px-4 py-3 text-center shadow-sm">
+                        <p className="text-xs text-gray-500 mb-0.5">Avg Rating</p>
+                        <p className="text-xl font-bold text-yellow-500">
+                            {stats.avgRating > 0 ? `${stats.avgRating} ★` : '—'}
+                        </p>
+                    </div>
+                </div>
+            </div>
 
             {/* Status Tabs */}
             <div className="flex gap-2 mb-6 border-b">
                 {TABS.map((tab) => (
                     <button key={tab} onClick={() => setActiveTab(tab)}
-                        className={`px-4 py-2 text-sm font-medium capitalize transition-colors border-b-2 -mb-px ${activeTab === tab ? 'border-yellow-500 text-yellow-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}>
+                        className={`px-4 py-2 text-sm font-medium capitalize transition-colors border-b-2 -mb-px ${
+                            activeTab === tab
+                                ? 'border-[#7B3B2A] text-[#7B3B2A]'
+                                : 'border-transparent text-gray-500 hover:text-gray-700'
+                        }`}>
                         {tab}
                     </button>
                 ))}
@@ -126,7 +124,9 @@ export default function AdminReviews() {
             {loading ? (
                 <div className="text-center py-12 text-gray-400">Loading reviews...</div>
             ) : reviews.length === 0 ? (
-                <div className="text-center py-12 text-gray-400">No {activeTab !== 'all' ? activeTab : ''} reviews found.</div>
+                <div className="text-center py-12 text-gray-400">
+                    No {activeTab !== 'all' ? activeTab : ''} Rejoosh reviews found.
+                </div>
             ) : (
                 <div className="space-y-4">
                     {reviews.map((review) => (
@@ -139,33 +139,24 @@ export default function AdminReviews() {
                                         <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[review.status]}`}>
                                             {review.status}
                                         </span>
-                                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getSourceColor(review)}`}>
-                                            {getSourceLabel(review)}
+                                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-rose-100 text-rose-700">
+                                            Rejoosh Page
                                         </span>
                                     </div>
                                     <StarDisplay rating={review.rating} />
-                                    {review.title && <h4 className="font-medium text-gray-900 mt-2">{review.title}</h4>}
+                                    {review.title && (
+                                        <h4 className="font-medium text-gray-900 mt-2">{review.title}</h4>
+                                    )}
                                     <p className="text-gray-600 text-sm mt-1">{review.review}</p>
                                     {review.image && (
                                         <img src={review.image} alt="Review" className="mt-2 w-20 h-20 object-cover rounded-lg border border-gray-200" />
                                     )}
                                     <p className="text-xs text-gray-400 mt-2">
-                                        {new Date(review.createdAt).toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                        {new Date(review.createdAt).toLocaleDateString('en-ZA', {
+                                            year: 'numeric', month: 'long', day: 'numeric',
+                                            hour: '2-digit', minute: '2-digit',
+                                        })}
                                     </p>
-
-                                    {/* Page Assignment */}
-                                    <div className="mt-3 flex items-center gap-2">
-                                        <span className="text-xs text-gray-500 font-medium whitespace-nowrap">Show on:</span>
-                                        <select
-                                            value={review.page || ''}
-                                            onChange={(e) => handlePageChange(review._id, e.target.value)}
-                                            className="text-xs border border-gray-200 rounded px-2 py-1 bg-white text-gray-700 focus:outline-none focus:border-yellow-400 cursor-pointer"
-                                        >
-                                            {PAGE_OPTIONS.map((opt) => (
-                                                <option key={opt.value} value={opt.value}>{opt.label}</option>
-                                            ))}
-                                        </select>
-                                    </div>
                                 </div>
 
                                 <div className="flex gap-2 flex-shrink-0">

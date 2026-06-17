@@ -1,9 +1,11 @@
 const express = require('express'); // v3 - CORS + CSP + PayFast fixes
 const mongoose = require('mongoose');
 const cors = require('cors');
+const compression = require('compression');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
+const mongoSanitize = require('express-mongo-sanitize');
 const rateLimit = require('express-rate-limit');
 const dns = require('dns');
 require('dotenv').config();
@@ -30,7 +32,9 @@ const app = express();
 
 // Trust proxy is required for secure cookies on Railway (behind load balancer)
 // Use 'true' to trust the left-most IP in X-Forwarded-* headers, essential for deep proxy chains
-app.set('trust proxy', true);
+app.set('trust proxy', 1);
+
+app.use(compression());
 
 // Security Headers with Helmet
 app.use(helmet({
@@ -95,7 +99,7 @@ const authLimiter = rateLimit({
 });
 
 // Apply General Limiter globally
-// app.use(generalLimiter);
+app.use(generalLimiter);
 
 // Professional CORS Configuration
 const allowedOrigins = [
@@ -147,15 +151,11 @@ app.use(express.urlencoded({
   }
 }));
 app.use(cookieParser());
+app.use(mongoSanitize());
 
-// Database connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/beauty-store')
-  .then(() => console.log('✅ Connected to MongoDB'))
-  .catch(err => console.error('❌ MongoDB connection error:', err));
-
-// API Routes
-// app.use('/api/auth', authLimiter, authRoutes);
-app.use('/api/auth', authRoutes);
+// API Routes — registered before DB connects so Express is configured,
+// but the server only starts listening once MongoDB is ready (see below).
+app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/cart', cartRoutes);
@@ -191,16 +191,28 @@ app.use((req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-console.log(`⏳ Attempting to start server on port ${PORT}...`);
 
-const server = app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`🔒 CORS allowed for: ${allowedOrigins.join(', ')}`);
-});
+// Connect to MongoDB first, then start listening — this prevents any request
+// from arriving before the DB is ready (eliminates the startup race condition).
+let server;
+console.log(`⏳ Connecting to MongoDB...`);
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/beauty-store')
+  .then(() => {
+    console.log('✅ Connected to MongoDB');
+    server = app.listen(PORT, '0.0.0.0', () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+      console.log(`🔒 CORS allowed for: ${allowedOrigins.join(', ')}`);
+    });
+  })
+  .catch(err => {
+    console.error('❌ MongoDB connection error — server will NOT start:', err.message);
+    process.exit(1);
+  });
 
 // Graceful Shutdown for Railway
 const gracefulShutdown = async () => {
   console.log('Received kill signal, shutting down gracefully');
+  if (!server) return process.exit(0);
   server.close(async () => {
     console.log('Closed out remaining connections');
     try {

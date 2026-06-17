@@ -88,6 +88,9 @@ export default function ProductReviews({ productId }) {
                             </div>
                             {review.title && <h4 className="font-semibold text-gray-900 mb-1">{review.title}</h4>}
                             <p className="text-gray-600">{review.review}</p>
+                            {review.image && (
+                                <img src={review.image} alt="Review" className="mt-3 w-20 h-20 object-cover rounded-lg border border-gray-100" />
+                            )}
                             <p className="text-sm font-medium text-gray-800 mt-2">{review.name}</p>
                         </div>
                     ))}

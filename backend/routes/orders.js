@@ -142,7 +142,6 @@ router.post('/', optionalAuth, async (req, res) => {
     billingAddress,
     paymentMethod,
     shippingMethod = 'standard',
-    shippingCost: bodyShippingCost,
     shippingService,
     customerNote,
     couponCode: bodyCouponCode,
@@ -217,6 +216,11 @@ router.post('/', optionalAuth, async (req, res) => {
         throw new Error(`Insufficient stock for "${product.name}". Please refresh the page.`);
       }
 
+      // Use live catalog price — never trust the cart snapshot price
+      const authorizedPrice = item.variant
+        ? (updated.variants?.find(v => v.sku === item.variant?.sku)?.price ?? updated.price)
+        : updated.price;
+
       // Build order item snapshot
       orderItems.push({
         product: product._id,
@@ -225,21 +229,24 @@ router.post('/', optionalAuth, async (req, res) => {
         sku: item.variant?.sku || product.sku,
         variant: item.variant,
         quantity: item.quantity,
-        price: item.price,
-        total: item.price * item.quantity
+        price: authorizedPrice,
+        total: authorizedPrice * item.quantity
       });
     }
 
-    // Calculate shipping cost based on method
-    const shippingCosts = {
+    // Shipping cost computed server-side only — never trust client input
+    const shippingRates = {
       standard: 0,
-      pickup: 0
+      express: 0,
+      overnight: 0,
+      pickup: 0,
     };
-
-    const shippingCost = Number.isFinite(Number(bodyShippingCost))
-      ? Number(bodyShippingCost)
-      : (shippingCosts[shippingMethod] || 0);
+    let shippingCost = shippingRates[shippingMethod] ?? 0;
+    if (shippingCost < 0) shippingCost = 0; // safety guard
     const tax = 0;
+
+    // Recompute subtotal from server-verified prices
+    const serverSubtotal = orderItems.reduce((sum, i) => sum + i.total, 0);
 
     // Build customer details (from user or request body)
     const orderCustomerDetails = userId && req.user ? {
@@ -263,11 +270,11 @@ router.post('/', optionalAuth, async (req, res) => {
         } else if (coupon.discountType === 'fixed') {
           discountAmount = coupon.amount;
         } else if (coupon.discountType === 'percentage') {
-          discountAmount = (cart.subtotal * coupon.amount) / 100;
+          discountAmount = (serverSubtotal * coupon.amount) / 100;
         }
 
         // Ensure discount doesn't exceed total
-        const grossTotal = cart.subtotal + shippingCost;
+        const grossTotal = serverSubtotal + shippingCost;
         if (discountAmount > grossTotal) {
           discountAmount = grossTotal;
         }
@@ -289,13 +296,13 @@ router.post('/', optionalAuth, async (req, res) => {
       items: orderItems,
       shippingAddress,
       billingAddress: billingAddress || shippingAddress,
-      subtotal: cart.subtotal,
+      subtotal: serverSubtotal,
       shippingCost,
       tax,
       discount: discountAmount,
       couponCode: couponCode,
       affiliateCode: affiliateCode || null,
-      total: cart.subtotal + shippingCost + tax - discountAmount,
+      total: serverSubtotal + shippingCost + tax - discountAmount,
       paymentMethod,
       shippingMethod,
       shippingService: shippingService || undefined,

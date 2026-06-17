@@ -110,6 +110,42 @@ export default function RootLayout({ children }) {
         className={`${inter.className} ${playfair.variable} ${montserrat.variable}`}
         suppressHydrationWarning={true}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify([
+              {
+                '@context': 'https://schema.org',
+                '@type': 'Organization',
+                name: 'Ayoosh',
+                url: 'https://ayooshonline.com',
+                logo: 'https://ayooshonline.com/images/brand/yellow-logo.png',
+                contactPoint: {
+                  '@type': 'ContactPoint',
+                  contactType: 'customer service',
+                  email: 'web@ayooshonline.com',
+                },
+                sameAs: [
+                  'https://www.instagram.com/ayooshonline',
+                ],
+              },
+              {
+                '@context': 'https://schema.org',
+                '@type': 'WebSite',
+                name: 'Ayoosh',
+                url: 'https://ayooshonline.com',
+                potentialAction: {
+                  '@type': 'SearchAction',
+                  target: {
+                    '@type': 'EntryPoint',
+                    urlTemplate: 'https://ayooshonline.com/products?search={search_term_string}',
+                  },
+                  'query-input': 'required name=search_term_string',
+                },
+              },
+            ]),
+          }}
+        />
         <QueryProvider>
           <Toaster
             position="top-center"

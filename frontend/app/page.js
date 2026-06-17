@@ -1,10 +1,9 @@
-import { redirect } from 'next/navigation';
+import HomePage from './home/page';
 
 /**
- * Root Page - Redirects to /home
- * 
- * This page automatically redirects users to the homepage at /home
+ * Root Page — renders the HomePage component so content lives at /
+ * (canonical URL). /home remains accessible but is no longer the primary URL.
  */
 export default function RootPage() {
-    redirect('/home');
+    return <HomePage />;
 }

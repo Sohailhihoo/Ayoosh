@@ -29,12 +29,16 @@ const reviewSchema = new mongoose.Schema({
     },
     page: {
         type: String,
-        enum: ['suncream', 'sunglasses', 'general', null],
+        enum: ['suncream', 'sunglasses', 'general', 'rejoosh', null],
         default: null
     },
     productId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
+        default: null
+    },
+    image: {
+        type: String,
         default: null
     },
     status: {

@@ -1,5 +1,6 @@
 // PayFast Controller - Fixed & Optimized for Production
 const crypto = require('crypto');
+const axios = require('axios');
 const Order = require('../models/Order');
 const { processAffiliateCommission } = require('../utils/affiliateCommission');
 const { sendOrderConfirmation } = require('../utils/klaviyo');
@@ -115,6 +116,19 @@ const initiatePayment = async (req, res) => {
 
         if (order.paymentStatus === 'paid') {
             return res.status(400).json({ success: false, message: 'Order is already paid' });
+        }
+
+        // Ownership check: block authenticated users from initiating payment on
+        // another authenticated user's order. Guests are allowed through — the
+        // worst case is someone pays for an order that isn't theirs, which is
+        // harmless to the business and requires knowing the orderId upfront.
+        if (req.user && order.user) {
+            const orderUserId = order.user._id
+                ? order.user._id.toString()
+                : order.user.toString();
+            if (orderUserId !== req.user._id.toString()) {
+                return res.status(403).json({ success: false, message: 'Access denied' });
+            }
         }
 
         // --- STEP 1: PREPARE CUSTOMER DATA ---
@@ -235,6 +249,40 @@ const handleITN = async (req, res) => {
             return res.status(200).send('');
         }
 
+        // SECURITY CHECK 2: Server-to-server postback validation
+        const payfastHost = process.env.PAYFAST_SANDBOX === 'true'
+            ? 'https://sandbox.payfast.co.za'
+            : 'https://www.payfast.co.za';
+
+        try {
+            const validationResponse = await axios.post(
+                `${payfastHost}/eng/query/validate`,
+                req.rawBody,
+                {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    timeout: 10000,
+                }
+            );
+            if (validationResponse.data !== 'VALID') {
+                console.error('PayFast postback validation failed:', validationResponse.data);
+                return res.status(200).send('');
+            }
+        } catch (validationError) {
+            console.error('PayFast postback validation error:', validationError.message);
+            return res.status(200).send('');
+        }
+
+        // SECURITY CHECK 3: Merchant ID
+        const expectedMerchantId = process.env.PAYFAST_SANDBOX === 'true'
+            ? process.env.PAYFAST_SANDBOX_MERCHANT_ID
+            : process.env.PAYFAST_MERCHANT_ID;
+        if (pfData.merchant_id !== String(expectedMerchantId)) {
+            console.error(`Merchant ID mismatch: received ${pfData.merchant_id}, expected ${expectedMerchantId}`);
+            return res.status(200).send('');
+        }
+
         // --- PROCESS ORDER ---
         if (pfData.payment_status === 'COMPLETE') {
             const orderId = pfData.m_payment_id;
@@ -307,6 +355,24 @@ const verifyPayment = async (req, res) => {
 
         if (!order) {
             return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        // Ownership check: authenticated user must own the order; guests must
+        // match by session ID (the header sent automatically by the frontend).
+        if (req.user) {
+            if (order.user) {
+                const orderUserId = order.user._id
+                    ? order.user._id.toString()
+                    : order.user.toString();
+                if (orderUserId !== req.user._id.toString()) {
+                    return res.status(403).json({ success: false, message: 'Access denied' });
+                }
+            }
+        } else {
+            const sessionId = req.headers['x-session-id'];
+            if (order.user || (order.guestSessionId && sessionId !== order.guestSessionId)) {
+                return res.status(403).json({ success: false, message: 'Access denied' });
+            }
         }
 
         res.status(200).json({

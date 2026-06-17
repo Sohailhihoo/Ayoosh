@@ -1,18 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { reviewAPI } from '@/lib/api';
 import toast from 'react-hot-toast';
 
-/**
- * ReviewForm - Submit reviews for pages or products
- * @param {string} page - Page tag: "suncream" or "sunglasses" (for page reviews)
- * @param {string} productId - Product ID (for product reviews)
- * @param {boolean} isModal - If true, renders without section wrapper
- * @param {Function} onClose - Callback to close modal
- * @param {Function} onSuccess - Callback after successful submission
- */
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000/api';
+
 export default function ReviewForm({ page, productId, isModal = false, onClose, onSuccess }) {
     const [formData, setFormData] = useState({
         name: '',
@@ -21,12 +14,28 @@ export default function ReviewForm({ page, productId, isModal = false, onClose, 
         title: '',
         review: ''
     });
+    const [imageFile, setImageFile] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitSuccess, setSubmitSuccess] = useState(false);
+    const fileInputRef = useRef(null);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        setImageFile(file);
+        setImagePreview(URL.createObjectURL(file));
+    };
+
+    const removeImage = () => {
+        setImageFile(null);
+        setImagePreview(null);
+        if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
     const handleSubmit = async (e) => {
@@ -34,19 +43,32 @@ export default function ReviewForm({ page, productId, isModal = false, onClose, 
         setIsSubmitting(true);
 
         try {
-            const payload = { ...formData };
-            if (page) payload.page = page;
-            if (productId) payload.productId = productId;
+            const fd = new FormData();
+            fd.append('name', formData.name);
+            fd.append('email', formData.email);
+            fd.append('rating', formData.rating);
+            fd.append('title', formData.title);
+            fd.append('review', formData.review);
+            if (page) fd.append('page', page);
+            if (productId) fd.append('productId', productId);
+            if (imageFile) fd.append('image', imageFile);
 
-            await reviewAPI.submit(payload);
-            setSubmitSuccess(true);
+            const res = await fetch(`${API_URL}/reviews`, { method: 'POST', body: fd });
+            const data = await res.json();
 
-            setTimeout(() => {
-                setFormData({ name: '', email: '', rating: 5, title: '', review: '' });
-                setSubmitSuccess(false);
-                if (onSuccess) onSuccess();
-                if (onClose) onClose();
-            }, 2000);
+            if (data.success) {
+                setSubmitSuccess(true);
+                setTimeout(() => {
+                    setFormData({ name: '', email: '', rating: 5, title: '', review: '' });
+                    setImageFile(null);
+                    setImagePreview(null);
+                    setSubmitSuccess(false);
+                    if (onSuccess) onSuccess();
+                    if (onClose) onClose();
+                }, 2000);
+            } else {
+                toast.error(data.message || 'Failed to submit review. Please try again.');
+            }
         } catch (error) {
             console.error('Review submission failed:', error);
             toast.error('Failed to submit review. Please try again.');
@@ -99,6 +121,26 @@ export default function ReviewForm({ page, productId, isModal = false, onClose, 
                 <textarea id="review-text" name="review" value={formData.review} onChange={handleChange} required rows={3}
                     className="w-full px-3 md:px-4 py-2.5 md:py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all resize-none"
                     placeholder="Tell us about your experience..." />
+            </div>
+
+            {/* Image Upload */}
+            <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Photo <span className="font-normal text-gray-400">(optional)</span></label>
+                {imagePreview ? (
+                    <div className="flex items-center gap-3">
+                        <img src={imagePreview} alt="Preview" className="w-16 h-16 object-cover rounded-lg border border-gray-200" />
+                        <button type="button" onClick={removeImage}
+                            className="text-xs text-red-500 hover:text-red-700 underline">Remove</button>
+                    </div>
+                ) : (
+                    <label className="flex items-center gap-2 w-full px-4 py-3 text-sm text-gray-500 border border-dashed border-gray-300 rounded-lg hover:border-gray-400 cursor-pointer transition-colors">
+                        <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5V19a1.5 1.5 0 001.5 1.5h15A1.5 1.5 0 0021 19v-2.5M16.5 8L12 3.5 7.5 8M12 3.5v13" />
+                        </svg>
+                        Add a photo
+                        <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
+                    </label>
+                )}
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3">

@@ -69,6 +69,7 @@ const NAV_ITEMS = [
     { href: '/admin/customers', label: 'Customers', icon: UsersIcon },
     { href: '/admin/analytics', label: 'Analytics', icon: ChartBarIcon },
     { href: '/admin/reviews', label: 'Reviews', icon: StarIcon },
+    { href: '/admin/rejoosh-reviews', label: 'Rejoosh Reviews', icon: StarIcon },
     { href: '/admin/giveaway', label: 'Giveaway', icon: GiftIcon },
 ];
 
@@ -108,7 +109,7 @@ export default function AdminSidebar({ isOpen, onClose }) {
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-gray-700">
                     <Link href="/admin/dashboard" className="flex items-center space-x-2">
-                        <Image loader={cloudinaryLoader} src={ASSETS.logos.main} alt="Admin" width={80} height={32} className="h-8 w-auto" />
+                        <Image loader={cloudinaryLoader} src={ASSETS.logos.main} alt="Admin" width={80} height={80} className="h-8 w-auto" />
                         <span className="text-xl font-semibold">Admin</span>
                     </Link>
                     <button

@@ -67,9 +67,6 @@ export default function Navbar() {
   // Check if on homepage
   const isHomePage = pathname === '/' || pathname === '/home';
 
-  // Never render navbar on homepage — it has its own logo animation
-  if (isHomePage) return null;
-
   // Determine navbar styles based on scroll state and current page
   const getNavClasses = () => {
     // Special detailed logic for Sunglasses page (3 Stages)
@@ -159,11 +156,9 @@ export default function Navbar() {
     return 'h-14 md:h-20'; // Default smaller size
   };
 
-  /**
-   * Initialize user session and cart data, setup scroll listener
-   */
   useEffect(() => {
-    checkAuth(); // Validate session via /auth/me
+    if (isHomePage) return;
+    checkAuth();
     fetchCart();
 
     const handleScroll = () => {
@@ -174,29 +169,23 @@ export default function Navbar() {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [checkAuth, fetchCart]);
+  }, [checkAuth, fetchCart, isHomePage]);
 
-  /**
-   * Toggles mobile menu state
-   */
   const toggleMenu = useCallback(() => {
     setIsMenuOpen((prev) => !prev);
   }, []);
 
-  /**
-   * Closes mobile menu
-   */
   const closeMenu = useCallback(() => {
     setIsMenuOpen(false);
   }, []);
 
-  /**
-   * Handles user logout
-   */
   const handleLogout = useCallback(async () => {
     await logout();
     closeMenu();
   }, [logout, closeMenu]);
+
+  // Never render navbar on homepage — it has its own logo animation
+  if (isHomePage) return null;
 
   return (
     <>

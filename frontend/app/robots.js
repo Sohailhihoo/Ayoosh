@@ -4,7 +4,7 @@ export default function robots() {
             {
                 userAgent: '*',
                 allow: '/',
-                disallow: ['/api/', '/admin/', '/_next/', '/home'],
+                disallow: ['/api/', '/admin/', '/_next/'],
             },
         ],
         sitemap: 'https://ayooshonline.com/sitemap.xml',

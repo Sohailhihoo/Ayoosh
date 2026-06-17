@@ -43,7 +43,7 @@ export default function Footer() {
                 src={ASSETS.logos.light}
                 alt="Ayoosh Logo"
                 width={120}
-                height={96}
+                height={120}
                 className="h-24 w-auto object-contain"
               />
             </Link>

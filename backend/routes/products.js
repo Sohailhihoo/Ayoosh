@@ -209,9 +209,8 @@ router.get('/:id', async (req, res) => {
       });
     }
 
-    // Increment view count
-    product.viewCount += 1;
-    await product.save();
+    // Fire-and-forget viewCount increment — don't await, don't block the response
+    Product.updateOne({ _id: product._id }, { $inc: { viewCount: 1 } }).catch(() => {});
 
     res.json({
       success: true,

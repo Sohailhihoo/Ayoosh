@@ -94,6 +94,9 @@ export default function ReviewCarousel({ page }) {
                                 <StarRating rating={review.rating} />
                                 {review.title && <h4 className="font-semibold text-gray-900 mt-3">{review.title}</h4>}
                                 <p className="text-gray-600 mt-2 text-sm leading-relaxed line-clamp-4">{review.review}</p>
+                                {review.image && (
+                                    <img src={review.image} alt="Review" className="mt-3 w-14 h-14 object-cover rounded-lg border border-yellow-100" />
+                                )}
                                 <div className="mt-4 pt-3 border-t border-yellow-200">
                                     <p className="font-medium text-gray-900 text-sm">{review.name}</p>
                                 </div>

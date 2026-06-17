@@ -143,6 +143,7 @@ export default function HomePage() {
 
     return (
         <div className="bg-black">
+            <h1 className="sr-only">Ayoosh — Premium Korean Skincare, Sun Care &amp; Sunglasses</h1>
             {/* Hero Logo Animation (shows after loading screen on first visit) */}
             {showLogoAnimation && (
                 <HeroLogoAnimation />

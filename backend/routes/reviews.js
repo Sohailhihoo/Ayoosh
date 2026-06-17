@@ -3,6 +3,24 @@ const router = express.Router();
 const Review = require('../models/Review');
 const Product = require('../models/Product');
 const { protect, authorize } = require('../middleware/auth');
+const cloudinary = require('cloudinary').v2;
+const CloudinaryStorage = require('multer-storage-cloudinary');
+const multer = require('multer');
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+const reviewImageStorage = new CloudinaryStorage({
+    cloudinary,
+    folder: 'beauty-store/reviews',
+    allowedFormats: ['jpg', 'jpeg', 'png', 'webp'],
+    transformation: [{ width: 800, height: 800, crop: 'limit', quality: 'auto' }],
+});
+
+const uploadReviewImage = multer({ storage: reviewImageStorage, limits: { fileSize: 5 * 1024 * 1024 } });
 
 // Helper: recalculate and cache product rating
 async function syncProductRating(productId) {
@@ -15,8 +33,8 @@ async function syncProductRating(productId) {
     await Product.findByIdAndUpdate(productId, { averageRating: avg, reviewCount: count });
 }
 
-// POST /api/reviews — Submit a review (public)
-router.post('/', async (req, res) => {
+// POST /api/reviews — Submit a review (public, optional image)
+router.post('/', uploadReviewImage.single('image'), async (req, res) => {
     try {
         const { name, email, rating, title, review, page, productId } = req.body;
 
@@ -34,6 +52,7 @@ router.post('/', async (req, res) => {
             review,
             page: page || null,
             productId: productId || null,
+            image: req.file ? req.file.path : null,
             status: 'pending'
         });
 
@@ -51,31 +70,42 @@ router.get('/', async (req, res) => {
         const filter = { status: 'approved' };
 
         if (page) {
-            // Page maps to a productType (suncream → suncream products, sunglasses → sunglasses products)
-            const productTypeMap = { suncream: 'suncream', sunglasses: 'sunglasses' };
-            const productType = productTypeMap[page];
+            // rejoosh reviews are tagged directly by page — no productType mapping needed
+            if (page === 'rejoosh') {
+                filter.page = 'rejoosh';
+            } else {
+                // Page maps to a productType (suncream → suncream products, sunglasses → sunglasses products)
+                const productTypeMap = { suncream: 'suncream', sunglasses: 'sunglasses' };
+                const productType = productTypeMap[page];
 
-            // Find all product IDs of this type so we can include their reviews
-            const productIds = productType
-                ? (await Product.find({ productType }).select('_id').lean()).map(p => p._id)
-                : [];
+                const productIds = productType
+                    ? (await Product.find({ productType }).select('_id').lean()).map(p => p._id)
+                    : [];
 
-            filter.$or = [
-                { page },
-                ...(productIds.length > 0 ? [{ productId: { $in: productIds } }] : [])
-            ];
+                filter.$or = [
+                    { page },
+                    ...(productIds.length > 0 ? [{ productId: { $in: productIds } }] : [])
+                ];
+            }
         }
 
         if (productId) filter.productId = productId;
 
-        const reviews = await Review.find(filter).sort({ createdAt: -1 }).select('-email');
+        const page_num = Math.max(1, parseInt(req.query.page) || 1);
+        const limit = Math.min(50, parseInt(req.query.limit) || 20);
+        const skip = (page_num - 1) * limit;
+
+        const [reviews, totalCount] = await Promise.all([
+            Review.find(filter).sort({ createdAt: -1 }).select('-email').skip(skip).limit(limit).lean(),
+            Review.countDocuments(filter),
+        ]);
 
         const count = reviews.length;
-        const averageRating = count > 0
+        const averageRating = totalCount > 0
             ? Math.round((reviews.reduce((sum, r) => sum + r.rating, 0) / count) * 10) / 10
             : 0;
 
-        res.json({ success: true, reviews, averageRating, reviewCount: count });
+        res.json({ success: true, reviews, averageRating, reviewCount: totalCount, page: page_num, limit, total: totalCount });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Failed to fetch reviews' });
     }
@@ -88,8 +118,15 @@ router.get('/all', protect, authorize('admin'), async (req, res) => {
         const filter = {};
         if (status && status !== 'all') filter.status = status;
 
-        const reviews = await Review.find(filter).sort({ createdAt: -1 }).populate('productId', 'name slug');
-        res.json({ success: true, reviews });
+        const page = Math.max(1, parseInt(req.query.page) || 1);
+        const limit = Math.min(100, parseInt(req.query.limit) || 50);
+        const skip = (page - 1) * limit;
+
+        const [reviews, total] = await Promise.all([
+            Review.find(filter).sort({ createdAt: -1 }).populate('productId', 'name slug').skip(skip).limit(limit).lean(),
+            Review.countDocuments(filter),
+        ]);
+        res.json({ success: true, reviews, total, page, limit });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Failed to fetch reviews' });
     }
