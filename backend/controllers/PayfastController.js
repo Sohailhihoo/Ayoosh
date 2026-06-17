@@ -360,7 +360,14 @@ const verifyPayment = async (req, res) => {
         // Ownership check: authenticated user must own the order; guests must
         // match by session ID (the header sent automatically by the frontend).
         if (req.user) {
-            if (order.user) {
+            if (!order.user) {
+                // Guest order — even logged-in users must present the session ID
+                // to prevent any authenticated user from reading guest order PII.
+                const sessionId = req.headers['x-session-id'];
+                if (!order.guestSessionId || sessionId !== order.guestSessionId) {
+                    return res.status(403).json({ success: false, message: 'Access denied' });
+                }
+            } else {
                 const orderUserId = order.user._id
                     ? order.user._id.toString()
                     : order.user.toString();
