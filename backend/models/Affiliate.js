@@ -30,7 +30,9 @@ const affiliateSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        default: null
+        default: null,
+        sparse: true,  // sparse unique index — enforces one-affiliate-per-user at DB level
+        unique: true,
     },
 
     // Unique affiliate code used in referral links

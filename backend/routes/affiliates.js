@@ -292,6 +292,9 @@ router.put('/:id/link-user', protect, authorize('admin'), async (req, res) => {
         }
         res.json({ success: true, data: affiliate });
     } catch (error) {
+        if (error.code === 11000) {
+            return res.status(409).json({ success: false, message: 'This user is already linked to another affiliate' });
+        }
         res.status(500).json({ success: false, message: error.message });
     }
 });
@@ -306,21 +309,22 @@ router.put('/:id/payout', protect, authorize('admin'), async (req, res) => {
             return res.status(404).json({ success: false, message: 'Affiliate not found' });
         }
 
-        // Compute amount server-side from approved referrals — never trust client body
-        const [{ totalPending } = { totalPending: 0 }] = await Referral.aggregate([
-            { $match: { affiliate: affiliate._id, status: 'approved' } },
-            { $group: { _id: null, totalPending: { $sum: '$commissionAmount' } } },
-        ]);
+        // Snapshot exact referral _ids first — updateMany uses these same ids so
+        // aggregate and update operate on the same set even under concurrent requests
+        const approvedReferrals = await Referral.find(
+            { affiliate: affiliate._id, status: 'approved' },
+            { _id: 1, commissionAmount: 1 }
+        ).lean();
 
-        if (!totalPending || totalPending <= 0) {
+        if (!approvedReferrals.length) {
             return res.status(400).json({ success: false, message: 'No approved commission to pay out' });
         }
 
+        const referralIds = approvedReferrals.map(r => r._id);
+        const totalPending = Math.round(approvedReferrals.reduce((s, r) => s + r.commissionAmount, 0) * 100) / 100;
         const now = new Date();
-        await Referral.updateMany(
-            { affiliate: affiliate._id, status: 'approved' },
-            { status: 'paid', paidAt: now }
-        );
+
+        await Referral.updateMany({ _id: { $in: referralIds } }, { status: 'paid', paidAt: now });
 
         const updated = await Affiliate.findByIdAndUpdate(
             affiliate._id,
@@ -386,21 +390,21 @@ router.post('/:id/mark-paid', protect, authorize('admin'), async (req, res) => {
             return res.status(404).json({ success: false, message: 'Affiliate not found' });
         }
 
-        // Compute amount server-side — never trust client body for financial values
-        const [{ totalPending } = { totalPending: 0 }] = await Referral.aggregate([
-            { $match: { affiliate: affiliate._id, status: 'approved' } },
-            { $group: { _id: null, totalPending: { $sum: '$commissionAmount' } } },
-        ]);
+        // Snapshot exact referral _ids — anchor updateMany to same set to prevent TOCTOU drift
+        const approvedReferrals = await Referral.find(
+            { affiliate: affiliate._id, status: 'approved' },
+            { _id: 1, commissionAmount: 1 }
+        ).lean();
 
-        if (!totalPending || totalPending <= 0) {
+        if (!approvedReferrals.length) {
             return res.status(400).json({ success: false, message: 'No approved commission to pay out' });
         }
 
+        const referralIds = approvedReferrals.map(r => r._id);
+        const totalPending = Math.round(approvedReferrals.reduce((s, r) => s + r.commissionAmount, 0) * 100) / 100;
         const now = new Date();
-        const result = await Referral.updateMany(
-            { affiliate: affiliate._id, status: 'approved' },
-            { status: 'paid', paidAt: now }
-        );
+
+        const result = await Referral.updateMany({ _id: { $in: referralIds } }, { status: 'paid', paidAt: now });
 
         const updated = await Affiliate.findByIdAndUpdate(
             affiliate._id,

@@ -341,6 +341,13 @@ router.post('/totp/regenerate', protect, authorize('admin'), async (req, res) =>
       return res.status(400).json({ success: false, message: 'Current TOTP code is required to reset the authenticator.' });
     }
 
+    const regenAttemptsKey = `totp_regen_attempts:${req.user._id}`;
+    const regenAttempts = await redisClient.incr(regenAttemptsKey);
+    if (regenAttempts === 1) await redisClient.expire(regenAttemptsKey, 300);
+    if (regenAttempts > 5) {
+      return res.status(429).json({ success: false, message: 'Too many failed attempts. Try again later.' });
+    }
+
     const user = await User.findById(req.user._id).select('+totpSecret +recoveryCodes');
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
@@ -366,6 +373,8 @@ router.post('/totp/regenerate', protect, authorize('admin'), async (req, res) =>
     if (!verified) {
       return res.status(401).json({ success: false, message: 'Incorrect TOTP code. Authenticator not reset.' });
     }
+
+    await redisClient.del(regenAttemptsKey);
 
     await User.findByIdAndUpdate(req.user._id, {
       $unset: { totpSecret: 1 },
