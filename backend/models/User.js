@@ -54,7 +54,20 @@ const userSchema = new mongoose.Schema({
     default: true
   },
   passwordResetToken: String,
-  passwordResetExpires: Date
+  passwordResetExpires: Date,
+  totpEnabled: {
+    type: Boolean,
+    default: false,
+  },
+  totpSecret: {
+    type: String,
+    select: false,
+  },
+  recoveryCodes: {
+    type: [{ code: String, used: { type: Boolean, default: false } }],
+    select: false,
+    default: [],
+  },
 }, {
   timestamps: true
 });

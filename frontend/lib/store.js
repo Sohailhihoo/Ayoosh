@@ -127,22 +127,60 @@ export const useAuthStore = create((set) => ({
     try {
       const { data } = await api.post('/auth/login', { email, password });
 
+      if (data.totpSetupRequired) {
+        set({ isLoading: false });
+        return { totpSetupRequired: true, pendingToken: data.pendingToken, qrUri: data.qrUri, recoveryCodes: data.recoveryCodes };
+      }
+
+      if (data.totpRequired) {
+        set({ isLoading: false });
+        return { totpRequired: true, pendingToken: data.pendingToken };
+      }
+
       if (data.success) {
-        // Fallback: Save token to localStorage for environments where cookies fail
         if (typeof window !== 'undefined' && data.token) {
           localStorage.setItem('authToken', data.token);
         }
-
-        set({
-          user: data.data,
-          isAuthenticated: true,
-          isLoading: false,
-        });
-        return data.data; // Return user for component use
+        set({ user: data.data, isAuthenticated: true, isLoading: false });
+        return data.data;
       }
     } catch (error) {
       set({ isLoading: false });
-      throw error; // Let component handle (show toast, etc.)
+      throw error;
+    }
+  },
+
+  confirmTotpSetup: async (pendingToken, code) => {
+    set({ isLoading: true });
+    try {
+      const { data } = await api.post('/auth/totp/setup/confirm', { pendingToken, code });
+      if (data.success) {
+        if (typeof window !== 'undefined' && data.token) {
+          localStorage.setItem('authToken', data.token);
+        }
+        set({ user: data.data, isAuthenticated: true, isLoading: false });
+        return data.data;
+      }
+    } catch (error) {
+      set({ isLoading: false });
+      throw error;
+    }
+  },
+
+  verifyTotp: async (pendingToken, code) => {
+    set({ isLoading: true });
+    try {
+      const { data } = await api.post('/auth/totp/verify', { pendingToken, code });
+      if (data.success) {
+        if (typeof window !== 'undefined' && data.token) {
+          localStorage.setItem('authToken', data.token);
+        }
+        set({ user: data.data, isAuthenticated: true, isLoading: false });
+        return data.data;
+      }
+    } catch (error) {
+      set({ isLoading: false });
+      throw error;
     }
   },
 

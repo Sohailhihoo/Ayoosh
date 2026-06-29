@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
-const { protect } = require('../middleware/auth');
+const { protect, authorize } = require('../middleware/auth');
 const crypto = require('crypto');
 const redisClient = require('../lib/redis');
-const sendRegisterationEmail = require("../utils/sendRegisterationEmail")
+const sendRegisterationEmail = require("../utils/sendRegisterationEmail");
+const { generateSecret, generateURI, verify: verifyTOTP } = require('otplib');
+const QRCode = require('qrcode');
 
 // Session configuration
 const SESSION_EXPIRY = 604800; // 7 days in seconds
@@ -116,15 +118,59 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 
-    // 4. Create Session (Redis + Cookie)
-    // This calls your helper function to set the cookie and redis key
+    // 4. Admin → TOTP step; everyone else → issue session immediately
+    if (user.role === 'admin') {
+      const pendingToken = crypto.randomBytes(32).toString('hex');
+      const userId = user._id.toString();
+
+      // totpEnabled is not select:false, so it's already on the `user` object
+      if (!user.totpEnabled) {
+        // First-time setup: generate secret + QR + recovery codes
+        const secret = generateSecret();
+        const otpauthUrl = generateURI({ type: 'totp', label: user.email, secret, issuer: 'Ayoosh Admin' });
+        const qrUri = await QRCode.toDataURL(otpauthUrl);
+
+        const recoveryCodes = Array.from({ length: 8 }, () =>
+          crypto.randomBytes(4).toString('hex') + '-' +
+          crypto.randomBytes(2).toString('hex') + '-' +
+          crypto.randomBytes(2).toString('hex')
+        );
+        const hashedCodes = recoveryCodes.map(c =>
+          crypto.createHash('sha256').update(c).digest('hex')
+        );
+
+        await redisClient.setEx(
+          `totp_setup:${pendingToken}`,
+          600,
+          JSON.stringify({ userId, secret, hashedCodes })
+        );
+
+        return res.json({
+          success: true,
+          totpSetupRequired: true,
+          pendingToken,
+          qrUri,
+          recoveryCodes,
+        });
+      }
+
+      // TOTP already configured — just need the code
+      await redisClient.setEx(`totp_pending:${pendingToken}`, 300, userId);
+
+      return res.json({
+        success: true,
+        totpRequired: true,
+        pendingToken,
+      });
+    }
+
+    // 5. Non-admin: issue session as normal
     const token = await createSession(res, user._id);
 
-    // 5. Response (Don't send password or internal fields)
     res.json({
       success: true,
       message: 'Login successful',
-      token, // Send token to client
+      token,
       data: {
         id: user._id,
         firstName: user.firstName,
@@ -136,6 +182,158 @@ router.post('/login', async (req, res) => {
 
   } catch (error) {
     console.error('Login Error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// @route   POST /api/auth/totp/setup/confirm
+// @desc    Verify first TOTP code, save secret + recovery codes, issue session
+// @access  Public
+router.post('/totp/setup/confirm', async (req, res) => {
+  try {
+    const { pendingToken, code } = req.body;
+    if (!pendingToken || !code) {
+      return res.status(400).json({ success: false, message: 'pendingToken and code are required' });
+    }
+
+    const raw = await redisClient.get(`totp_setup:${pendingToken}`);
+    if (!raw) {
+      return res.status(401).json({ success: false, message: 'Setup session expired. Please log in again.' });
+    }
+
+    const { userId, secret, hashedCodes } = JSON.parse(raw);
+
+    const { valid: isValid } = await verifyTOTP({ token: String(code).trim(), secret });
+    if (!isValid) {
+      return res.status(401).json({ success: false, message: 'Incorrect code. Please try again.' });
+    }
+
+    await User.findByIdAndUpdate(userId, {
+      totpSecret: secret,
+      totpEnabled: true,
+      recoveryCodes: hashedCodes.map(c => ({ code: c, used: false })),
+    });
+
+    await redisClient.del(`totp_setup:${pendingToken}`);
+
+    const user = await User.findById(userId);
+    const token = await createSession(res, user._id);
+
+    res.json({
+      success: true,
+      message: 'Two-factor authentication enabled',
+      token,
+      data: {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.error('TOTP setup confirm error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// @route   POST /api/auth/totp/verify
+// @desc    Verify TOTP code (or recovery code) and issue session
+// @access  Public
+router.post('/totp/verify', async (req, res) => {
+  try {
+    const { pendingToken, code } = req.body;
+    if (!pendingToken || !code) {
+      return res.status(400).json({ success: false, message: 'pendingToken and code are required' });
+    }
+
+    const userId = await redisClient.get(`totp_pending:${pendingToken}`);
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Session expired. Please log in again.' });
+    }
+
+    const attemptsKey = `totp_attempts:${userId}`;
+    const attempts = parseInt(await redisClient.get(attemptsKey) || '0');
+    if (attempts >= 5) {
+      await Promise.all([
+        redisClient.del(`totp_pending:${pendingToken}`),
+        redisClient.del(attemptsKey),
+      ]);
+      return res.status(401).json({ success: false, message: 'Too many failed attempts. Please log in again.' });
+    }
+
+    const user = await User.findById(userId).select('+totpSecret +recoveryCodes');
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const trimmed = String(code).trim();
+    let verified = false;
+
+    if (/^\d{6}$/.test(trimmed)) {
+      // Standard TOTP code
+      const { valid } = await verifyTOTP({ token: trimmed, secret: user.totpSecret });
+      verified = valid;
+    } else {
+      // Recovery code — hash and compare
+      const hashed = crypto.createHash('sha256').update(trimmed).digest('hex');
+      const entry = user.recoveryCodes.find(r => !r.used && r.code === hashed);
+      if (entry) {
+        entry.used = true;
+        await user.save();
+        verified = true;
+      }
+    }
+
+    if (!verified) {
+      const newCount = attempts + 1;
+      await redisClient.setEx(attemptsKey, 300, String(newCount));
+      const remaining = 5 - newCount;
+      return res.status(401).json({
+        success: false,
+        message: `Incorrect code. ${remaining} attempt${remaining === 1 ? '' : 's'} remaining.`,
+      });
+    }
+
+    await Promise.all([
+      redisClient.del(`totp_pending:${pendingToken}`),
+      redisClient.del(attemptsKey),
+    ]);
+
+    const token = await createSession(res, user._id);
+
+    res.json({
+      success: true,
+      message: 'Login successful',
+      token,
+      data: {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.error('TOTP verify error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// @route   POST /api/auth/totp/regenerate
+// @desc    Reset TOTP — clears secret so admin must re-setup on next login
+// @access  Private (admin only)
+router.post('/totp/regenerate', protect, authorize('admin'), async (req, res) => {
+  try {
+    await User.findByIdAndUpdate(req.user._id, {
+      $unset: { totpSecret: 1 },
+      totpEnabled: false,
+      recoveryCodes: [],
+    });
+
+    res.json({ success: true, message: 'Authenticator reset. Re-scan the QR code on your next login.' });
+  } catch (error) {
+    console.error('TOTP regenerate error:', error);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 });
