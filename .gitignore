@@ -46,3 +46,6 @@ coverage/
 *.tgz
 nul
 ngrok_url.txt
+
+# Preview pages (local only, not for production)
+frontend/app/preview-hero/
