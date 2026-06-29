@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 const Affiliate = require('../models/Affiliate');
 const Referral = require('../models/Referral');
+const User = require('../models/User');
 const { protect, authorize } = require('../middleware/auth');
 
 // @route   GET /api/affiliates/track/:code
@@ -264,9 +266,22 @@ router.put('/:id/status', protect, authorize('admin'), async (req, res) => {
 router.put('/:id/link-user', protect, authorize('admin'), async (req, res) => {
     try {
         const { userId } = req.body;
-        if (!userId) {
-            return res.status(400).json({ success: false, message: 'userId is required' });
+        if (!userId || !mongoose.isValidObjectId(userId)) {
+            return res.status(400).json({ success: false, message: 'A valid userId is required' });
         }
+
+        const [userExists, alreadyLinked] = await Promise.all([
+            User.exists({ _id: userId }),
+            Affiliate.exists({ user: userId, _id: { $ne: req.params.id } }),
+        ]);
+
+        if (!userExists) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        if (alreadyLinked) {
+            return res.status(409).json({ success: false, message: 'This user is already linked to another affiliate' });
+        }
+
         const affiliate = await Affiliate.findByIdAndUpdate(
             req.params.id,
             { user: userId },
@@ -286,14 +301,19 @@ router.put('/:id/link-user', protect, authorize('admin'), async (req, res) => {
 // @access  Private/Admin
 router.put('/:id/payout', protect, authorize('admin'), async (req, res) => {
     try {
-        const { amount } = req.body;
-        if (!amount || amount <= 0) {
-            return res.status(400).json({ success: false, message: 'amount is required and must be > 0' });
-        }
-
         const affiliate = await Affiliate.findById(req.params.id);
         if (!affiliate) {
             return res.status(404).json({ success: false, message: 'Affiliate not found' });
+        }
+
+        // Compute amount server-side from approved referrals — never trust client body
+        const [{ totalPending } = { totalPending: 0 }] = await Referral.aggregate([
+            { $match: { affiliate: affiliate._id, status: 'approved' } },
+            { $group: { _id: null, totalPending: { $sum: '$commissionAmount' } } },
+        ]);
+
+        if (!totalPending || totalPending <= 0) {
+            return res.status(400).json({ success: false, message: 'No approved commission to pay out' });
         }
 
         const now = new Date();
@@ -304,14 +324,15 @@ router.put('/:id/payout', protect, authorize('admin'), async (req, res) => {
 
         const updated = await Affiliate.findByIdAndUpdate(
             affiliate._id,
-            { $inc: { paidCommission: amount } },
+            { $inc: { paidCommission: totalPending } },
             { new: true }
         );
 
         res.json({
             success: true,
-            message: `Payout of R${amount} recorded`,
+            message: `Payout of R${totalPending.toFixed(2)} recorded`,
             data: {
+                amount: totalPending,
                 totalCommission: updated.totalCommission,
                 paidCommission: updated.paidCommission,
             }
@@ -360,35 +381,38 @@ router.post('/', protect, authorize('admin'), async (req, res) => {
 // @access  Private/Admin
 router.post('/:id/mark-paid', protect, authorize('admin'), async (req, res) => {
     try {
-        const { amount } = req.body;
-        if (!amount || amount <= 0) {
-            return res.status(400).json({ success: false, message: 'amount is required and must be > 0' });
-        }
-
         const affiliate = await Affiliate.findById(req.params.id);
         if (!affiliate) {
             return res.status(404).json({ success: false, message: 'Affiliate not found' });
         }
 
-        const now = new Date();
+        // Compute amount server-side — never trust client body for financial values
+        const [{ totalPending } = { totalPending: 0 }] = await Referral.aggregate([
+            { $match: { affiliate: affiliate._id, status: 'approved' } },
+            { $group: { _id: null, totalPending: { $sum: '$commissionAmount' } } },
+        ]);
 
-        // Mark all approved referrals for this affiliate as paid
+        if (!totalPending || totalPending <= 0) {
+            return res.status(400).json({ success: false, message: 'No approved commission to pay out' });
+        }
+
+        const now = new Date();
         const result = await Referral.updateMany(
             { affiliate: affiliate._id, status: 'approved' },
             { status: 'paid', paidAt: now }
         );
 
-        // Atomic increment of paidCommission
         const updated = await Affiliate.findByIdAndUpdate(
             affiliate._id,
-            { $inc: { paidCommission: amount } },
+            { $inc: { paidCommission: totalPending } },
             { new: true }
         );
 
         res.json({
             success: true,
-            message: `Payout of R${amount} recorded for ${affiliate.affiliateCode}`,
+            message: `Payout of R${totalPending.toFixed(2)} recorded for ${affiliate.affiliateCode}`,
             data: {
+                amount: totalPending,
                 referralsPaid: result.modifiedCount,
                 totalCommission: updated.totalCommission,
                 paidCommission: updated.paidCommission,

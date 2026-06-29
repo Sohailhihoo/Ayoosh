@@ -203,10 +203,22 @@ router.post('/totp/setup/confirm', async (req, res) => {
 
     const { userId, secret, hashedCodes } = JSON.parse(raw);
 
+    // Atomic attempt counter — invalidate setup session after 5 wrong codes
+    const setupAttemptsKey = `totp_setup_attempts:${pendingToken}`;
+    const setupAttempts = await redisClient.incr(setupAttemptsKey);
+    if (setupAttempts === 1) await redisClient.expire(setupAttemptsKey, 600);
+    if (setupAttempts > 5) {
+      await redisClient.del(`totp_setup:${pendingToken}`);
+      return res.status(401).json({ success: false, message: 'Too many failed attempts. Please log in again.' });
+    }
+
     const { valid: isValid } = await verifyTOTP({ token: String(code).trim(), secret });
     if (!isValid) {
-      return res.status(401).json({ success: false, message: 'Incorrect code. Please try again.' });
+      const remaining = 5 - setupAttempts;
+      return res.status(401).json({ success: false, message: `Incorrect code. ${remaining} attempt${remaining === 1 ? '' : 's'} remaining.` });
     }
+
+    await redisClient.del(setupAttemptsKey);
 
     await User.findByIdAndUpdate(userId, {
       totpSecret: secret,
@@ -253,12 +265,10 @@ router.post('/totp/verify', async (req, res) => {
     }
 
     const attemptsKey = `totp_attempts:${userId}`;
-    const attempts = parseInt(await redisClient.get(attemptsKey) || '0');
-    if (attempts >= 5) {
-      await Promise.all([
-        redisClient.del(`totp_pending:${pendingToken}`),
-        redisClient.del(attemptsKey),
-      ]);
+    const currentAttempts = parseInt(await redisClient.get(attemptsKey) || '0');
+    if (currentAttempts >= 5) {
+      // Don't delete attemptsKey — let it expire so lockout can't be bypassed by re-login
+      await redisClient.del(`totp_pending:${pendingToken}`);
       return res.status(401).json({ success: false, message: 'Too many failed attempts. Please log in again.' });
     }
 
@@ -286,9 +296,10 @@ router.post('/totp/verify', async (req, res) => {
     }
 
     if (!verified) {
-      const newCount = attempts + 1;
-      await redisClient.setEx(attemptsKey, 300, String(newCount));
-      const remaining = 5 - newCount;
+      // Atomic increment — no read-modify-write race
+      const newCount = await redisClient.incr(attemptsKey);
+      if (newCount === 1) await redisClient.expire(attemptsKey, 300);
+      const remaining = Math.max(0, 5 - newCount);
       return res.status(401).json({
         success: false,
         message: `Incorrect code. ${remaining} attempt${remaining === 1 ? '' : 's'} remaining.`,
@@ -297,7 +308,7 @@ router.post('/totp/verify', async (req, res) => {
 
     await Promise.all([
       redisClient.del(`totp_pending:${pendingToken}`),
-      redisClient.del(attemptsKey),
+      redisClient.del(attemptsKey), // safe to clear on success — lockout only needed for failures
     ]);
 
     const token = await createSession(res, user._id);
@@ -322,9 +333,40 @@ router.post('/totp/verify', async (req, res) => {
 
 // @route   POST /api/auth/totp/regenerate
 // @desc    Reset TOTP — clears secret so admin must re-setup on next login
-// @access  Private (admin only)
+// @access  Private (admin only) — requires current TOTP code as step-up auth
 router.post('/totp/regenerate', protect, authorize('admin'), async (req, res) => {
   try {
+    const { code } = req.body;
+    if (!code) {
+      return res.status(400).json({ success: false, message: 'Current TOTP code is required to reset the authenticator.' });
+    }
+
+    const user = await User.findById(req.user._id).select('+totpSecret +recoveryCodes');
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const trimmed = String(code).trim();
+    let verified = false;
+
+    if (/^\d{6}$/.test(trimmed)) {
+      const { valid } = await verifyTOTP({ token: trimmed, secret: user.totpSecret });
+      verified = valid;
+    } else {
+      // Allow a recovery code as step-up too
+      const hashed = crypto.createHash('sha256').update(trimmed).digest('hex');
+      const entry = user.recoveryCodes.find(r => !r.used && r.code === hashed);
+      if (entry) {
+        entry.used = true;
+        await user.save();
+        verified = true;
+      }
+    }
+
+    if (!verified) {
+      return res.status(401).json({ success: false, message: 'Incorrect TOTP code. Authenticator not reset.' });
+    }
+
     await User.findByIdAndUpdate(req.user._id, {
       $unset: { totpSecret: 1 },
       totpEnabled: false,

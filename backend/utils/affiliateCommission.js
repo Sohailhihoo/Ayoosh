@@ -95,6 +95,15 @@ async function voidAffiliateCommission(orderId, reason = 'Order cancelled') {
         const referral = await Referral.findOne({ order: orderId, status: { $ne: 'void' } });
         if (!referral) return;
 
+        if (referral.status === 'paid') {
+            // Commission already paid out — log for manual clawback, don't silently reverse counters
+            console.warn(`[Affiliate] Order ${orderId} cancelled but commission already paid to ${referral.affiliateCode}. Manual clawback required.`);
+            await Referral.findByIdAndUpdate(referral._id, {
+                voidReason: `${reason} — MANUAL CLAWBACK REQUIRED (already paid)`,
+            });
+            return;
+        }
+
         // Reverse the Affiliate counters atomically
         await Promise.all([
             Referral.findByIdAndUpdate(referral._id, {
