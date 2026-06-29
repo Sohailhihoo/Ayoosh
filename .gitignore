@@ -49,3 +49,6 @@ ngrok_url.txt
 
 # Preview pages (local only, not for production)
 frontend/app/preview-hero/
+
+# Local exports
+influencer-affiliate-links.csv
