@@ -5,43 +5,29 @@ import { useSearchParams } from 'next/navigation';
 import api from '@/lib/api';
 
 /**
- * AffiliateTracker - Reads ?ref= from URL and stores affiliate code in cookie.
- * Mounted globally in layout so it works on any landing page.
+ * Mounted in root layout (inside Suspense) so it fires on every landing page.
+ * Last-touch: always overwrites the cookie when a ?ref= param is present.
  */
 export default function AffiliateTracker() {
     const searchParams = useSearchParams();
 
     useEffect(() => {
-        const refCode = searchParams.get('ref');
+        const refCode = searchParams?.get('ref');
         if (!refCode) return;
 
-        // Check if we already have this affiliate cookie
-        const existingRef = getCookie('ayoosh_ref');
-        if (existingRef === refCode.toUpperCase()) return;
+        const code = refCode.trim().toUpperCase();
+        if (!code) return;
 
-        // Validate and record the click
+        // Set cookie immediately (last-touch overwrite — don't wait for API)
+        const expires = new Date(Date.now() + 7 * 864e5).toUTCString();
+        document.cookie = `ayoosh_ref=${encodeURIComponent(code)}; expires=${expires}; path=/; SameSite=Lax`;
+
+        // Record click server-side — fire-and-forget, never blocks UX
         api.post('/affiliates/click', {
-            affiliateCode: refCode,
-            landingPage: window.location.pathname
-        }).then(({ data }) => {
-            if (data.success) {
-                const days = data.cookieDuration || 7;
-                setCookie('ayoosh_ref', refCode.toUpperCase(), days);
-            }
-        }).catch(() => {
-            // Silently fail - don't block user experience
-        });
+            affiliateCode: code,
+            landingPage: window.location.pathname,
+        }).catch(() => {});
     }, [searchParams]);
 
-    return null; // This component renders nothing
-}
-
-function setCookie(name, value, days) {
-    const expires = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toUTCString();
-    document.cookie = `${name}=${value};expires=${expires};path=/;SameSite=Lax`;
-}
-
-function getCookie(name) {
-    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-    return match ? match[2] : null;
+    return null;
 }

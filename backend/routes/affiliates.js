@@ -112,6 +112,55 @@ router.get('/validate/:code', async (req, res) => {
     }
 });
 
+// ==================== INFLUENCER SELF-SERVE ROUTES ====================
+
+// @route   GET /api/affiliates/me
+// @desc    Get the affiliate account linked to the logged-in user
+// @access  Private
+router.get('/me', protect, async (req, res) => {
+    try {
+        const affiliate = await Affiliate.findOne({ user: req.user._id });
+        if (!affiliate) {
+            return res.status(404).json({ success: false, message: 'No affiliate account linked to your profile' });
+        }
+        res.json({ success: true, data: affiliate });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+// @route   GET /api/affiliates/me/referrals
+// @desc    Get referrals for the logged-in influencer
+// @access  Private
+router.get('/me/referrals', protect, async (req, res) => {
+    try {
+        const affiliate = await Affiliate.findOne({ user: req.user._id });
+        if (!affiliate) {
+            return res.status(404).json({ success: false, message: 'No affiliate account found' });
+        }
+
+        const { page = 1, limit = 20 } = req.query;
+        const skip = (Number(page) - 1) * Number(limit);
+
+        const [referrals, total] = await Promise.all([
+            Referral.find({ affiliate: affiliate._id })
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(Number(limit))
+                .populate('order', 'orderNumber total status createdAt'),
+            Referral.countDocuments({ affiliate: affiliate._id }),
+        ]);
+
+        res.json({
+            success: true,
+            data: referrals,
+            pagination: { page: Number(page), limit: Number(limit), total },
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
 // ==================== ADMIN ROUTES ====================
 
 // @route   GET /api/affiliates
@@ -134,6 +183,25 @@ router.get('/', protect, authorize('admin'), async (req, res) => {
             data: affiliates,
             pagination: { page: parseInt(page), limit: parseInt(limit), total }
         });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+// @route   GET /api/affiliates/pending-payouts
+// @desc    List affiliates with pending commission totals (admin)
+// @access  Private/Admin
+router.get('/pending-payouts', protect, authorize('admin'), async (req, res) => {
+    try {
+        const pending = await Referral.aggregate([
+            { $match: { status: 'approved' } },
+            { $group: { _id: '$affiliate', pendingAmount: { $sum: '$commissionAmount' }, referralCount: { $sum: 1 } } },
+            { $lookup: { from: 'affiliates', localField: '_id', foreignField: '_id', as: 'affiliate' } },
+            { $unwind: '$affiliate' },
+            { $project: { affiliateId: '$_id', pendingAmount: 1, referralCount: 1, firstName: '$affiliate.firstName', lastName: '$affiliate.lastName', email: '$affiliate.email', affiliateCode: '$affiliate.affiliateCode', minPayoutAmount: '$affiliate.minPayoutAmount' } },
+            { $sort: { pendingAmount: -1 } },
+        ]);
+        res.json({ success: true, data: pending });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
@@ -190,38 +258,140 @@ router.put('/:id/status', protect, authorize('admin'), async (req, res) => {
     }
 });
 
+// @route   PUT /api/affiliates/:id/link-user
+// @desc    Link a User account to an affiliate (admin) — lets influencer log in and see their portal
+// @access  Private/Admin
+router.put('/:id/link-user', protect, authorize('admin'), async (req, res) => {
+    try {
+        const { userId } = req.body;
+        if (!userId) {
+            return res.status(400).json({ success: false, message: 'userId is required' });
+        }
+        const affiliate = await Affiliate.findByIdAndUpdate(
+            req.params.id,
+            { user: userId },
+            { new: true }
+        );
+        if (!affiliate) {
+            return res.status(404).json({ success: false, message: 'Affiliate not found' });
+        }
+        res.json({ success: true, data: affiliate });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
 // @route   PUT /api/affiliates/:id/payout
-// @desc    Record a payout to affiliate (admin)
+// @desc    Record a payout to affiliate (admin) — kept for backward compat, delegates to mark-paid
 // @access  Private/Admin
 router.put('/:id/payout', protect, authorize('admin'), async (req, res) => {
     try {
         const { amount } = req.body;
-        const affiliate = await Affiliate.findById(req.params.id);
+        if (!amount || amount <= 0) {
+            return res.status(400).json({ success: false, message: 'amount is required and must be > 0' });
+        }
 
+        const affiliate = await Affiliate.findById(req.params.id);
         if (!affiliate) {
             return res.status(404).json({ success: false, message: 'Affiliate not found' });
         }
 
-        if (amount > affiliate.unpaidCommission) {
-            return res.status(400).json({ success: false, message: 'Amount exceeds unpaid commission' });
-        }
-
-        affiliate.paidCommission += amount;
-        await affiliate.save();
-
-        // Mark referral commissions as paid
+        const now = new Date();
         await Referral.updateMany(
-            { affiliate: affiliate._id, commissionStatus: 'approved' },
-            { commissionStatus: 'paid', paidAt: new Date() }
+            { affiliate: affiliate._id, status: 'approved' },
+            { status: 'paid', paidAt: now }
+        );
+
+        const updated = await Affiliate.findByIdAndUpdate(
+            affiliate._id,
+            { $inc: { paidCommission: amount } },
+            { new: true }
         );
 
         res.json({
             success: true,
             message: `Payout of R${amount} recorded`,
             data: {
-                totalCommission: affiliate.totalCommission,
-                paidCommission: affiliate.paidCommission,
-                unpaidCommission: affiliate.unpaidCommission
+                totalCommission: updated.totalCommission,
+                paidCommission: updated.paidCommission,
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+// @route   POST /api/affiliates
+// @desc    Create a new affiliate (admin)
+// @access  Private/Admin
+router.post('/', protect, authorize('admin'), async (req, res) => {
+    try {
+        const { firstName, lastName, email, phone, commissionRate = 5, payoutMethod, payoutDetails, minPayoutAmount } = req.body;
+
+        if (!firstName || !lastName || !email) {
+            return res.status(400).json({ success: false, message: 'firstName, lastName, and email are required' });
+        }
+
+        const affiliate = await Affiliate.create({
+            firstName,
+            lastName,
+            email: email.toLowerCase().trim(),
+            phone,
+            commissionRate,
+            commissionType: 'percentage',
+            payoutMethod: payoutMethod || 'manual',
+            payoutDetails: payoutDetails || {},
+            minPayoutAmount: minPayoutAmount || 200,
+            status: 'approved',
+            approvedAt: new Date(),
+        });
+
+        res.status(201).json({ success: true, data: affiliate });
+    } catch (error) {
+        if (error.code === 11000) {
+            return res.status(409).json({ success: false, message: 'An affiliate with this email already exists' });
+        }
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+// @route   POST /api/affiliates/:id/mark-paid
+// @desc    Mark approved referrals as paid and record payout (admin)
+// @access  Private/Admin
+router.post('/:id/mark-paid', protect, authorize('admin'), async (req, res) => {
+    try {
+        const { amount } = req.body;
+        if (!amount || amount <= 0) {
+            return res.status(400).json({ success: false, message: 'amount is required and must be > 0' });
+        }
+
+        const affiliate = await Affiliate.findById(req.params.id);
+        if (!affiliate) {
+            return res.status(404).json({ success: false, message: 'Affiliate not found' });
+        }
+
+        const now = new Date();
+
+        // Mark all approved referrals for this affiliate as paid
+        const result = await Referral.updateMany(
+            { affiliate: affiliate._id, status: 'approved' },
+            { status: 'paid', paidAt: now }
+        );
+
+        // Atomic increment of paidCommission
+        const updated = await Affiliate.findByIdAndUpdate(
+            affiliate._id,
+            { $inc: { paidCommission: amount } },
+            { new: true }
+        );
+
+        res.json({
+            success: true,
+            message: `Payout of R${amount} recorded for ${affiliate.affiliateCode}`,
+            data: {
+                referralsPaid: result.modifiedCount,
+                totalCommission: updated.totalCommission,
+                paidCommission: updated.paidCommission,
             }
         });
     } catch (error) {

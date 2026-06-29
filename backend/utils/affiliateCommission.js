@@ -1,80 +1,119 @@
 const Affiliate = require('../models/Affiliate');
 const Referral = require('../models/Referral');
 
+const COMMISSION_RATE = 0.05; // flat 5%
+
 /**
- * Process affiliate commission when an order is confirmed/paid.
- * Called from all payment gateways (Stripe, PayFast, PayGate).
+ * Credit a commission when an order is marked paid.
+ * Called from the PayFast ITN handler only — never at order creation.
  *
- * @param {Object} order - The mongoose Order document (must have affiliateCode field)
+ * Idempotency: the unique index on Referral.order turns any duplicate ITN
+ * call into a E11000 error, which we catch and silently ignore.
  */
 async function processAffiliateCommission(order) {
     try {
         if (!order.affiliateCode) return;
 
         const affiliate = await Affiliate.findOne({
-            affiliateCode: order.affiliateCode,
+            affiliateCode: order.affiliateCode.toUpperCase(),
             status: 'approved'
         });
 
         if (!affiliate) {
-            console.log(`[Affiliate] No approved affiliate found for code: ${order.affiliateCode}`);
+            console.log(`[Affiliate] No active affiliate for code: ${order.affiliateCode}`);
             return;
         }
 
-        // Check if commission already recorded for this order
-        const existingReferral = await Referral.findOne({
-            order: order._id,
-            status: 'converted'
-        });
-
-        if (existingReferral) {
-            console.log(`[Affiliate] Commission already recorded for order: ${order._id}`);
+        // Self-referral guard — block affiliate earning on their own orders
+        const orderEmail = order.customerDetails?.email?.toLowerCase();
+        if (affiliate.email === orderEmail) {
+            console.log(`[Affiliate] Self-referral blocked for ${affiliate.affiliateCode}`);
             return;
         }
+        if (affiliate.user && order.user) {
+            const affiliateUserId = affiliate.user._id
+                ? affiliate.user._id.toString()
+                : affiliate.user.toString();
+            const orderUserId = order.user._id
+                ? order.user._id.toString()
+                : order.user.toString();
+            if (affiliateUserId === orderUserId) {
+                console.log(`[Affiliate] Self-referral (user match) blocked for ${affiliate.affiliateCode}`);
+                return;
+            }
+        }
 
-        // Calculate commission
-        const commission = affiliate.calculateCommission(order.total);
-
-        // Update or create referral record
-        const referral = await Referral.findOneAndUpdate(
-            { affiliateCode: order.affiliateCode, order: null, status: 'clicked' },
-            {
-                status: 'converted',
-                order: order._id,
-                orderTotal: order.total,
-                commission,
-                commissionStatus: 'pending',
-                convertedAt: new Date()
-            },
-            { sort: { createdAt: -1 }, new: true }
+        // Commission base: item subtotal minus coupon discount, no shipping
+        const itemSubtotal = order.items.reduce(
+            (sum, item) => sum + item.price * item.quantity,
+            0
         );
+        const orderAmount = Math.max(0, itemSubtotal - (order.discount || 0));
+        const commissionAmount = Math.round(orderAmount * COMMISSION_RATE * 100) / 100;
 
-        // If no existing click referral found, create a direct conversion record
-        if (!referral) {
+        // Create commission record — unique index on `order` prevents double-credit
+        try {
             await Referral.create({
                 affiliate: affiliate._id,
-                affiliateCode: order.affiliateCode,
-                status: 'converted',
+                affiliateCode: affiliate.affiliateCode,
                 order: order._id,
-                orderTotal: order.total,
-                commission,
-                commissionStatus: 'pending',
-                convertedAt: new Date(),
-                expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) // Keep for 1 year
+                orderAmount,
+                commissionAmount,
+                status: 'pending',
             });
+        } catch (err) {
+            if (err.code === 11000) {
+                // Duplicate ITN — commission already recorded, safe to ignore
+                console.log(`[Affiliate] Duplicate ITN for order ${order._id}, skipping`);
+                return;
+            }
+            throw err;
         }
 
-        // Update affiliate totals
-        affiliate.totalOrders += 1;
-        affiliate.totalRevenue += order.total;
-        affiliate.totalCommission += commission;
-        await affiliate.save();
+        // Atomic counter update on Affiliate — no read-modify-write
+        await Affiliate.findByIdAndUpdate(affiliate._id, {
+            $inc: {
+                totalOrders: 1,
+                totalRevenue: orderAmount,
+                totalCommission: commissionAmount,
+            }
+        });
 
-        console.log(`[Affiliate] Commission R${commission} recorded for ${affiliate.affiliateCode} on order ${order.orderNumber}`);
+        console.log(`[Affiliate] R${commissionAmount} commission credited to ${affiliate.affiliateCode} for order ${order.orderNumber}`);
     } catch (error) {
-        // Don't let affiliate errors break payment flow
-        console.error('[Affiliate] Commission processing error:', error.message);
+        // Never let affiliate errors break the payment confirmation flow
+        console.error('[Affiliate] Commission error:', error.message);
     }
 }
 
-module.exports = { processAffiliateCommission };
+/**
+ * Void the commission for a cancelled or refunded order.
+ * Call this when an order moves to cancelled/returned status.
+ */
+async function voidAffiliateCommission(orderId, reason = 'Order cancelled') {
+    try {
+        const referral = await Referral.findOne({ order: orderId, status: { $ne: 'void' } });
+        if (!referral) return;
+
+        // Reverse the Affiliate counters atomically
+        await Promise.all([
+            Referral.findByIdAndUpdate(referral._id, {
+                status: 'void',
+                voidReason: reason,
+            }),
+            Affiliate.findByIdAndUpdate(referral.affiliate, {
+                $inc: {
+                    totalOrders: -1,
+                    totalRevenue: -referral.orderAmount,
+                    totalCommission: -referral.commissionAmount,
+                }
+            }),
+        ]);
+
+        console.log(`[Affiliate] Commission voided for order ${orderId}: ${reason}`);
+    } catch (error) {
+        console.error('[Affiliate] Void commission error:', error.message);
+    }
+}
+
+module.exports = { processAffiliateCommission, voidAffiliateCommission };

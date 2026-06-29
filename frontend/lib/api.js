@@ -107,8 +107,22 @@ export const reviewAPI = {
   updatePage: (id, page) => api.put(`/reviews/${id}/page`, { page }),
 };
 
+// Affiliate APIs (influencer self-serve)
+export const affiliateAPI = {
+  getMe: () => api.get('/affiliates/me'),
+  getMyReferrals: (params) => api.get('/affiliates/me/referrals', { params }),
+};
+
 // Admin APIs
 export const adminAPI = {
+  // Affiliate Management
+  getAffiliates: (params) => api.get('/affiliates', { params }),
+  getAffiliate: (id) => api.get(`/affiliates/${id}`),
+  createAffiliate: (data) => api.post('/affiliates', data),
+  updateAffiliateStatus: (id, data) => api.put(`/affiliates/${id}/status`, data),
+  linkAffiliateUser: (id, userId) => api.put(`/affiliates/${id}/link-user`, { userId }),
+  getPendingPayouts: () => api.get('/affiliates/pending-payouts'),
+  markAffiliatePaid: (id, amount) => api.post(`/affiliates/${id}/mark-paid`, { amount }),
   // Product Management
   createProduct: (data) => api.post('/products', data, {
     headers: { 'Content-Type': 'multipart/form-data' }

@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 
+// One document per paid order — commission record, not click record.
+// Unique index on `order` is the idempotency guard: a duplicate-key error
+// (E11000) on insert means commission was already credited → safe to ignore.
 const referralSchema = new mongoose.Schema({
-    // Which affiliate referred this
     affiliate: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Affiliate',
@@ -9,60 +11,36 @@ const referralSchema = new mongoose.Schema({
     },
     affiliateCode: {
         type: String,
-        required: true
+        required: true,
+        uppercase: true,
+        trim: true
     },
-
-    // Click tracking
-    ipAddress: String,
-    userAgent: String,
-    referrerUrl: String,
-    landingPage: String,
-
-    // Conversion tracking
-    status: {
-        type: String,
-        enum: ['clicked', 'converted', 'expired'],
-        default: 'clicked'
-    },
-
-    // Order details (populated when conversion happens)
     order: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Order',
-        default: null
+        required: true,
+        unique: true   // idempotency guard — E11000 on duplicate = already credited
     },
-    orderTotal: {
+    // 5% of (order subtotal − coupon discount), excluding shipping
+    orderAmount: {
         type: Number,
-        default: 0
+        required: true
     },
-    commission: {
+    commissionAmount: {
         type: Number,
-        default: 0
+        required: true
     },
-
-    // Commission payout status
-    commissionStatus: {
+    status: {
         type: String,
-        enum: ['pending', 'approved', 'paid', 'cancelled'],
+        enum: ['pending', 'approved', 'paid', 'void'],
         default: 'pending'
     },
     paidAt: Date,
+    voidReason: String,
+}, { timestamps: true });
 
-    // Cookie expiry (when this referral attribution expires)
-    expiresAt: {
-        type: Date,
-        required: true
-    },
-
-    convertedAt: Date
-}, {
-    timestamps: true
-});
-
-// Index for fast lookups
 referralSchema.index({ affiliate: 1, status: 1 });
 referralSchema.index({ affiliateCode: 1 });
-referralSchema.index({ order: 1 });
-referralSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 }); // TTL: auto-delete expired clicks
+referralSchema.index({ createdAt: -1 });
 
 module.exports = mongoose.model('Referral', referralSchema);

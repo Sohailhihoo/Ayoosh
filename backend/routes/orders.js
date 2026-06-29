@@ -4,7 +4,9 @@ const mongoose = require('mongoose');
 const Order = require('../models/Order');
 const Cart = require('../models/Cart');
 const Product = require('../models/Product');
+const Affiliate = require('../models/Affiliate');
 const { protect, authorize, optionalAuth } = require('../middleware/auth');
+const { voidAffiliateCommission } = require('../utils/affiliateCommission');
 
 // @route   GET /api/orders
 // @desc    Get user's orders (customer) or all orders (admin)
@@ -145,7 +147,7 @@ router.post('/', optionalAuth, async (req, res) => {
     shippingService,
     customerNote,
     couponCode: bodyCouponCode,
-    affiliateCode
+    affiliateCode: rawAffiliateCode
   } = req.body;
 
   const userId = req.user?._id;
@@ -255,6 +257,16 @@ router.post('/', optionalAuth, async (req, res) => {
       lastName: req.user.lastName,
       phone: req.user.phone
     } : customerDetails;
+
+    // Validate affiliate code server-side — silently drop unknown/suspended codes
+    let affiliateCode = null;
+    if (rawAffiliateCode) {
+      const aff = await Affiliate.findOne({
+        affiliateCode: rawAffiliateCode.trim().toUpperCase(),
+        status: 'approved'
+      }).lean();
+      affiliateCode = aff ? aff.affiliateCode : null;
+    }
 
     // Validate Coupon if present (check cart first, fallback to request body)
     let discountAmount = 0;
@@ -370,6 +382,11 @@ router.put('/:id/status', protect, authorize('admin'), async (req, res) => {
 
     await order.updateStatus(status, note, req.user._id);
 
+    // Void affiliate commission on cancellation or return
+    if (status === 'cancelled' || status === 'returned') {
+      voidAffiliateCommission(order._id, `Order ${status}`).catch(() => {});
+    }
+
     res.json({
       success: true,
       message: 'Order status updated',
@@ -421,6 +438,9 @@ router.put('/:id/cancel', protect, async (req, res) => {
     }
 
     await order.updateStatus('cancelled', req.body.reason || 'Cancelled by user', req.user._id);
+
+    // Void any pending affiliate commission for this order (fire-and-forget)
+    voidAffiliateCommission(order._id, 'Order cancelled').catch(() => {});
 
     res.json({
       success: true,
