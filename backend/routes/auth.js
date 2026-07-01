@@ -10,6 +10,7 @@ const QRCode = require('qrcode');
 
 // Session configuration
 const SESSION_EXPIRY = 604800; // 7 days in seconds
+const USER_SESSIONS_TTL = SESSION_EXPIRY + 60; // slightly longer so the set outlives all sessions
 
 /**
  * Helper function to create session and set cookie
@@ -19,7 +20,13 @@ const createSession = async (res, userId) => {
   const sessionId = crypto.randomBytes(32).toString('hex');
 
   // Store in Redis: key = session:{sessionId}, value = userId, expiry = 7 days
-  await redisClient.setEx(`session:${sessionId}`, SESSION_EXPIRY, userId.toString());
+  const userIdStr = userId.toString();
+  await redisClient.setEx(`session:${sessionId}`, SESSION_EXPIRY, userIdStr);
+
+  // Maintain reverse index: user:{userId}:sessions → Set of sessionIds
+  const sessionsKey = `user:${userIdStr}:sessions`;
+  await redisClient.sadd(sessionsKey, sessionId);
+  await redisClient.expire(sessionsKey, USER_SESSIONS_TTL);
 
   // Determine if we are in a secure environment (Production or Railway)
   const isProduction = process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT_NAME;
@@ -36,6 +43,16 @@ const createSession = async (res, userId) => {
   });
 
   return sessionId; // Return token for fallback usage
+};
+
+const revokeAllUserSessions = async (res, userId) => {
+  const sessionsKey = `user:${userId.toString()}:sessions`;
+  const sessionIds = await redisClient.smembers(sessionsKey);
+  if (sessionIds.length > 0) {
+    await Promise.all(sessionIds.map(id => redisClient.del(`session:${id}`)));
+  }
+  await redisClient.del(sessionsKey);
+  res.clearCookie('sessionId');
 };
 
 // @route   POST /api/auth/register
@@ -429,11 +446,8 @@ router.put('/update-password', protect, async (req, res) => {
     user.password = newPassword;
     await user.save();
 
-    // Invalidate old session and create new one
-    const oldSessionId = req.cookies.sessionId;
-    if (oldSessionId) {
-      await redisClient.del(`session:${oldSessionId}`);
-    }
+    // Revoke all existing sessions and create a fresh one
+    await revokeAllUserSessions(res, user._id);
     await createSession(res, user._id);
 
     res.json({
@@ -458,6 +472,9 @@ router.post('/logout', protect, async (req, res) => {
     if (sessionId) {
       // 1. Remove from Redis (Instant Revocation)
       await redisClient.del(`session:${sessionId}`);
+      if (req.user) {
+        await redisClient.srem(`user:${req.user._id.toString()}:sessions`, sessionId);
+      }
     }
 
     // 2. Clear the cookie on the browser
@@ -541,7 +558,8 @@ router.post('/reset-password/:token', async (req, res) => {
     user.passwordResetExpires = undefined;
     await user.save();
 
-    // Create session and set cookie
+    // Revoke all existing sessions and create a fresh one
+    await revokeAllUserSessions(res, user._id);
     await createSession(res, user._id);
 
     res.json({

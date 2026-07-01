@@ -30,6 +30,47 @@ const inMemoryClient = {
         inMemoryStore.delete(key);
         return 1;
     },
+    async incr(key) {
+        const item = inMemoryStore.get(key);
+        const current = item && Date.now() <= item.expiry ? parseInt(item.value) || 0 : 0;
+        const next = current + 1;
+        inMemoryStore.set(key, { value: String(next), expiry: item?.expiry || Date.now() + 3600000 });
+        return next;
+    },
+    async expire(key, seconds) {
+        const item = inMemoryStore.get(key);
+        if (item) {
+            inMemoryStore.set(key, { ...item, expiry: Date.now() + seconds * 1000 });
+            return 1;
+        }
+        return 0;
+    },
+    async sadd(key, ...members) {
+        const item = inMemoryStore.get(key);
+        const set = (item && Date.now() <= item.expiry) ? new Set(item.value) : new Set();
+        let added = 0;
+        for (const m of members) {
+            if (!set.has(m)) { set.add(m); added++; }
+        }
+        inMemoryStore.set(key, { value: set, expiry: item?.expiry || Date.now() + 3600000 });
+        return added;
+    },
+    async smembers(key) {
+        const item = inMemoryStore.get(key);
+        if (!item || Date.now() > item.expiry) return [];
+        return [...item.value];
+    },
+    async srem(key, ...members) {
+        const item = inMemoryStore.get(key);
+        if (!item || Date.now() > item.expiry) return 0;
+        const set = item.value;
+        let removed = 0;
+        for (const m of members) {
+            if (set.has(m)) { set.delete(m); removed++; }
+        }
+        inMemoryStore.set(key, { ...item, value: set });
+        return removed;
+    },
     isMemoryFallback: true
 };
 
@@ -85,6 +126,26 @@ const clientProxy = {
     async del(key) {
         const client = await getClient();
         return client.del(key);
+    },
+    async incr(key) {
+        const client = await getClient();
+        return client.incr(key);
+    },
+    async expire(key, seconds) {
+        const client = await getClient();
+        return client.expire(key, seconds);
+    },
+    async sadd(key, ...members) {
+        const client = await getClient();
+        return client.sadd(key, ...members);
+    },
+    async smembers(key) {
+        const client = await getClient();
+        return client.smembers(key);
+    },
+    async srem(key, ...members) {
+        const client = await getClient();
+        return client.srem(key, ...members);
     }
 };
 
