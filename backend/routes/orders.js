@@ -276,7 +276,7 @@ router.post('/', optionalAuth, async (req, res) => {
       const Coupon = require('../models/Coupon');
       const coupon = await Coupon.findOne({ code: couponCode, isActive: true });
 
-      if (coupon && coupon.isValid()) {
+      if (coupon && coupon.isValid(serverSubtotal)) {
         if (coupon.discountType === 'free_shipping') {
           discountAmount = shippingCost;
         } else if (coupon.discountType === 'fixed') {

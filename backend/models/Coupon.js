@@ -41,10 +41,11 @@ const couponSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // Method to check if coupon is valid
-couponSchema.methods.isValid = function () {
+couponSchema.methods.isValid = function (subtotal = 0) {
     if (!this.isActive) return false;
     if (this.usageLimit !== null && this.usedCount >= this.usageLimit) return false;
     if (this.expiryDate && new Date() > this.expiryDate) return false;
+    if (this.minOrderAmount > 0 && subtotal < this.minOrderAmount) return false;
     return true;
 };
 
