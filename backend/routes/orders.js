@@ -276,6 +276,7 @@ router.post('/', optionalAuth, async (req, res) => {
       const Coupon = require('../models/Coupon');
       const coupon = await Coupon.findOne({ code: couponCode, isActive: true });
 
+      // @ts-ignore — isValid is a custom Mongoose instance method; TS types don't see it
       if (coupon && coupon.isValid(serverSubtotal)) {
         if (coupon.discountType === 'free_shipping') {
           discountAmount = shippingCost;
