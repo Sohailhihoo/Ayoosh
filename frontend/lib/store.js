@@ -138,9 +138,6 @@ export const useAuthStore = create((set) => ({
       }
 
       if (data.success) {
-        if (typeof window !== 'undefined' && data.token) {
-          localStorage.setItem('authToken', data.token);
-        }
         set({ user: data.data, isAuthenticated: true, isLoading: false });
         return data.data;
       }
@@ -155,9 +152,6 @@ export const useAuthStore = create((set) => ({
     try {
       const { data } = await api.post('/auth/totp/setup/confirm', { pendingToken, code });
       if (data.success) {
-        if (typeof window !== 'undefined' && data.token) {
-          localStorage.setItem('authToken', data.token);
-        }
         set({ user: data.data, isAuthenticated: true, isLoading: false });
         return data.data;
       }
@@ -172,9 +166,6 @@ export const useAuthStore = create((set) => ({
     try {
       const { data } = await api.post('/auth/totp/verify', { pendingToken, code });
       if (data.success) {
-        if (typeof window !== 'undefined' && data.token) {
-          localStorage.setItem('authToken', data.token);
-        }
         set({ user: data.data, isAuthenticated: true, isLoading: false });
         return data.data;
       }
@@ -193,11 +184,6 @@ export const useAuthStore = create((set) => ({
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
-      // Clear token
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('authToken');
-      }
-
       // Always clear state, even if API call fails
       set({
         user: null,
@@ -213,6 +199,11 @@ export const useAuthStore = create((set) => ({
    */
   checkAuth: async () => {
     set({ isLoading: true });
+
+    // One-time cleanup: remove legacy authToken from localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('authToken');
+    }
 
     try {
       const { data } = await api.get('/auth/me');
