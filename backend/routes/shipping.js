@@ -3,6 +3,7 @@ const router = express.Router();
 const Product = require('../models/Product');
 const Order = require('../models/Order');
 const bobgo = require('../lib/bobgo');
+const { protect, authorize } = require('../middleware/auth');
 
 const ORIGIN = {
   company: process.env.SHIP_FROM_COMPANY || 'Ayoosh Online',
@@ -50,7 +51,7 @@ router.post('/rates', async (req, res, next) => {
 
 // POST /api/shipping/shipments
 // body: { orderId, service_code }
-router.post('/shipments', async (req, res, next) => {
+router.post('/shipments', protect, authorize('admin'), async (req, res, next) => {
   try {
     const { orderId, service_code } = req.body;
     const order = await Order.findById(orderId);
