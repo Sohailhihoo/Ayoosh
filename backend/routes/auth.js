@@ -101,7 +101,7 @@ router.post('/login', async (req, res) => {
     }
 
     // 2. Find User (explicitly select password since it's excluded by default in schema)
-    const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
+    const user = await User.findOne({ email: email.toLowerCase(), isActive: true }).select('+password');
     console.log(`Login attempt for: ${email}`);
 
     if (!user) {

@@ -58,6 +58,13 @@ exports.protect = async (req, res, next) => {
       return res.status(401).json({ success: false, message: 'User not found' });
     }
 
+    if (!user.isActive) {
+      console.log(`[Auth] Deactivated user attempted access: ${user.email}`);
+      await redisClient.del(`session:${sessionId}`);
+      res.clearCookie('sessionId');
+      return res.status(401).json({ success: false, message: 'Account has been deactivated' });
+    }
+
     // 3. Attach user and move on
     req.user = user;
     next();
@@ -79,13 +86,15 @@ exports.optionalAuth = async (req, res, next) => {
     if (sessionId) {
       const userId = await redisClient.get(`session:${sessionId}`);
       if (userId) {
-        req.user = await User.findById(userId).select('-password');
+        const user = await User.findById(userId).select('-password');
+        if (user && user.isActive) {
+          req.user = user;
+        }
       }
     }
 
     next();
   } catch (error) {
-    // Continue without user
     next();
   }
 };
