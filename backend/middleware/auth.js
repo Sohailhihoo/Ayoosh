@@ -74,7 +74,7 @@ exports.protect = async (req, res, next) => {
  * Optional authentication - continues even without session
  * Use for routes that behave differently for logged-in users
  */
-exports.optionalAuth = async (req, res, next) => {
+exports.optionalAuth = async (req, _res, next) => {
   try {
     const sessionId = req.cookies?.sessionId;
 
