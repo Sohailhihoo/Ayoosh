@@ -54,7 +54,7 @@ function ProductsContent() {
 
   const productTypes = ['suncream', 'sunglasses', 'accessories'];
   const categoryLabels = {
-    suncream: 'Sun Care',
+    suncream: 'Skin Care',
     sunglasses: 'Sunglasses',
     accessories: 'Accessories'
   };
