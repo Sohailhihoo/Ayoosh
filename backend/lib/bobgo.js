@@ -57,7 +57,10 @@ function flattenRates(data) {
   for (const provider of data.provider_rate_requests || []) {
     if (provider.status !== 'success') continue;
     for (const resp of provider.responses || []) {
-      if (resp.status !== 'success') continue;
+      // Accept any response that has a valid rate amount — a provider-level "success"
+      // already confirms the quote is real; individual response status can lag after
+      // a Bob Go account top-up.
+      if (!resp.rate_amount || resp.rate_amount <= 0) continue;
       rates.push({
         service_code: `${provider.provider_slug}-${resp.service_level_code}`,
         service_name: `${provider.provider_name} ${resp.service_level?.name || resp.service_level_code}`,
