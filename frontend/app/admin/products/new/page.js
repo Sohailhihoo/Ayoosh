@@ -40,6 +40,7 @@ export default function NewProduct() {
         name: '',
         brand: '',
         price: '',
+        shortDescription: '',
         description: '',
         productType: 'suncream',
         stock: '',
@@ -51,6 +52,25 @@ export default function NewProduct() {
     const [galleryPreviews, setGalleryPreviews] = useState([]);
     const [videoFile, setVideoFile] = useState(null);
     const [videoPreview, setVideoPreview] = useState(null);
+
+    // Cloudinary URL State
+    const [cloudinaryUrlInput, setCloudinaryUrlInput] = useState('');
+    const [cloudinaryUrls, setCloudinaryUrls] = useState([]);
+
+    const handleAddCloudinaryUrl = () => {
+        const url = cloudinaryUrlInput.trim();
+        if (!url) return;
+        if (!url.startsWith('http')) {
+            toast.error('Please enter a valid URL');
+            return;
+        }
+        setCloudinaryUrls(prev => [...prev, url]);
+        setCloudinaryUrlInput('');
+    };
+
+    const removeCloudinaryUrl = (index) => {
+        setCloudinaryUrls(prev => prev.filter((_, i) => i !== index));
+    };
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -129,6 +149,11 @@ export default function NewProduct() {
             // Append Gallery Files
             galleryFiles.forEach(file => {
                 data.append('gallery', file);
+            });
+
+            // Append Cloudinary URLs
+            cloudinaryUrls.forEach(url => {
+                data.append('cloudinaryUrl', url);
             });
 
             // Append Video File
@@ -251,15 +276,30 @@ export default function NewProduct() {
 
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Description
+                                    Short Description
+                                    <span className="text-gray-400 font-normal ml-1">(shown on product card hover)</span>
+                                </label>
+                                <textarea
+                                    name="shortDescription"
+                                    value={formData.shortDescription}
+                                    onChange={handleChange}
+                                    rows="2"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="One or two sentences summarising the product..."
+                                />
+                            </div>
+
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Long Description
                                 </label>
                                 <textarea
                                     name="description"
                                     value={formData.description}
                                     onChange={handleChange}
-                                    rows="4"
+                                    rows="5"
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="Enter product description..."
+                                    placeholder="Full product description..."
                                 />
                             </div>
 
@@ -322,6 +362,51 @@ export default function NewProduct() {
                                         </div>
                                     ))}
                                 </div>
+                            </div>
+
+                            {/* Cloudinary URL Input */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Add Images from Cloudinary URL
+                                </label>
+                                <div className="flex gap-2 mb-3">
+                                    <input
+                                        type="text"
+                                        value={cloudinaryUrlInput}
+                                        onChange={(e) => setCloudinaryUrlInput(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddCloudinaryUrl())}
+                                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                        placeholder="https://res.cloudinary.com/..."
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={handleAddCloudinaryUrl}
+                                        className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap"
+                                    >
+                                        Add URL
+                                    </button>
+                                </div>
+                                {cloudinaryUrls.length > 0 && (
+                                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                                        {cloudinaryUrls.map((url, index) => (
+                                            <div key={index} className="relative aspect-square rounded-lg overflow-hidden border border-gray-200 group">
+                                                <img
+                                                    src={url}
+                                                    alt={`Cloudinary ${index + 1}`}
+                                                    className="w-full h-full object-cover"
+                                                    onError={(e) => { e.target.style.display = 'none'; }}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeCloudinaryUrl(index)}
+                                                    className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                                >
+                                                    <XIcon className="w-4 h-4" />
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
 
                             {/* Video Upload */}

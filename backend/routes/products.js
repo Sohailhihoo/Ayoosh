@@ -239,26 +239,29 @@ router.post('/', protect, authorize('admin'),
       // Initialize if fields are missing in body
       if (!productData.images) productData.images = [];
 
-      // Handle Gallery Images (map to 'images' in DB schema)
-      // Frontend sends 'gallery', DB expects 'images'
+      // Handle Gallery Images (file uploads via multipart)
+      let imageObjects = [];
       if (req.files && req.files['gallery']) {
-        const galleryUrls = req.files['gallery'].map(file => ({
+        imageObjects = req.files['gallery'].map(file => ({
           url: file.path,
           alt: productData.name || 'Product Image'
         }));
-        // If schema expects array of strings, map to paths.
-        // But our schema now expects objects: { url, alt, isPrimary } 
-        // OR array of strings? Let's check schema again. 
-        // Schema says: images: [{ url: String... }]
-        // Previous code handled array of strings? 
-        // "productData.images = req.files.map(file => file.path);" <-- logic from previous step.
-        // Wait, schema was: images: [{ url: String, ... }] but previous code did array of strings?
-        // Let's look at schema Line 84-88:
-        // images: [{ url: String, ... }]
-        // So mapping to string path was WRONG unless Mongoose casts it or previous code was simplistic.
-        // Let's implement robust object mapping.
+      }
 
-        productData.images = galleryUrls;
+      // Handle Cloudinary URLs pasted directly in the form
+      if (req.body.cloudinaryUrl) {
+        const urls = Array.isArray(req.body.cloudinaryUrl)
+          ? req.body.cloudinaryUrl
+          : [req.body.cloudinaryUrl];
+        const cloudinaryImages = urls
+          .map(u => u.trim())
+          .filter(u => u)
+          .map(url => ({ url, alt: productData.name || 'Product Image' }));
+        imageObjects = [...imageObjects, ...cloudinaryImages];
+      }
+
+      if (imageObjects.length > 0) {
+        productData.images = imageObjects;
       }
 
       // Handle Video
@@ -302,27 +305,20 @@ router.put('/:id', protect, authorize('admin'),
       if (req.files && req.files['gallery']) {
         newImages = req.files['gallery'].map(file => ({
           url: file.path,
-          alt: productData.name
+          alt: productData.name || 'Product Image'
         }));
       }
 
-      // If existing images passed as JSON string (common in multipart forms)
-      let existingImages = [];
-      if (productData.existingImages) {
-        try {
-          existingImages = JSON.parse(productData.existingImages);
-        } catch (e) {
-          existingImages = [];
-        }
-      }
-
-      // Merge: This logic depends on frontend. 
-      // If we just want to ADD new images to DB:
-      if (newImages.length > 0) {
-        // We'll update after fetching or let consumer handle full Replace logic
-        // Assuming 'images' field in body replaces structure.
-        // Let's construct the final array if we can.
-        productData.images = [...existingImages, ...newImages];
+      // Handle comma-separated Cloudinary URLs sent as a plain string from the edit form
+      if (productData.images && typeof productData.images === 'string') {
+        const urlImages = productData.images
+          .split(',')
+          .map(u => u.trim())
+          .filter(u => u)
+          .map(url => ({ url, alt: productData.name || 'Product Image' }));
+        productData.images = [...urlImages, ...newImages];
+      } else if (newImages.length > 0) {
+        productData.images = newImages;
       }
 
       // Handle Video

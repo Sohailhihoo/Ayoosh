@@ -109,6 +109,7 @@ const productSchema = new mongoose.Schema({
   isBestseller: { type: Boolean, default: false },
 
   // Shipping
+  freeShipping: { type: Boolean, default: false },
   weight: Number,             // in grams
   dimensions: {
     length: Number,

@@ -31,6 +31,7 @@ export default function EditProduct() {
         name: '',
         brand: '',
         price: '',
+        shortDescription: '',
         description: '',
         productType: 'suncream',
         stock: '',
@@ -54,10 +55,11 @@ export default function EditProduct() {
                 name: product.name || '',
                 brand: product.brand || '',
                 price: product.price || '',
+                shortDescription: product.shortDescription || '',
                 description: product.description || '',
                 productType: product.productType || 'suncream',
                 stock: product.stock || '',
-                images: product.images?.join(', ') || '',
+                images: product.images?.map(img => img.url || img).join(', ') || '',
                 isFeatured: product.isFeatured || false,
             });
         } catch (error) {
@@ -207,7 +209,22 @@ export default function EditProduct() {
 
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Description
+                                    Short Description
+                                    <span className="text-gray-400 font-normal ml-1">(shown on product card hover)</span>
+                                </label>
+                                <textarea
+                                    name="shortDescription"
+                                    value={formData.shortDescription}
+                                    onChange={handleChange}
+                                    rows="2"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="One or two sentences summarising the product..."
+                                />
+                            </div>
+
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Long Description
                                 </label>
                                 <textarea
                                     name="description"
@@ -220,14 +237,15 @@ export default function EditProduct() {
 
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Image URLs (comma-separated)
+                                    Image URLs (comma-separated Cloudinary URLs)
                                 </label>
-                                <input
-                                    type="text"
+                                <textarea
                                     name="images"
                                     value={formData.images}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    rows="3"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                    placeholder="https://res.cloudinary.com/..., https://res.cloudinary.com/..."
                                 />
                             </div>
 

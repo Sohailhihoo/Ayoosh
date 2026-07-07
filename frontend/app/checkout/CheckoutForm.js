@@ -96,8 +96,12 @@ export default function CheckoutForm() {
         }
     }, [user]);
 
+    // True when every item in cart has freeShipping: true (e.g. Rejoosh)
+    const allFreeShipping = items.length > 0 && items.every(item => item.product?.freeShipping === true);
+
     // Fetch shipping rates when address is complete
     const fetchShippingRates = async () => {
+        if (allFreeShipping) return; // no need to fetch — delivery is free
         if (!formData.city.trim() || !formData.zipCode.trim() || items.length === 0) return;
 
         setFetchingRates(true);
@@ -135,16 +139,16 @@ export default function CheckoutForm() {
         }
     };
 
-    // Trigger rate fetch when city + zipCode change (debounced)
+    // Trigger rate fetch when city + zipCode change (debounced) — skip for free-shipping carts
     useEffect(() => {
-        if (!formData.city.trim() || !formData.zipCode.trim() || items.length === 0) return;
+        if (allFreeShipping || !formData.city.trim() || !formData.zipCode.trim() || items.length === 0) return;
 
         const timer = setTimeout(() => {
             fetchShippingRates();
         }, 800);
 
         return () => clearTimeout(timer);
-    }, [formData.city, formData.zipCode, formData.street, items.length]);
+    }, [formData.city, formData.zipCode, formData.street, items.length, allFreeShipping]);
 
     const currentShippingCost = selectedRate?.total_price || 0;
 
@@ -212,8 +216,8 @@ export default function CheckoutForm() {
             toast.error('Please enter a valid email address');
             return false;
         }
-        // Shipping rate must be selected
-        if (!selectedRate) {
+        // Shipping rate must be selected (unless all items have free delivery)
+        if (!allFreeShipping && !selectedRate) {
             toast.error('Please select a shipping option');
             return false;
         }
@@ -252,8 +256,8 @@ export default function CheckoutForm() {
                 },
                 paymentMethod: formData.paymentMethod,
                 shippingMethod: 'standard',
-                shippingCost: selectedRate?.total_price || 0,
-                shippingService: selectedRate ? {
+                shippingCost: allFreeShipping ? 0 : (selectedRate?.total_price || 0),
+                shippingService: (!allFreeShipping && selectedRate) ? {
                     provider: 'bobgo',
                     service_code: selectedRate.service_code,
                     service_name: selectedRate.service_name,
@@ -476,6 +480,17 @@ export default function CheckoutForm() {
                                     Shipping Method
                                 </h2>
 
+                                {allFreeShipping ? (
+                                    <div className="flex items-center gap-3 p-4 border border-green-200 bg-green-50 rounded-lg">
+                                        <span className="text-green-600 text-lg">✓</span>
+                                        <div>
+                                            <p className="font-medium text-sm text-green-800">Free Delivery</p>
+                                            <p className="text-xs text-green-600">Your order includes free delivery</p>
+                                        </div>
+                                        <span className="ml-auto font-semibold text-green-700">R0.00</span>
+                                    </div>
+                                ) : (
+                                <>
                                 {fetchingRates && (
                                     <div className="flex items-center gap-3 py-4">
                                         <div className="animate-spin rounded-full h-5 w-5 border-2 border-yellow-500 border-t-transparent"></div>
@@ -538,6 +553,8 @@ export default function CheckoutForm() {
                                         ))}
                                     </div>
                                 )}
+                                </>
+                                )}
                             </div>
 
                             {/* Order Notes */}
@@ -598,7 +615,9 @@ export default function CheckoutForm() {
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-600">Shipping</span>
                                     <span>
-                                        {coupon?.discountType === 'free_shipping' ? (
+                                        {allFreeShipping ? (
+                                            <span className="text-green-600 font-medium">FREE</span>
+                                        ) : coupon?.discountType === 'free_shipping' ? (
                                             <span className="text-green-600 font-medium">FREE (Coupon)</span>
                                         ) : selectedRate ? (
                                             `R${shipping.toFixed(2)}`

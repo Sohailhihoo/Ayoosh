@@ -160,6 +160,120 @@ const SUNCREAM_ACCORDION = [
   },
 ];
 
+const REJOOSH_ACCORDION = [
+  {
+    id: 'ingredients',
+    title: 'Ingredients',
+    content: (
+      <p className="text-gray-500 text-sm leading-relaxed">
+        Polydeoxyribonucleotide / Lacto PDRN (at 1500ppm), Niacinamide (Vitamin B3), Adenosine, Sodium Hyaluronate, Sodium Hyaluronate Crosspolymer, Hydrolyzed Hyaluronic Acid, Hydroxypropyltrimonium Hyaluronate, Sodium Acetylated Hyaluronate, Hyaluronic Acid, Lactobacillus/Soybean Ferment Extract, Lactobacillus Ferment Lysate, Scutellaria Baicalensis Root Extract (Skullcap), Portulaca Oleracea Extract (Purslane), Salix Alba Bark Extract (Willow Bark), Chamaecyparis Obtusa Leaf Extract (Hinoki Cypress), Cinnamomum Cassia Bark Extract (Cinnamon Bark), Origanum Vulgare Leaf Extract (Oregano), Hydrolyzed Collagen, Panthenol, Allantoin, and Trehalose.
+      </p>
+    ),
+  },
+  {
+    id: 'key-benefits',
+    title: 'Key Benefits',
+    content: (
+      <div>
+        <ul className="space-y-3 text-gray-500 text-sm leading-relaxed">
+          <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Repairs at a cellular level:</strong> Lacto-PDRN at 1500ppm activates the skin&apos;s natural regeneration cascade, stimulating collagen production and strengthening the skin barrier from within.</span></li>
+          <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Deep, multi-layer hydration:</strong> Six forms of hyaluronic acid work at different skin depths simultaneously, delivering hydration from the surface all the way to the dermis for up to 24 hours.</span></li>
+          <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Rebalances the skin microbiome:</strong> A dual probiotic ferment complex rebuilds microbial balance and primes the skin&apos;s protective immune response for a calm complexion.</span></li>
+          <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Visibly reduces fine lines and wrinkles:</strong> Adenosine delivers rapid receptor stimulation while PDRN provides sustained release.</span></li>
+          <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Brightens and evens skin tone:</strong> Niacinamide inhibits melanin transfer to reduce hyperpigmentation while building ceramides and regulating sebum for a balanced complexion.</span></li>
+          <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Calms inflammation across five pathways:</strong> A six-extract botanical complex targets multiple inflammation pathways simultaneously for lasting relief.</span></li>
+          <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">100% vegan (no animal DNA, no fish):</strong> Lacto-PDRN is fermentation-derived from Lactobacillus rhamnosus — the clean, ethical alternative to conventional salmon-derived PDRN.</span></li>
+          <li className="flex gap-2"><span className="text-yellow-500 font-bold">&#8226;</span><span><strong className="text-gray-700">Suitable for all skin types:</strong> Formulated for dry, oily, combination, sensitive, acne-prone, ageing, and post-procedure skin. All genders. All ages.</span></li>
+        </ul>
+        <p className="mt-4 text-sm text-yellow-700 bg-yellow-50 rounded-lg px-4 py-3 border border-yellow-100 font-medium">
+          A portion of profits from every purchase goes to the Ayoosh Foundation.
+        </p>
+      </div>
+    ),
+  },
+  {
+    id: 'how-to-use',
+    title: 'How to Use',
+    content: (
+      <div className="space-y-5">
+        <ol className="space-y-3 text-gray-500 text-sm leading-relaxed">
+          <li className="flex gap-3"><span className="flex-shrink-0 w-6 h-6 rounded-full bg-yellow-100 text-yellow-700 text-xs font-bold flex items-center justify-center">1</span><span>Apply Rejoosh Lacto-PDRN on clean skin after toner and before moisturiser.</span></li>
+          <li className="flex gap-3"><span className="flex-shrink-0 w-6 h-6 rounded-full bg-yellow-100 text-yellow-700 text-xs font-bold flex items-center justify-center">2</span><span>Massage gently until fully absorbed.</span></li>
+          <li className="flex gap-3"><span className="flex-shrink-0 w-6 h-6 rounded-full bg-yellow-100 text-yellow-700 text-xs font-bold flex items-center justify-center">3</span><span>Use morning and evening as part of your daily skincare routine.</span></li>
+          <li className="flex gap-3"><span className="flex-shrink-0 w-6 h-6 rounded-full bg-yellow-100 text-yellow-700 text-xs font-bold flex items-center justify-center">4</span><span>For daytime use, always finish with Centella Cica SPF 50+. Use consistently for best results — deeper repair builds over time.</span></li>
+        </ol>
+        <p className="text-sm text-yellow-700 bg-yellow-50 rounded-lg px-4 py-3 border border-yellow-100">
+          A portion of profits from every purchase goes to the Ayoosh Foundation.
+        </p>
+      </div>
+    ),
+  },
+  {
+    id: 'key-ingredients',
+    title: 'Key Ingredients',
+    content: (
+      <div className="space-y-5 text-sm">
+        <div>
+          <h4 className="font-semibold text-gray-900 mb-1">Lacto-PDRN 1500ppm</h4>
+          <p className="text-gray-500 leading-relaxed">Vegan PDRN, fermentation-derived from Lactobacillus rhamnosus, is the foundation of the formula&apos;s regeneration system. Smaller DNA fragments than salmon PDRN means better skin absorption.</p>
+        </div>
+        <div>
+          <h4 className="font-semibold text-gray-900 mb-1">Six-Form Hyaluronic Acid Complex</h4>
+          <p className="text-gray-500 leading-relaxed">Six different HA molecules, each working at a different skin depth, building a continuous hydration gradient from the surface to the dermis.</p>
+        </div>
+        <div>
+          <h4 className="font-semibold text-gray-900 mb-1">Niacinamide (Vitamin B3)</h4>
+          <p className="text-gray-500 leading-relaxed">Brightens, balances sebum, builds ceramides, and calms inflammation. Works in direct synergy with PDRN to fuel the same cellular energy and repair pathways.</p>
+        </div>
+        <div>
+          <h4 className="font-semibold text-gray-900 mb-1">Adenosine</h4>
+          <p className="text-gray-500 leading-relaxed">Pairs with PDRN for a rapid-onset plus slow-release anti-ageing effect.</p>
+        </div>
+        <div>
+          <h4 className="font-semibold text-gray-900 mb-1">Lactobacillus Ferment Complex</h4>
+          <p className="text-gray-500 leading-relaxed">Two probiotic-derived ingredients from the same fermentation source as the Lacto-PDRN. Rebuilds microbiome balance and primes the skin&apos;s protective immune response.</p>
+        </div>
+        <div>
+          <h4 className="font-semibold text-gray-900 mb-1">Botanical Anti-Inflammatory Blend</h4>
+          <p className="text-gray-500 leading-relaxed">Six botanicals targeting multiple inflammation pathways: Skullcap, Purslane, Willow Bark, Hinoki Cypress, Cinnamon Bark, and Oregano. Supports skin comfort, balance, and recovery.</p>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 'faqs',
+    title: 'FAQs',
+    content: (
+      <div className="space-y-4 text-sm">
+        {[
+          { q: 'What is Rejoosh?', a: 'It is the first vegan probiotic Lacto PDRN skin booster by Ayoosh, the first of the Ayoosh Jewels. It is formulated at 1500ppm with fermentation-derived PDRN alongside six forms of hyaluronic acid, a probiotic ferment complex, niacinamide, adenosine, hydrolyzed collagen, and a six-extract botanical blend. It is suitable for all skin types.' },
+          { q: 'What makes Rejoosh Lacto PDRN different from regular PDRN?', a: 'Most PDRN products on the market use salmon-derived PDRN, extracted from fish cells. Rejoosh uses Lacto PDRN, sourced from Lactobacillus rhamnosus through soybean fermentation, making it 100% vegan. A study found that microbial-derived PDRN contains smaller DNA fragments than salmon PDRN, which means better absorption through the skin.' },
+          { q: 'Why does Rejoosh by Ayoosh use six forms of hyaluronic acid?', a: 'Each form of hyaluronic acid acts at a different depth in the skin and has a different residency time. Used together, they create a continuous hydration gradient from the skin\'s surface to the dermis.' },
+          { q: 'Is Rejoosh suitable for sensitive or reactive skin?', a: 'Yes. The probiotic ferment complex rebuilds microbiome balance; allantoin (an FDA-recognised skin protectant) moves the skin into healing mode, and panthenol accelerates barrier repair. The botanical blend targets inflammation at multiple pathways simultaneously. Rejoosh is formulated to calm reactivity, not aggravate it.' },
+          { q: 'Is Rejoosh vegan and cruelty-free?', a: 'Yes. Rejoosh is 100% vegan. The Lacto PDRN is derived from bacterial fermentation, not from salmon or any other animal source. No animal-derived ingredients are used anywhere in the formulation.' },
+          { q: 'Where does Rejoosh fit in my skincare routine?', a: 'Apply Rejoosh to clean, dry skin before your moisturiser. In the morning, follow with SPF. It can be used as a serum-step replacement or alongside other targeted treatments.' },
+        ].map((faq, i) => (
+          <div key={i} className="pb-4 border-b border-gray-100 last:border-0 last:pb-0">
+            <p className="font-semibold text-gray-900 mb-1">Q: {faq.q}</p>
+            <p className="text-gray-500 leading-relaxed">A: {faq.a}</p>
+          </div>
+        ))}
+      </div>
+    ),
+  },
+  {
+    id: 'disclaimer',
+    title: 'Disclaimer',
+    content: (
+      <div className="text-gray-500 text-sm leading-relaxed space-y-2">
+        <p>Rejoosh is a cosmetic skincare product and is not intended to diagnose, treat, cure, or prevent any skin condition or medical disease. Individual results may vary.</p>
+        <p>If you have a known skin condition, allergy, or are pregnant or breastfeeding, consult a dermatologist or healthcare professional before using it. Perform a patch test before first use.</p>
+        <p>For external use only. Avoid direct contact with the eyes. Discontinue use if irritation persists. Keep out of reach of children. Store below 30°C away from direct sunlight.</p>
+      </div>
+    ),
+  },
+];
+
 const DEFAULT_ACCORDION = [
   { id: 'ingredients', title: 'Ingredients', content: <p className="text-gray-500 text-sm leading-relaxed">Content coming soon.</p> },
   { id: 'key-benefits', title: 'Key Benefits', content: <p className="text-gray-500 text-sm leading-relaxed">Content coming soon.</p> },
@@ -171,6 +285,7 @@ const DEFAULT_ACCORDION = [
 const PRODUCT_ACCORDION_MAP = {
   'sun-cream-50ml-tube': SUNCREAM_ACCORDION,
   'sun-cream-pouch': SUNCREAM_ACCORDION,
+  'rejoosh-lacto-pdrn-skin-booster': REJOOSH_ACCORDION,
 };
 
 function getAccordionItems(slug) {
@@ -392,7 +507,7 @@ export default function ProductDetailPage() {
                   </span>
                 </>
               )}
-              {product.productType === 'suncream' && (
+              {product.freeShipping && (
                 <span className="text-sm text-gray-500">(incl delivery)</span>
               )}
             </div>
@@ -400,7 +515,7 @@ export default function ProductDetailPage() {
             {/* Short Description */}
             {product.productType !== 'sunglasses' && (
               <p className="text-gray-600 mb-6 leading-relaxed">
-                {product.shortDescription || 'Experience the pinnacle of Korean sun care with a formula that does more than just protect. The Ayoosh Centella Cica Glow Sun Cream is a weightless, broad-spectrum SPF 50+ PA++++ treatment that seamlessly blends advanced UV defense with therapeutic skin-soothing botanicals. Designed to melt into the skin without a trace, it delivers a refined, natural glow while strengthening your skin\'s resilience against environmental stressors.'}
+                {product.shortDescription}
               </p>
             )}
 
