@@ -200,8 +200,56 @@ router.post('/', optionalAuth, async (req, res) => {
   // session.startTransaction();
 
   try {
+    // ── Phase 1: validate inputs and fetch shipping BEFORE touching inventory ──
+    // Any rejection here costs nothing — no stock has been decremented yet.
+
+    const allFreeShipping = cart.items.every(item => item.product.freeShipping === true);
+
+    let shippingCost = 0;
+    if (!allFreeShipping) {
+      if (!shippingAddress?.city || !shippingAddress?.zipCode) {
+        return res.status(400).json({
+          success: false,
+          message: 'Shipping address must include city and postal code'
+        });
+      }
+      let ratesFetched = false;
+      try {
+        const dest = {
+          street: shippingAddress.street || '',
+          city: shippingAddress.city,
+          zip: shippingAddress.zipCode,
+          country: 'ZA',
+        };
+        const parcelItems = cart.items.map(item => ({
+          description: item.product.name,
+          quantity: item.quantity,
+          weight: 0.5,
+          length: 15, width: 10, height: 5,
+          value: item.product.price,
+        }));
+        const rates = await bobgo.getRates({ origin: SHIP_FROM, destination: dest, items: parcelItems });
+        if (rates.length > 0) {
+          const serviceCode = shippingService?.service_code;
+          const matched = serviceCode ? rates.find(r => r.service_code === serviceCode) : null;
+          shippingCost = (matched || rates[0]).total_price;
+          ratesFetched = true;
+        }
+      } catch (bobgoErr) {
+        console.error('[Orders] Bob Go rate fetch failed:', bobgoErr.message);
+      }
+      // Fail closed — never silently give free shipping to a paid-shipping cart
+      if (!ratesFetched) {
+        return res.status(503).json({
+          success: false,
+          message: 'Unable to calculate shipping at this time. Please try again in a moment.'
+        });
+      }
+    }
+    if (shippingCost < 0) shippingCost = 0;
+
+    // ── Phase 2: atomically decrement stock (after all input validation passes) ──
     const orderItems = [];
-    let allFreeShipping = true;
 
     // Use for...of loop - correctly awaits each async operation sequentially
     for (const item of cart.items) {
@@ -228,8 +276,6 @@ router.post('/', optionalAuth, async (req, res) => {
         throw new Error(`Insufficient stock for "${product.name}". Please refresh the page.`);
       }
 
-      if (!updated.freeShipping) allFreeShipping = false;
-
       // Use live catalog price — never trust the cart snapshot price
       const authorizedPrice = item.variant
         ? (updated.variants?.find(v => v.sku === item.variant?.sku)?.price ?? updated.price)
@@ -247,51 +293,6 @@ router.post('/', optionalAuth, async (req, res) => {
         total: authorizedPrice * item.quantity
       });
     }
-
-    // Shipping cost computed server-side only — never trust client input
-    let shippingCost = 0;
-    if (!allFreeShipping) {
-      // Validate required address fields before calling Bob Go
-      if (!shippingAddress?.city || !shippingAddress?.zipCode) {
-        return res.status(400).json({
-          success: false,
-          message: 'Shipping address must include city and postal code'
-        });
-      }
-      let ratesFetched = false;
-      try {
-        const dest = {
-          street: shippingAddress.street || '',
-          city: shippingAddress.city,
-          zip: shippingAddress.zipCode,
-          country: 'ZA',
-        };
-        const parcelItems = orderItems.map(item => ({
-          description: item.name,
-          quantity: item.quantity,
-          weight: 0.5,
-          length: 15, width: 10, height: 5,
-          value: item.price,
-        }));
-        const rates = await bobgo.getRates({ origin: SHIP_FROM, destination: dest, items: parcelItems });
-        if (rates.length > 0) {
-          const serviceCode = shippingService?.service_code;
-          const matched = serviceCode ? rates.find(r => r.service_code === serviceCode) : null;
-          shippingCost = (matched || rates[0]).total_price;
-          ratesFetched = true;
-        }
-      } catch (bobgoErr) {
-        console.error('[Orders] Bob Go rate fetch failed:', bobgoErr.message);
-      }
-      // Fail closed: never silently give free shipping to a paid-shipping cart
-      if (!ratesFetched) {
-        return res.status(503).json({
-          success: false,
-          message: 'Unable to calculate shipping at this time. Please try again in a moment.'
-        });
-      }
-    }
-    if (shippingCost < 0) shippingCost = 0;
     const tax = 0;
 
     // Recompute subtotal from server-verified prices
