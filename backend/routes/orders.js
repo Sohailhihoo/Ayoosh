@@ -251,11 +251,19 @@ router.post('/', optionalAuth, async (req, res) => {
     // Shipping cost computed server-side only — never trust client input
     let shippingCost = 0;
     if (!allFreeShipping) {
+      // Validate required address fields before calling Bob Go
+      if (!shippingAddress?.city || !shippingAddress?.zipCode) {
+        return res.status(400).json({
+          success: false,
+          message: 'Shipping address must include city and postal code'
+        });
+      }
+      let ratesFetched = false;
       try {
         const dest = {
-          street: shippingAddress?.street || '',
-          city: shippingAddress?.city || '',
-          zip: shippingAddress?.zipCode || '',
+          street: shippingAddress.street || '',
+          city: shippingAddress.city,
+          zip: shippingAddress.zipCode,
           country: 'ZA',
         };
         const parcelItems = orderItems.map(item => ({
@@ -270,9 +278,17 @@ router.post('/', optionalAuth, async (req, res) => {
           const serviceCode = shippingService?.service_code;
           const matched = serviceCode ? rates.find(r => r.service_code === serviceCode) : null;
           shippingCost = (matched || rates[0]).total_price;
+          ratesFetched = true;
         }
       } catch (bobgoErr) {
         console.error('[Orders] Bob Go rate fetch failed:', bobgoErr.message);
+      }
+      // Fail closed: never silently give free shipping to a paid-shipping cart
+      if (!ratesFetched) {
+        return res.status(503).json({
+          success: false,
+          message: 'Unable to calculate shipping at this time. Please try again in a moment.'
+        });
       }
     }
     if (shippingCost < 0) shippingCost = 0;
