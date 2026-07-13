@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 
-const newsletterConnection = require('../config/newsletterDB');
-
 const newsletterSchema = new mongoose.Schema({
     email: {
         type: String,
@@ -22,4 +20,4 @@ const newsletterSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-module.exports = newsletterConnection.model('Newsletter', newsletterSchema);
+module.exports = mongoose.model('Newsletter', newsletterSchema);
