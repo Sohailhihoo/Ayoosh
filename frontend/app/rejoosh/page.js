@@ -199,7 +199,7 @@ function ProductIntroSection() {
             letterSpacing: '0.22em', color: '#2B1A14',
             textTransform: 'uppercase', margin: 0,
           }}>
-            Korean Skin Care
+            The Future Skin Renewal
           </motion.p>
 
           <motion.p variants={fadeUp} style={{
@@ -207,8 +207,12 @@ function ProductIntroSection() {
             fontSize: '0.95rem', color: '#6B5650',
             lineHeight: 1.85, maxWidth: 460, margin: 0,
           }}>
-            Rejoosh by Ayoosh blends Korean skincare wisdom with pure organic ingredients,
-            delivering anti-aging results without relying on harsh chemicals or artificial enhancers.
+            Rejoosh is the home of Ayoosh Jewels: a series of hero products inspired by Korean innovation,
+            advanced biotechnology and K-Pharmacy skincare. The first Jewel, our Lacto-PDRN Skin Booster,
+            is built around vegan Lacto-PDRN, multi-layer hyaluronic acid hydration and probiotic ferment
+            complexes. Together, they repair the skin barrier, restore microbiome balance and reset skin
+            health, bringing regenerative science into your everyday routine. Each Jewel in Rejoosh series
+            is designed to solve real skin concerns.
           </motion.p>
 
           <motion.div variants={fadeUp} className="mt-2">
@@ -278,9 +282,9 @@ function ClinicalResultSection() {
             fontFamily: 'var(--font-montserrat)',
             fontSize: 'clamp(24px, 3.2vw, 42px)',
             fontWeight: 900, color: TERRA,
-            letterSpacing: '0.08em', textTransform: 'uppercase', margin: 0,
+            letterSpacing: '0.08em', textTransform: 'uppercase', margin: 0, lineHeight: 1,
           }}>
-            Clinical Result
+            Rejoosh by Ayoosh<br />A Range Built on Science
           </motion.h2>
 
           <motion.div variants={fadeUp} className="flex flex-wrap gap-2">
@@ -302,7 +306,7 @@ function ClinicalResultSection() {
             fontSize: '0.88rem', fontWeight: 700,
             color: '#2B1A14', margin: 0,
           }}>
-            Dermatologically tested | Non-irritating formula
+            A New Generation of Skin Renewal
           </motion.p>
 
           <motion.p variants={fadeUp} style={{
@@ -310,9 +314,8 @@ function ClinicalResultSection() {
             fontSize: '0.9rem', color: '#6B5650',
             lineHeight: 1.85, margin: 0, maxWidth: 440,
           }}>
-            After a single application following laser treatment, PDRN cream showed 25%+
-            improvement in skin recovery and soothing. For optimal results, use continuously
-            for at least 28 days — aligned with your skin's natural regeneration cycle.
+            Derived from Lactobacillus rhamnosus, our vegan Lacto-PDRN activates your skin&apos;s
+            natural repair receptors, boosting collagen and rebuilding your barrier beautifully.
           </motion.p>
         </RevealGroup>
       </div>
@@ -327,17 +330,17 @@ function ClinicalResultSection() {
 const benefits = [
   {
     icon: '/rejoosh/1.png',
-    title: 'BOOST HYDRATION',
+    title: 'Made For Every Skin',
     body: 'Powerful moisture replenishment for dehydrated, damaged skin. PDRN deeply hydrates at the cellular level for lasting results.',
   },
   {
     icon: '/rejoosh/2.png',
-    title: 'SOOTHE IRRITATION',
+    title: 'Your Post-Procedure Ally',
     body: 'Calms damaged skin and accelerates recovery. Clinically shown to improve post-laser recovery by 25%+ after single application.',
   },
   {
     icon: '/rejoosh/3.png',
-    title: 'REDUCE POST MARK',
+    title: 'Repair From Within',
     body: 'Supports skin regeneration cycle to reduce visible imperfections and improve overall skin texture and tone.',
   },
 ];
@@ -380,12 +383,11 @@ function BenefitsSection() {
 // SECTION 5 — WHY CHOOSE REJOOSH
 // ═══════════════════════════════════════════════════════════════
 const whyPoints = [
-  'Made with 100% organic, plant-based ingredients',
-  'Use botanical alternatives like Vegan Lacto-PDRN',
-  'Naturally preserved through antioxidant-rich oils and airless packaging',
-  'Gentler approach, but natural oils can also cause reactions for some',
-  'Emphasis on sustainability',
-  'People prioritizing natural sourcing and softer formulations',
+  <><strong>Vegan Lacto PDRN at 1500ppm</strong> — ethically sourced, no animal DNA, no fish byproducts</>,
+  <><strong>Six forms of hyaluronic acid,</strong> from immediate surface hydration to 24-hour sustained moisture deep in the dermis</>,
+  <><strong>Niacinamide + adenosine in direct synergy with PDRN</strong> — fuelling cellular repair from two directions at once</>,
+  <><strong>Six-botanical anti-inflammatory complex</strong> across five inflammation pathways</>,
+  <><strong>Lightweight, fast-absorbing texture</strong> leaves only actives behind; compact 25g, built for daily habit</>,
 ];
 
 function WhyChooseSection() {
@@ -410,8 +412,7 @@ function WhyChooseSection() {
               fontSize: '0.9rem', color: '#6B5650',
               lineHeight: 1.85, maxWidth: 440,
             }}>
-              Rejoosh by Ayoosh blends Korean skincare wisdom with pure organic ingredients,
-              delivering anti-aging results without relying on harsh chemicals or artificial enhancers.
+              Most skincare sits on the surface, moisturizing, brightening, giving you something that looks good for a few hours. Rejoosh is going deeper. It repairs the foundation so everything else you use actually works. And it is one of the most multi-layered formulas in its category globally. 
             </p>
 
             <ul className="flex flex-col gap-3 mt-1">
@@ -461,7 +462,7 @@ function PDRNSection() {
             fontWeight: 800, color: TERRA,
             lineHeight: 1.2, margin: 0,
           }}>
-            PDRN (Salmon DNA)
+            Rejoosh Lacto-PDRN
           </motion.h2>
 
           <motion.p variants={fadeUp} style={{
@@ -470,7 +471,7 @@ function PDRNSection() {
             letterSpacing: '0.14em', textTransform: 'uppercase',
             color: '#2B1A14', margin: 0,
           }}>
-            The Right PDRN: Pure &amp; Optimal
+            Difference: Why Vegan is Better &amp; Optimal
           </motion.p>
 
           <motion.p variants={fadeUp} style={{
@@ -478,10 +479,33 @@ function PDRNSection() {
             fontSize: '0.9rem', color: '#6B5650',
             lineHeight: 1.88, margin: 0,
           }}>
-            PDRN is a powerful regenerative ingredient, but most products get it wrong.
-            The market is flooded with high-ppm marketing, plant-based alternatives, and
-            low-purity formulas that compromise safety and efficacy. Dr. Reju-All corrects
-            this with optimal concentration, 99% purity salmon DNA, and pharmaceutical precision.
+            Traditional PDRN is typically sourced from salmon, while REJOOSH uses biotechnology and fermentation to create vegan Lacto PDRN without compromising performance.
+          </motion.p>
+
+          <motion.p variants={fadeUp} style={{
+            fontFamily: 'var(--font-montserrat)',
+            fontSize: '0.7rem', fontWeight: 800,
+            letterSpacing: '0.14em', textTransform: 'uppercase',
+            color: '#2B1A14', margin: 0,
+          }}>
+            Clean. Thoughtful. Advanced.
+          </motion.p>
+
+          <motion.ul variants={fadeUp} style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {['100% vegan', 'No animal-derived DNA', 'No fish-derived ingredients', 'Sustainably developed through fermentation technology'].map(point => (
+              <li key={point} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                <span style={{ color: TERRA, fontWeight: 700, flexShrink: 0 }}>+</span>
+                <span style={{ fontFamily: 'var(--font-montserrat)', fontSize: '0.87rem', color: '#6B5650', lineHeight: 1.65 }}>{point}</span>
+              </li>
+            ))}
+          </motion.ul>
+
+          <motion.p variants={fadeUp} style={{
+            fontFamily: 'var(--font-montserrat)',
+            fontSize: '0.9rem', color: '#B85C51',
+            lineHeight: 1.85, margin: 0, fontStyle: 'italic',
+          }}>
+            Because we believe the future of skincare should be effective, ethical, and beautifully simple.
           </motion.p>
         </RevealGroup>
 

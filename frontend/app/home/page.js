@@ -187,6 +187,7 @@ export default function HomePage() {
                         loop
                         muted
                         playsInline
+                        preload="none"
                         className="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110 brightness-[0.3] group-hover:brightness-110 grayscale group-hover:grayscale-0"
                         aria-label="Skincare collection video"
                     >
@@ -229,6 +230,7 @@ export default function HomePage() {
                         loop
                         muted
                         playsInline
+                        preload="none"
                         className="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110 brightness-[0.3] group-hover:brightness-110 grayscale group-hover:grayscale-0"
                         aria-label="SkinBooster collection video"
                     >

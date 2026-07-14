@@ -29,7 +29,7 @@ export default function LoadingScreen() {
         const timer = setTimeout(() => {
             setIsVisible(false);
             sessionStorage.setItem('siteLoaded', 'true');
-        }, 3800);
+        }, 1800);
 
         return () => clearTimeout(timer);
     }, []);
