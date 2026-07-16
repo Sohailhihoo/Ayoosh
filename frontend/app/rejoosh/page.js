@@ -7,8 +7,8 @@ import { motion, useInView } from 'framer-motion';
 import cloudinaryLoader from '@/lib/cloudinary-loader';
 
 const TUBE = 'https://res.cloudinary.com/dpdg462fb/image/upload/v1780901598/rejoosh-tube-image_p9za7l.png';
-const TERRA = '#7B3B2A';
-const TERRA_LIGHT = '#9B5543';
+const TERRA = '#A74E45';
+const TERRA_LIGHT = '#BF6059';
 const BLUSH = '#F5E8E3';
 const GREY_BG = '#ECEAE6';
 

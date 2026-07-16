@@ -59,6 +59,18 @@ const HANDLE_MAP = {
     'megmegmegannn':             '@megmegmegannn',
     'kisha':                     '@kisha_126',
     'sbongakonke':               '@sbongakonke_23',
+    // Batch 4
+    'nthabisengam':              '@nthabiseng_a.m',
+    'preciouslaka':              '@precious__laka',
+    'nolubabalosodladla':        '@nolubabalo_sodladla',
+    'anreathequeen':             '@anreathequeen',
+    'zarziiie':                  '@zarziiie',
+    'mihlaliimatyantya':         '@mihlalii_matyantya',
+    'missjugar':                 '@miss.jugar',
+    'quinvee05':                 '@_quinvee05',
+    'rolenenaffouj':             '@rolenenaffouj',
+    'sanelisiwejaca':            '@sanelisiwe_jaca',
+    'kirstyackermann':           '@kirsty_ackermann',
 };
 
 function handleFromEmail(email) {
