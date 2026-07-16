@@ -251,7 +251,7 @@ function ProductIntroSection() {
 // SECTION 3 — CLINICAL RESULT
 // ═══════════════════════════════════════════════════════════════
 function ClinicalResultSection() {
-  const tags = ['#Deep Hydration', '#Skin-Calming', '#Blemish Care'];
+  const tags = ['Vegan Lacto-PDRN', 'Probiotic Fermentation', 'Botanical Complex'];
   return (
     <section style={{ background: GREY_BG, overflow: 'hidden', position: 'relative' }}>
       <div className="grid grid-cols-1 md:grid-cols-2 items-center" style={{ minHeight: 480 }}>
