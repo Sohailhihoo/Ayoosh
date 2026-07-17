@@ -39,7 +39,7 @@ const ShoppingBagIcon = ({ className }) => (
 
 // Navigation items configuration
 const NAV_ITEMS = [
-  { href: '/suncream', label: 'SUNCREAM', ariaLabel: 'Shop Suncream' },
+  { href: '/suncream', label: 'SKINCARE', ariaLabel: 'Shop Skincare' },
   { href: '/sunglasses', label: 'SUNGLASSES', ariaLabel: 'Shop Sunglasses' },
   { href: '/about', label: 'ABOUT', ariaLabel: 'About us' },
   { href: '/products', label: 'SHOP', ariaLabel: 'Shop products' },
