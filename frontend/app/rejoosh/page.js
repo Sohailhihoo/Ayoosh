@@ -331,17 +331,17 @@ const benefits = [
   {
     icon: '/rejoosh/1.png',
     title: 'Made For Every Skin',
-    body: 'Powerful moisture replenishment for dehydrated, damaged skin. PDRN deeply hydrates at the cellular level for lasting results.',
+    body: 'Whether your skin is dry, oily, sensitive, or acne-prone, Rejoosh is genuinely formulated for all of it. Every skin type. Every age. Every gender.',
   },
   {
     icon: '/rejoosh/2.png',
     title: 'Your Post-Procedure Ally',
-    body: 'Calms damaged skin and accelerates recovery. Clinically shown to improve post-laser recovery by 25%+ after single application.',
+    body: 'After lasers, peels, or anything that disrupts your barrier, PDRN, panthenol, and allantoin work together to help your skin recover faster and more completely.',
   },
   {
     icon: '/rejoosh/3.png',
     title: 'Repair From Within',
-    body: 'Supports skin regeneration cycle to reduce visible imperfections and improve overall skin texture and tone.',
+    body: 'PDRN stimulates collagen, adenosine reduces wrinkle depth, and hydrolyzed collagen provides the amino acid building blocks your skin needs for real structural repair.',
   },
 ];
 
@@ -361,7 +361,7 @@ function BenefitsSection() {
             <h3 style={{
               fontFamily: 'var(--font-montserrat)',
               fontSize: '0.75rem', fontWeight: 800,
-              letterSpacing: '0.18em', color: '#2B1A14', margin: 0,
+              letterSpacing: '0.06em', color: '#2B1A14', margin: 0,
             }}>
               {title}
             </h3>
@@ -383,9 +383,9 @@ function BenefitsSection() {
 // SECTION 5 — WHY CHOOSE REJOOSH
 // ═══════════════════════════════════════════════════════════════
 const whyPoints = [
-  <><strong>Vegan Lacto PDRN at 1500ppm</strong> — ethically sourced, no animal DNA, no fish byproducts</>,
-  <><strong>Six forms of hyaluronic acid,</strong> from immediate surface hydration to 24-hour sustained moisture deep in the dermis</>,
-  <><strong>Niacinamide + adenosine in direct synergy with PDRN</strong> — fuelling cellular repair from two directions at once</>,
+  <><strong>Vegan Lacto PDRN at 1500ppm</strong> ethically sourced, no animal DNA, no fish byproducts</>,
+  <><strong>Six forms of hyaluronic acid</strong> from immediate surface hydration to 24-hour sustained moisture deep in the dermis</>,
+  <><strong>Niacinamide + adenosine in direct synergy with PDRN</strong> fuelling cellular repair from two directions at once</>,
   <><strong>Six-botanical anti-inflammatory complex</strong> across five inflammation pathways</>,
   <><strong>Lightweight, fast-absorbing texture</strong> leaves only actives behind; compact 25g, built for daily habit</>,
 ];
