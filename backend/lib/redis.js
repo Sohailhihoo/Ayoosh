@@ -45,7 +45,7 @@ const inMemoryClient = {
         }
         return 0;
     },
-    async sadd(key, ...members) {
+    async sAdd(key, ...members) {
         const item = inMemoryStore.get(key);
         const set = (item && Date.now() <= item.expiry) ? new Set(item.value) : new Set();
         let added = 0;
@@ -55,12 +55,12 @@ const inMemoryClient = {
         inMemoryStore.set(key, { value: set, expiry: item?.expiry || Date.now() + 3600000 });
         return added;
     },
-    async smembers(key) {
+    async sMembers(key) {
         const item = inMemoryStore.get(key);
         if (!item || Date.now() > item.expiry) return [];
         return [...item.value];
     },
-    async srem(key, ...members) {
+    async sRem(key, ...members) {
         const item = inMemoryStore.get(key);
         if (!item || Date.now() > item.expiry) return 0;
         const set = item.value;
@@ -137,15 +137,15 @@ const clientProxy = {
     },
     async sadd(key, ...members) {
         const client = await getClient();
-        return client.sadd(key, ...members);
+        return client.sAdd(key, ...members);
     },
     async smembers(key) {
         const client = await getClient();
-        return client.smembers(key);
+        return client.sMembers(key);
     },
     async srem(key, ...members) {
         const client = await getClient();
-        return client.srem(key, ...members);
+        return client.sRem(key, ...members);
     }
 };
 
