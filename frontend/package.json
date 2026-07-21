@@ -15,6 +15,7 @@
     "framer-motion": "^12.27.5",
     "mongoose": "^9.6.2",
     "next": "^16.2.6",
+    "next-cloudinary": "^6.17.5",
     "qrcode": "^1.5.4",
     "react": "19.2.0",
     "react-dom": "19.2.0",

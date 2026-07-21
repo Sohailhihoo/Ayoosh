@@ -220,6 +220,11 @@ router.post('/totp/setup/confirm', async (req, res) => {
 
     const { userId, secret, hashedCodes } = JSON.parse(raw);
 
+    if (!secret) {
+      await redisClient.del(`totp_setup:${pendingToken}`);
+      return res.status(409).json({ success: false, message: 'Setup session corrupted. Please log in again.' });
+    }
+
     // Atomic attempt counter — invalidate setup session after 5 wrong codes
     const setupAttemptsKey = `totp_setup_attempts:${pendingToken}`;
     const setupAttempts = await redisClient.incr(setupAttemptsKey);
@@ -292,6 +297,18 @@ router.post('/totp/verify', async (req, res) => {
     const user = await User.findById(userId).select('+totpSecret +recoveryCodes');
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // If totpSecret is missing despite totpEnabled, the setup completed partially.
+    // Reset so the admin goes through first-time setup again on next login.
+    if (!user.totpSecret) {
+      await User.findByIdAndUpdate(userId, { totpEnabled: false });
+      await redisClient.del(`totp_pending:${pendingToken}`);
+      return res.status(409).json({
+        success: false,
+        message: 'Authenticator not configured correctly. Please log in again to re-scan the QR code.',
+        totpResetRequired: true,
+      });
     }
 
     const trimmed = String(code).trim();

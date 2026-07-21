@@ -120,12 +120,20 @@ function LoginForm() {
       toast.success('Welcome back!');
       router.push(redirect);
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Incorrect code');
-      if (!useRecovery) {
+      const data = error.response?.data;
+      if (data?.totpResetRequired) {
+        toast.error('Authenticator not configured. Please log in again to re-scan the QR code.');
+        setStep('credentials');
         setVerifyCode(['', '', '', '', '', '']);
-        verifyRefs[0].current?.focus();
-      } else {
         setRecoveryInput('');
+      } else {
+        toast.error(data?.message || 'Incorrect code');
+        if (!useRecovery) {
+          setVerifyCode(['', '', '', '', '', '']);
+          verifyRefs[0].current?.focus();
+        } else {
+          setRecoveryInput('');
+        }
       }
     } finally {
       setLoading(false);
