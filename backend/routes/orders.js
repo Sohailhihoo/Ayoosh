@@ -205,8 +205,12 @@ router.post('/', optionalAuth, async (req, res) => {
 
     const allFreeShipping = cart.items.every(item => item.product.freeShipping === true);
 
+    // Early affiliate check — used only to skip Bob Go fetch.
+    // Full validation (DB lookup + code normalisation) still happens in Phase 2.
+    const mayHaveAffiliate = !!rawAffiliateCode?.trim();
+
     let shippingCost = 0;
-    if (!allFreeShipping) {
+    if (!allFreeShipping && !mayHaveAffiliate) {
       if (!shippingAddress?.city || !shippingAddress?.zipCode) {
         return res.status(400).json({
           success: false,
