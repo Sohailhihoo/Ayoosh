@@ -158,6 +158,7 @@ export default function CheckoutForm() {
     const currentShippingCost = selectedRate?.total_price || 0;
 
     const calculateDiscount = () => {
+        if (affiliateCode) return Math.round((subtotal * 0.10) * 100) / 100;
         if (!coupon) return 0;
 
         if (coupon.discountType === 'free_shipping') {
@@ -171,6 +172,10 @@ export default function CheckoutForm() {
     };
 
     const calculateTotal = () => {
+        if (affiliateCode) {
+            // Affiliate: shipping is free, 10% off subtotal
+            return Math.max(0, subtotal - calculateDiscount());
+        }
         const shipping = coupon?.discountType === 'free_shipping' ? 0 : currentShippingCost;
         let total = subtotal + shipping;
 
@@ -178,7 +183,7 @@ export default function CheckoutForm() {
             total -= calculateDiscount();
         }
 
-        return Math.max(0, total); // Ensure no negative total
+        return Math.max(0, total);
     };
 
     const handleApplyCoupon = async () => {
