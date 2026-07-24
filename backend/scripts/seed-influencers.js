@@ -9,7 +9,7 @@ const influencers = [
     { firstName: 'Amanda',      lastName: 'Majola',     code: 'AMANDA10'      },
     { firstName: 'Tyler-Paige', lastName: 'Nefdt',      code: 'TYLERPAIGE10'  },
     { firstName: 'Daniella',    lastName: 'Lagerwey',   code: 'DANIELLA10'    },
-    { firstName: 'Aisha',       lastName: 'Joosub',     code: 'AISHA10'       },  // @ayooshonthego
+    { firstName: 'Aisha',       lastName: 'Joosub',     code: 'FOUNDER10'     },  // @ayooshonthego
     { firstName: 'Veloura',     lastName: 'Fabric',     code: 'VELOURA10'     },  // @Velourafabric
 ];
 

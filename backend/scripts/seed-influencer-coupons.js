@@ -68,7 +68,7 @@ const codes = [
     'ROLENE10',
     'SANELISIWE10',
     'KIRSTYA10',
-    'AISHA10',
+    'FOUNDER10',
     'VELOURA10',
 ];
 
