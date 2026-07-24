@@ -18,9 +18,9 @@ export default function AffiliateTracker() {
         const code = refCode.trim().toUpperCase();
         if (!code) return;
 
-        // Set cookie immediately (last-touch overwrite — don't wait for API)
-        const expires = new Date(Date.now() + 7 * 864e5).toUTCString();
-        document.cookie = `ayoosh_ref=${encodeURIComponent(code)}; expires=${expires}; path=/; SameSite=Lax`;
+        // Session cookie — no expires means browser deletes it when closed.
+        // Discount is only valid for the session in which the customer clicked the influencer link.
+        document.cookie = `ayoosh_ref=${encodeURIComponent(code)}; path=/; SameSite=Lax`;
 
         // Record click server-side — fire-and-forget, never blocks UX
         api.post('/affiliates/click', {
