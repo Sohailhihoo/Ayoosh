@@ -316,36 +316,46 @@ router.post('/', optionalAuth, async (req, res) => {
       affiliateCode = aff ? aff.affiliateCode : null;
     }
 
-    // Validate Coupon if present (check cart first, fallback to request body)
+    // Apply discount: affiliate takes priority over coupon — only one applies.
+    // If a valid affiliate code is present: 10% off subtotal + free shipping.
+    // Otherwise: run existing coupon logic.
     let discountAmount = 0;
-    let couponCode = cart.couponCode || bodyCouponCode;
+    let couponCode = null;
 
-    if (couponCode) {
-      const Coupon = require('../models/Coupon');
-      const coupon = await Coupon.findOne({ code: couponCode, isActive: true });
+    if (affiliateCode) {
+      discountAmount = Math.round((serverSubtotal * 0.10) * 100) / 100;
+      shippingCost = 0;
+    } else {
+      // Validate Coupon if present (check cart first, fallback to request body)
+      couponCode = cart.couponCode || bodyCouponCode;
 
-      // @ts-ignore — isValid is a custom Mongoose instance method; TS types don't see it
-      if (coupon && coupon.isValid(serverSubtotal)) {
-        if (coupon.discountType === 'free_shipping') {
-          discountAmount = shippingCost;
-        } else if (coupon.discountType === 'fixed') {
-          discountAmount = coupon.amount;
-        } else if (coupon.discountType === 'percentage') {
-          discountAmount = (serverSubtotal * coupon.amount) / 100;
+      if (couponCode) {
+        const Coupon = require('../models/Coupon');
+        const coupon = await Coupon.findOne({ code: couponCode, isActive: true });
+
+        // @ts-ignore — isValid is a custom Mongoose instance method; TS types don't see it
+        if (coupon && coupon.isValid(serverSubtotal)) {
+          if (coupon.discountType === 'free_shipping') {
+            discountAmount = shippingCost;
+          } else if (coupon.discountType === 'fixed') {
+            discountAmount = coupon.amount;
+          } else if (coupon.discountType === 'percentage') {
+            discountAmount = (serverSubtotal * coupon.amount) / 100;
+          }
+
+          // Ensure discount doesn't exceed total
+          const grossTotal = serverSubtotal + shippingCost;
+          if (discountAmount > grossTotal) {
+            discountAmount = grossTotal;
+          }
+
+          // Increment usage
+          await Coupon.findByIdAndUpdate(coupon._id, { $inc: { usedCount: 1 } });
+        } else {
+          // Invalid/Expired coupon - remove it
+          couponCode = null;
+          discountAmount = 0;
         }
-
-        // Ensure discount doesn't exceed total
-        const grossTotal = serverSubtotal + shippingCost;
-        if (discountAmount > grossTotal) {
-          discountAmount = grossTotal;
-        }
-
-        // Increment usage
-        await Coupon.findByIdAndUpdate(coupon._id, { $inc: { usedCount: 1 } });
-      } else {
-        // Invalid/Expired coupon - remove it
-        couponCode = null;
-        discountAmount = 0;
       }
     }
 
