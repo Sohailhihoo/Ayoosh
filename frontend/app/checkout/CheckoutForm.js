@@ -106,7 +106,7 @@ export default function CheckoutForm() {
 
     // Fetch shipping rates when address is complete
     const fetchShippingRates = async () => {
-        if (allFreeShipping) return; // no need to fetch — delivery is free
+        if (allFreeShipping || affiliateCode) return; // no need to fetch — delivery is free
         if (!formData.city.trim() || !formData.zipCode.trim() || items.length === 0) return;
 
         setFetchingRates(true);
@@ -266,7 +266,7 @@ export default function CheckoutForm() {
                 },
                 paymentMethod: formData.paymentMethod,
                 shippingMethod: 'standard',
-                shippingCost: allFreeShipping ? 0 : (selectedRate?.total_price || 0),
+                shippingCost: allFreeShipping || affiliateCode ? 0 : (selectedRate?.total_price || 0),
                 shippingService: (!allFreeShipping && selectedRate) ? {
                     provider: 'bobgo',
                     service_code: selectedRate.service_code,
