@@ -99,6 +99,11 @@ export default function CheckoutForm() {
     // True when every item in cart has freeShipping: true (e.g. Rejoosh)
     const allFreeShipping = items.length > 0 && items.every(item => item.product?.freeShipping === true);
 
+    // Read referral cookie — set by AffiliateTracker when visitor lands via ?ref=CODE
+    const affiliateCode = typeof document !== 'undefined'
+      ? (document.cookie.match(/ayoosh_ref=([^;]+)/)?.[1]?.trim().toUpperCase() || null)
+      : null;
+
     // Fetch shipping rates when address is complete
     const fetchShippingRates = async () => {
         if (allFreeShipping) return; // no need to fetch — delivery is free
@@ -271,7 +276,7 @@ export default function CheckoutForm() {
                 couponCode: coupon?.code,
                 discountAmount: calculateDiscount(),
                 // Affiliate tracking
-                affiliateCode: document.cookie.match(/ayoosh_ref=([^;]+)/)?.[1] || null
+                affiliateCode: affiliateCode
             };
 
             const response = await orderAPI.create(orderData);
