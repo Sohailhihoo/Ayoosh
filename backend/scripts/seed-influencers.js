@@ -1,42 +1,42 @@
 require('dotenv').config({ path: __dirname + '/../.env' });
 const mongoose = require('mongoose');
-const crypto = require('crypto');
 const Affiliate = require('../models/Affiliate');
 
 const influencers = [
-    { firstName: 'Lihle',       lastName: 'Ngcethane' },
-    { firstName: 'Esona',       lastName: 'Vinqishe' },
-    { firstName: 'Onkarabile',  lastName: 'Kgomo' },
-    { firstName: 'Amanda',      lastName: 'Majola' },
-    { firstName: 'Tyler-Paige', lastName: 'Nefdt' },
-    { firstName: 'Daniella',    lastName: 'Lagerwey' },
+    { firstName: 'Lihle',       lastName: 'Ngcethane',  code: 'LIHLE10'       },
+    { firstName: 'Esona',       lastName: 'Vinqishe',   code: 'ESONA10'       },
+    { firstName: 'Onkarabile',  lastName: 'Kgomo',      code: 'ONKARABILE10'  },
+    { firstName: 'Amanda',      lastName: 'Majola',     code: 'AMANDA10'      },
+    { firstName: 'Tyler-Paige', lastName: 'Nefdt',      code: 'TYLERPAIGE10'  },
+    { firstName: 'Daniella',    lastName: 'Lagerwey',   code: 'DANIELLA10'    },
+    { firstName: 'Aisha',       lastName: 'Joosub',     code: 'AISHA10'       },  // @ayooshonthego
+    { firstName: 'Veloura',     lastName: 'Fabric',     code: 'VELOURA10'     },  // @Velourafabric
 ];
 
-function makeCode(firstName) {
-    const namePart = firstName.replace(/[^a-zA-Z]/g, '').substring(0, 3).toUpperCase();
-    const rand = crypto.randomBytes(3).toString('hex').toUpperCase();
-    return `AY-${namePart}-${rand}`;
-}
+const BASE = 'https://www.ayooshonline.com/products';
 
 async function run() {
     await mongoose.connect(process.env.MONGODB_URI);
 
-    const BASE = 'https://www.ayooshonline.com/products';
     const results = [];
 
     for (const inf of influencers) {
-        const code = makeCode(inf.firstName);
         const email = `${inf.firstName.toLowerCase().replace(/[^a-z]/g, '')}.${inf.lastName.toLowerCase()}@influencer.ayoosh`;
         try {
-            const aff = await Affiliate.create({
-                ...inf,
-                email,
-                affiliateCode: code,
-                commissionRate: 5,
-                commissionType: 'percentage',
-                status: 'approved',
-                approvedAt: new Date(),
-            });
+            const aff = await Affiliate.findOneAndUpdate(
+                { affiliateCode: inf.code },
+                {
+                    firstName: inf.firstName,
+                    lastName: inf.lastName,
+                    email,
+                    affiliateCode: inf.code,
+                    commissionRate: 5,
+                    commissionType: 'percentage',
+                    status: 'approved',
+                    approvedAt: new Date(),
+                },
+                { upsert: true, new: true, setDefaultsOnInsert: true }
+            );
             results.push({
                 name: `${inf.firstName} ${inf.lastName}`,
                 code: aff.affiliateCode,
@@ -47,12 +47,12 @@ async function run() {
         }
     }
 
-    console.log('\nAffiliate links created:\n');
+    console.log('\nAffiliate links:\n');
     results.forEach(r => {
         if (r.error) {
             console.log(`  ✗ ${r.name}: ${r.error}`);
         } else {
-            console.log(`  ${r.name} (${r.code})`);
+            console.log(`  ${r.name}  (${r.code})`);
             console.log(`    ${r.link}\n`);
         }
     });
