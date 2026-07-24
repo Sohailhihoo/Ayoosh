@@ -227,7 +227,7 @@ export default function CheckoutForm() {
             return false;
         }
         // Shipping rate must be selected (unless all items have free delivery)
-        if (!allFreeShipping && !selectedRate) {
+        if (!allFreeShipping && !affiliateCode && !selectedRate) {
             toast.error('Please select a shipping option');
             return false;
         }
