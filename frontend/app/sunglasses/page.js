@@ -64,7 +64,7 @@ export default function SunglassesPage() {
         <div className="min-h-screen bg-[#d9d9d9]">
             {/* Hero Section */}
             <HeroSection
-                videoSrc="https://res.cloudinary.com/dpdg462fb/video/upload/q_auto:low,vc_auto,w_1280/v1770179525/sunglasses_ocnfon.mp4"
+                videoSrc="https://res.cloudinary.com/dpdg462fb/video/upload/v1784630458/sunglasses_vt4ldq.mp4"
                 title="The Perspective Range"
                 titleStyle={heroTitleStyle}
                 buttons={heroButtons}

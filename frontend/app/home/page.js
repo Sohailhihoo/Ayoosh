@@ -96,17 +96,21 @@ export default function HomePage() {
 
     const leftVideoRef = useRef(null);
     const centerVideoRef = useRef(null);
+    const rightVideoRef = useRef(null);
+    const [hoveredPanel, setHoveredPanel] = useState(null);
 
-    const handleMouseEnter = (ref) => {
+    const handleMouseEnter = (ref, panel) => {
         if (ref.current) {
             ref.current.play().catch(e => console.log('Video play failed:', e));
         }
+        setHoveredPanel(panel);
     };
 
     const handleMouseLeave = (ref) => {
         if (ref.current) {
             ref.current.pause();
         }
+        setHoveredPanel(null);
     };
 
     // Mobile Autoplay Effect
@@ -115,6 +119,7 @@ export default function HomePage() {
             if (window.innerWidth < 768) {
                 if (leftVideoRef.current) leftVideoRef.current.play().catch(() => { });
                 if (centerVideoRef.current) centerVideoRef.current.play().catch(() => { });
+                if (rightVideoRef.current) rightVideoRef.current.play().catch(() => { });
             }
         };
 
@@ -167,7 +172,7 @@ export default function HomePage() {
                 </div>
             )}
 
-            {/* Split-Screen Hero Section - 2 Panels */}
+            {/* Split-Screen Hero Section - 3 Panels */}
             <section
                 ref={heroRef}
                 className="relative h-screen min-h-[600px] flex flex-col md:flex-row bg-black"
@@ -176,85 +181,134 @@ export default function HomePage() {
                 {/* Left Panel - Suncream */}
                 <Link
                     href="/suncream"
-                    className="relative w-full md:w-1/2 h-1/2 md:h-full overflow-hidden group cursor-none block"
                     aria-label="Shop skincare collection"
-                    onMouseEnter={() => handleMouseEnter(leftVideoRef)}
+                    className="relative h-1/3 md:h-full overflow-hidden group cursor-none block"
+                    style={{
+                        width: hoveredPanel === 'left' ? '38%' : hoveredPanel !== null ? '24%' : '30%',
+                        transition: 'width 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                        flexShrink: 0,
+                    }}
+                    onMouseEnter={() => handleMouseEnter(leftVideoRef, 'left')}
                     onMouseLeave={() => handleMouseLeave(leftVideoRef)}
                 >
-                    {/* Video Background */}
                     <video
                         ref={leftVideoRef}
-                        loop
-                        muted
-                        playsInline
-                        preload="none"
-                        className="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110 brightness-[0.3] group-hover:brightness-110 grayscale group-hover:grayscale-0"
-                        aria-label="Skincare collection video"
+                        loop muted playsInline preload="none"
+                        className="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-105"
+                        style={{
+                            filter: hoveredPanel === 'left' ? 'brightness(1) grayscale(0)' : 'brightness(0.35) grayscale(1)',
+                            transition: 'filter 0.7s ease',
+                        }}
                     >
                         <source src="https://res.cloudinary.com/dpdg462fb/video/upload/q_auto:low,vc_auto,w_1280/v1770179502/1_pdu3jc.mp4" type="video/mp4" />
-                        Your browser does not support the video tag.
                     </video>
-
-                    {/* Grey Overlay */}
-                    <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all duration-700" aria-hidden="true"></div>
-
-                    {/* Shimmer Effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" aria-hidden="true"></div>
-
-
-
-                    {/* Border Glow Effect */}
-                    <div className="absolute inset-0 border border-white/0 group-hover:border-white/20 transition-all duration-500"></div>
-
-                    {/* Transparent Button */}
-                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 pointer-events-auto">
-                        <button className="h-12 px-8 bg-transparent border border-white/50 text-white text-sm tracking-[0.2em] uppercase font-light hover:bg-white/10 hover:border-white transition-all duration-300 flex items-center justify-center" style={{ opacity: 0.5 }}>
-                            Shop Now
-                        </button>
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/5 transition-all duration-700" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
+                    <div className="absolute inset-0 flex flex-col justify-end p-8 items-center text-center">
+                        <div style={{ opacity: hoveredPanel === 'left' || hoveredPanel === null ? 1 : 0.3, transition: 'opacity 0.5s ease' }}>
+                            <p className="text-white/50 text-xs tracking-[0.3em] uppercase mb-2">Skincare</p>
+                            <h2
+                                className="text-white font-light tracking-wider mb-6"
+                                style={{ fontFamily: 'Georgia, serif', fontSize: hoveredPanel === 'left' ? '2.5rem' : '1.5rem', transition: 'font-size 0.5s ease' }}
+                            >
+                                Sun Cream
+                            </h2>
+                            <div style={{ maxHeight: hoveredPanel === 'left' ? '80px' : '0px', overflow: 'hidden', transition: 'max-height 0.5s ease' }}>
+                                <button className="border border-white/60 text-white text-xs tracking-[0.2em] uppercase px-8 py-3 hover:bg-white hover:text-black transition-all duration-300 cursor-none">
+                                    Shop Now
+                                </button>
+                            </div>
+                        </div>
                     </div>
+                    <div className="absolute top-0 right-0 w-px h-full bg-white/10" />
                 </Link>
 
+                {/* Center Panel - Rejoosh */}
+                <Link
+                    href="/rejoosh"
+                    aria-label="Shop Rejoosh collection"
+                    className="relative h-1/3 md:h-full overflow-hidden group cursor-none block"
+                    style={{
+                        width: hoveredPanel === 'center' ? '52%' : hoveredPanel !== null ? '28%' : '40%',
+                        transition: 'width 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                        flexShrink: 0,
+                    }}
+                    onMouseEnter={() => handleMouseEnter(centerVideoRef, 'center')}
+                    onMouseLeave={() => handleMouseLeave(centerVideoRef)}
+                >
+                    <video
+                        ref={centerVideoRef}
+                        loop muted playsInline preload="none"
+                        className="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-105"
+                        style={{
+                            filter: hoveredPanel === 'center' ? 'brightness(1) grayscale(0)' : 'brightness(0.35) grayscale(1)',
+                            transition: 'filter 0.7s ease',
+                        }}
+                    >
+                        <source src="https://res.cloudinary.com/dpdg462fb/video/upload/v1784626530/rejoosh_web_video_9X16_lp8c2r.mp4" type="video/mp4" />
+                    </video>
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/5 transition-all duration-700" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
 
+                    <div className="absolute inset-0 flex flex-col justify-end p-8 items-center text-center">
+                        <div style={{ opacity: hoveredPanel === 'center' || hoveredPanel === null ? 1 : 0.3, transition: 'opacity 0.5s ease' }}>
+                            <p className="text-white/50 text-xs tracking-[0.3em] uppercase mb-2">Anti-Aging</p>
+                            <h2
+                                className="text-white font-light tracking-wider mb-6"
+                                style={{ fontFamily: 'Georgia, serif', fontSize: hoveredPanel === 'center' ? '3rem' : '2rem', transition: 'font-size 0.5s ease' }}
+                            >
+                                Rejoosh
+                            </h2>
+                            <div style={{ maxHeight: hoveredPanel === 'center' ? '80px' : '0px', overflow: 'hidden', transition: 'max-height 0.5s ease' }}>
+                                <button className="border border-white/60 text-white text-xs tracking-[0.2em] uppercase px-10 py-3 hover:bg-white hover:text-black transition-all duration-300 cursor-none">
+                                    Discover
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="absolute top-0 left-0 w-px h-full bg-white/10" />
+                    <div className="absolute top-0 right-0 w-px h-full bg-white/10" />
+                </Link>
 
                 {/* Right Panel - Sunglasses */}
                 <Link
                     href="/sunglasses"
-                    className="relative w-full md:w-1/2 h-1/2 md:h-full overflow-hidden group cursor-none block"
                     aria-label="Shop Sunglasses collection"
-                    onMouseEnter={() => handleMouseEnter(centerVideoRef)}
-                    onMouseLeave={() => handleMouseLeave(centerVideoRef)}
+                    className="relative h-1/3 md:h-full overflow-hidden group cursor-none flex-1 block"
+                    style={{ transition: 'all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94)' }}
+                    onMouseEnter={() => handleMouseEnter(rightVideoRef, 'right')}
+                    onMouseLeave={() => handleMouseLeave(rightVideoRef)}
                 >
-                    {/* Video Background */}
                     <video
-                        ref={centerVideoRef}
-                        loop
-                        muted
-                        playsInline
-                        preload="none"
-                        className="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110 brightness-[0.3] group-hover:brightness-110 grayscale group-hover:grayscale-0"
-                        aria-label="SkinBooster collection video"
+                        ref={rightVideoRef}
+                        loop muted playsInline preload="none"
+                        className="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-105"
+                        style={{
+                            filter: hoveredPanel === 'right' ? 'brightness(1) grayscale(0)' : 'brightness(0.35) grayscale(1)',
+                            transition: 'filter 0.7s ease',
+                        }}
                     >
-                        <source src="https://res.cloudinary.com/dpdg462fb/video/upload/q_auto:low,vc_auto,w_1280/v1770179502/2_m0puzp.mp4" type="video/mp4" />
-                        Your browser does not support the video tag.
+                        <source src="https://res.cloudinary.com/dpdg462fb/video/upload/v1784630458/sunglasses_vt4ldq.mp4" type="video/mp4" />
                     </video>
-
-                    {/* Grey Overlay */}
-                    <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all duration-700" aria-hidden="true"></div>
-
-                    {/* Shimmer Effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" aria-hidden="true"></div>
-
-
-
-                    {/* Border Glow Effect */}
-                    <div className="absolute inset-0 border border-white/0 group-hover:border-white/20 transition-all duration-500"></div>
-
-                    {/* Transparent Button */}
-                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 pointer-events-auto">
-                        <button className="h-12 px-8 bg-transparent border border-white/50 text-white text-sm tracking-[0.2em] uppercase font-light hover:bg-white/10 hover:border-white transition-all duration-300 flex items-center justify-center" style={{ opacity: 0.5 }}>
-                            Shop Now
-                        </button>
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/5 transition-all duration-700" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
+                    <div className="absolute inset-0 flex flex-col justify-end p-8 items-center text-center">
+                        <div style={{ opacity: hoveredPanel === 'right' || hoveredPanel === null ? 1 : 0.3, transition: 'opacity 0.5s ease' }}>
+                            <p className="text-white/50 text-xs tracking-[0.3em] uppercase mb-2">Eyewear</p>
+                            <h2
+                                className="text-white font-light tracking-wider mb-6"
+                                style={{ fontFamily: 'Georgia, serif', fontSize: hoveredPanel === 'right' ? '2.5rem' : '1.5rem', transition: 'font-size 0.5s ease' }}
+                            >
+                                Sunglasses
+                            </h2>
+                            <div style={{ maxHeight: hoveredPanel === 'right' ? '80px' : '0px', overflow: 'hidden', transition: 'max-height 0.5s ease' }}>
+                                <button className="border border-white/60 text-white text-xs tracking-[0.2em] uppercase px-8 py-3 hover:bg-white hover:text-black transition-all duration-300 cursor-none">
+                                    Shop Now
+                                </button>
+                            </div>
+                        </div>
                     </div>
+                    <div className="absolute top-0 left-0 w-px h-full bg-white/10" />
                 </Link>
             </section>
 
