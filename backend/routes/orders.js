@@ -324,6 +324,7 @@ router.post('/', optionalAuth, async (req, res) => {
 
     if (affiliateCode) {
       discountAmount = Math.round((serverSubtotal * 0.10) * 100) / 100;
+      if (discountAmount > serverSubtotal) discountAmount = serverSubtotal;
       shippingCost = 0;
     } else {
       // Validate Coupon if present (check cart first, fallback to request body)
