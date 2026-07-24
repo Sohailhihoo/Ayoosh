@@ -23,18 +23,6 @@ router.get('/track/:code', async (req, res) => {
             return res.redirect(frontendUrl);
         }
 
-        // Record the click
-        await Referral.create({
-            affiliate: affiliate._id,
-            affiliateCode: affiliate.affiliateCode,
-            ipAddress: req.ip,
-            userAgent: req.headers['user-agent'],
-            referrerUrl: req.headers['referer'] || '',
-            landingPage: req.query.page || '/',
-            status: 'clicked',
-            expiresAt: new Date(Date.now() + affiliate.cookieDuration * 24 * 60 * 60 * 1000)
-        });
-
         // Increment click count
         affiliate.totalClicks += 1;
         await affiliate.save();
@@ -69,18 +57,6 @@ router.post('/click', async (req, res) => {
         if (!affiliate) {
             return res.status(404).json({ success: false, message: 'Invalid affiliate code' });
         }
-
-        // Record click
-        await Referral.create({
-            affiliate: affiliate._id,
-            affiliateCode: affiliate.affiliateCode,
-            ipAddress: req.ip,
-            userAgent: req.headers['user-agent'],
-            referrerUrl: req.headers['referer'] || '',
-            landingPage: landingPage || '/',
-            status: 'clicked',
-            expiresAt: new Date(Date.now() + affiliate.cookieDuration * 24 * 60 * 60 * 1000)
-        });
 
         affiliate.totalClicks += 1;
         await affiliate.save();
