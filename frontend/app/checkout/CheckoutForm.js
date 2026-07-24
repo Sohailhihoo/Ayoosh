@@ -99,10 +99,14 @@ export default function CheckoutForm() {
     // True when every item in cart has freeShipping: true (e.g. Rejoosh)
     const allFreeShipping = items.length > 0 && items.every(item => item.product?.freeShipping === true);
 
-    // Read referral cookie — set by AffiliateTracker when visitor lands via ?ref=CODE
-    const affiliateCode = typeof document !== 'undefined'
-      ? (document.cookie.match(/ayoosh_ref=([^;]+)/)?.[1]?.trim().toUpperCase() || null)
-      : null;
+    // Read referral cookie — deferred to avoid SSR/hydration mismatch.
+    // Cookie is set by AffiliateTracker on landing and doesn't change during checkout.
+    const [affiliateCode, setAffiliateCode] = useState(null);
+    useEffect(() => {
+        const raw = document.cookie.match(/ayoosh_ref=([^;]+)/)?.[1];
+        const code = raw ? decodeURIComponent(raw).trim().toUpperCase() : null;
+        setAffiliateCode(code);
+    }, []);
 
     // Fetch shipping rates when address is complete
     const fetchShippingRates = async () => {
@@ -153,7 +157,7 @@ export default function CheckoutForm() {
         }, 800);
 
         return () => clearTimeout(timer);
-    }, [formData.city, formData.zipCode, formData.street, items.length, allFreeShipping]);
+    }, [formData.city, formData.zipCode, formData.street, items.length, allFreeShipping, affiliateCode]);
 
     const currentShippingCost = selectedRate?.total_price || 0;
 
