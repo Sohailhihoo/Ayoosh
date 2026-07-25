@@ -175,6 +175,42 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// ONE-TIME seed endpoint — remove after use
+app.post('/api/seed-influencer-coupons', async (req, res) => {
+  if (req.headers['x-seed-secret'] !== 'ayoosh-seed-2026') {
+    return res.status(401).json({ success: false, message: 'Unauthorized' });
+  }
+  const Coupon = require('./models/Coupon');
+  const codes = [
+    'LIHLE10','ESONA10','ONKARABILE10','AMANDA10','TYLERPAIGE10','DANIELLA10',
+    'NATHANIEL10','KARABO10','JUS10','ASHLEY10','BROWNN10','MELIS10',
+    'GOODGUTGURU10','JULI10','SAYLA10','JUSTSIM10','BIANCA10','OWETHU10',
+    'STORM10','CASSIDY10','LEXA10','ORATILE10','XAVIER10','KYLA10',
+    'CALISTA10','TALISHA10','CHEY10','MILA10','COLLETTE10','DONIQUE10',
+    'DURBAN10','GWENDALYN10','YVNDZ10','NIN10','DONE10','ASH10',
+    'KIRSTY10','KMALATSI10','KGOSI10','KOKELETSO10','KEAMO10','MPUME10',
+    'SAFFA10','ZECKTELLO10','MAMELLO10','TRENT10','MOSALA10','SYLVIA10',
+    'MEGAN10','MWILA10','SBONGA10','NTHABISENG10','PRECIOUS10','NOLUBABALO10',
+    'ANREA10','ZARA10','MIHLALI10','RHEAH10','AMANDAVEE10','ROLENE10',
+    'SANELISIWE10','KIRSTYA10','FOUNDER10','VELOURA10',
+  ];
+  const results = [];
+  for (const code of codes) {
+    try {
+      await Coupon.findOneAndUpdate(
+        { code },
+        { code, discountType: 'percentage', amount: 10, usageLimit: null, isActive: true, minOrderAmount: 0, expiryDate: null },
+        { upsert: true, new: true }
+      );
+      results.push({ code, status: 'ok' });
+    } catch (e) {
+      results.push({ code, status: 'error', error: e.message });
+    }
+  }
+  const ok = results.filter(r => r.status === 'ok').length;
+  res.json({ success: true, message: `${ok}/${results.length} codes seeded`, results });
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
