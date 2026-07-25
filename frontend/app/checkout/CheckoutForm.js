@@ -99,18 +99,10 @@ export default function CheckoutForm() {
     // True when every item in cart has freeShipping: true (e.g. Rejoosh)
     const allFreeShipping = items.length > 0 && items.every(item => item.product?.freeShipping === true);
 
-    // Read referral cookie — deferred to avoid SSR/hydration mismatch.
-    // Cookie is set by AffiliateTracker on landing and doesn't change during checkout.
-    const [affiliateCode, setAffiliateCode] = useState(null);
-    useEffect(() => {
-        const raw = document.cookie.match(/ayoosh_ref=([^;]+)/)?.[1];
-        const code = raw ? decodeURIComponent(raw).trim().toUpperCase() : null;
-        setAffiliateCode(code);
-    }, []);
 
     // Fetch shipping rates when address is complete
     const fetchShippingRates = async () => {
-        if (allFreeShipping || affiliateCode) return; // no need to fetch — delivery is free
+        if (allFreeShipping) return;
         if (!formData.city.trim() || !formData.zipCode.trim() || items.length === 0) return;
 
         setFetchingRates(true);
@@ -157,12 +149,11 @@ export default function CheckoutForm() {
         }, 800);
 
         return () => clearTimeout(timer);
-    }, [formData.city, formData.zipCode, formData.street, items.length, allFreeShipping, affiliateCode]);
+    }, [formData.city, formData.zipCode, formData.street, items.length, allFreeShipping]);
 
     const currentShippingCost = selectedRate?.total_price || 0;
 
     const calculateDiscount = () => {
-        if (affiliateCode) return Math.round((subtotal * 0.10) * 100) / 100;
         if (!coupon) return 0;
 
         if (coupon.discountType === 'free_shipping') {
@@ -176,10 +167,6 @@ export default function CheckoutForm() {
     };
 
     const calculateTotal = () => {
-        if (affiliateCode) {
-            // Affiliate: shipping is free, 10% off subtotal
-            return Math.max(0, subtotal - calculateDiscount());
-        }
         const shipping = coupon?.discountType === 'free_shipping' ? 0 : currentShippingCost;
         let total = subtotal + shipping;
 
@@ -231,7 +218,7 @@ export default function CheckoutForm() {
             return false;
         }
         // Shipping rate must be selected (unless all items have free delivery)
-        if (!allFreeShipping && !affiliateCode && !selectedRate) {
+        if (!allFreeShipping && !selectedRate) {
             toast.error('Please select a shipping option');
             return false;
         }
@@ -270,7 +257,7 @@ export default function CheckoutForm() {
                 },
                 paymentMethod: formData.paymentMethod,
                 shippingMethod: 'standard',
-                shippingCost: allFreeShipping || affiliateCode ? 0 : (selectedRate?.total_price || 0),
+                shippingCost: allFreeShipping ? 0 : (selectedRate?.total_price || 0),
                 shippingService: (!allFreeShipping && selectedRate) ? {
                     provider: 'bobgo',
                     service_code: selectedRate.service_code,
@@ -283,9 +270,7 @@ export default function CheckoutForm() {
                 customerNote: formData.customerNote,
                 // Coupon Data
                 couponCode: coupon?.code,
-                discountAmount: calculateDiscount(),
-                // Affiliate tracking
-                affiliateCode: affiliateCode
+                discountAmount: calculateDiscount()
             };
 
             const response = await orderAPI.create(orderData);
@@ -590,12 +575,6 @@ export default function CheckoutForm() {
                             <div className="bg-white rounded-xl p-6 shadow-sm sticky top-24">
                                 <h2 className="text-xl font-bold mb-6">Order Summary</h2>
 
-                                {affiliateCode && (
-                                    <div className="bg-green-50 border border-green-100 rounded-lg px-3 py-2 mb-4 text-sm text-green-700 font-medium">
-                                        Referral discount applied — 10% off + free shipping
-                                    </div>
-                                )}
-
                                 {/* Items */}
                                 <div className="space-y-4 mb-6 max-h-64 overflow-y-auto">
                                     {items.map(item => (
@@ -635,7 +614,7 @@ export default function CheckoutForm() {
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-600">Shipping</span>
                                     <span>
-                                        {allFreeShipping || affiliateCode ? (
+                                        {allFreeShipping ? (
                                             <span className="text-green-600 font-medium">FREE</span>
                                         ) : coupon?.discountType === 'free_shipping' ? (
                                             <span className="text-green-600 font-medium">FREE (Coupon)</span>
@@ -648,12 +627,7 @@ export default function CheckoutForm() {
                                 </div>
 
                                 {/* Discount Row */}
-                                {affiliateCode ? (
-                                    <div className="flex justify-between text-sm text-green-600">
-                                        <span>Referral discount (10%)</span>
-                                        <span>-R{calculateDiscount().toFixed(2)}</span>
-                                    </div>
-                                ) : coupon && (
+                                {coupon && (
                                     <div className="flex justify-between text-sm text-green-600">
                                         <span>Discount ({coupon.code})</span>
                                         <span>-R{calculateDiscount().toFixed(2)}</span>
@@ -661,7 +635,7 @@ export default function CheckoutForm() {
                                 )}
 
                                 {/* Coupon Input */}
-                                {!affiliateCode && (!coupon ? (
+                                {!coupon ? (
                                     <div className="flex gap-2 mt-4">
                                         <input
                                             type="text"
@@ -696,7 +670,7 @@ export default function CheckoutForm() {
                                             Remove
                                         </button>
                                     </div>
-                                ))}
+                                )}
 
                                 <hr />
                                 <div className="flex justify-between text-lg font-bold">

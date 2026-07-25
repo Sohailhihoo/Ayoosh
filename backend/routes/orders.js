@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const Order = require('../models/Order');
 const Cart = require('../models/Cart');
 const Product = require('../models/Product');
-const Affiliate = require('../models/Affiliate');
 const { protect, authorize, optionalAuth } = require('../middleware/auth');
 const { voidAffiliateCommission } = require('../utils/affiliateCommission');
 const bobgo = require('../lib/bobgo');
@@ -156,7 +155,6 @@ router.post('/', optionalAuth, async (req, res) => {
     shippingService,
     customerNote,
     couponCode: bodyCouponCode,
-    affiliateCode: rawAffiliateCode
   } = req.body;
 
   const userId = req.user?._id;
@@ -205,12 +203,8 @@ router.post('/', optionalAuth, async (req, res) => {
 
     const allFreeShipping = cart.items.every(item => item.product.freeShipping === true);
 
-    // Early affiliate check — used only to skip Bob Go fetch.
-    // Full validation (DB lookup + code normalisation) still happens in Phase 2.
-    const mayHaveAffiliate = !!rawAffiliateCode?.trim();
-
     let shippingCost = 0;
-    if (!allFreeShipping && !mayHaveAffiliate) {
+    if (!allFreeShipping) {
       if (!shippingAddress?.city || !shippingAddress?.zipCode) {
         return res.status(400).json({
           success: false,
@@ -310,57 +304,35 @@ router.post('/', optionalAuth, async (req, res) => {
       phone: req.user.phone
     } : customerDetails;
 
-    // Validate affiliate code server-side — silently drop unknown/suspended codes
-    let affiliateCode = null;
-    if (rawAffiliateCode) {
-      const aff = await Affiliate.findOne({
-        affiliateCode: rawAffiliateCode.trim().toUpperCase(),
-        status: 'approved'
-      }).lean();
-      affiliateCode = aff ? aff.affiliateCode : null;
-    }
-
-    // Apply discount: affiliate takes priority over coupon — only one applies.
-    // If a valid affiliate code is present: 10% off subtotal + free shipping.
-    // Otherwise: run existing coupon logic.
+    // Apply coupon discount if present
     let discountAmount = 0;
-    let couponCode = null;
+    let couponCode = cart.couponCode || bodyCouponCode;
 
-    if (affiliateCode) {
-      discountAmount = Math.round((serverSubtotal * 0.10) * 100) / 100;
-      if (discountAmount > serverSubtotal) discountAmount = serverSubtotal;
-      shippingCost = 0;
-    } else {
-      // Validate Coupon if present (check cart first, fallback to request body)
-      couponCode = cart.couponCode || bodyCouponCode;
+    if (couponCode) {
+      const Coupon = require('../models/Coupon');
+      const coupon = await Coupon.findOne({ code: couponCode, isActive: true });
 
-      if (couponCode) {
-        const Coupon = require('../models/Coupon');
-        const coupon = await Coupon.findOne({ code: couponCode, isActive: true });
-
-        // @ts-ignore — isValid is a custom Mongoose instance method; TS types don't see it
-        if (coupon && coupon.isValid(serverSubtotal)) {
-          if (coupon.discountType === 'free_shipping') {
-            discountAmount = shippingCost;
-          } else if (coupon.discountType === 'fixed') {
-            discountAmount = coupon.amount;
-          } else if (coupon.discountType === 'percentage') {
-            discountAmount = (serverSubtotal * coupon.amount) / 100;
-          }
-
-          // Ensure discount doesn't exceed total
-          const grossTotal = serverSubtotal + shippingCost;
-          if (discountAmount > grossTotal) {
-            discountAmount = grossTotal;
-          }
-
-          // Increment usage
-          await Coupon.findByIdAndUpdate(coupon._id, { $inc: { usedCount: 1 } });
-        } else {
-          // Invalid/Expired coupon - remove it
-          couponCode = null;
-          discountAmount = 0;
+      if (coupon && coupon.isValid(serverSubtotal)) {
+        if (coupon.discountType === 'free_shipping') {
+          discountAmount = shippingCost;
+        } else if (coupon.discountType === 'fixed') {
+          discountAmount = coupon.amount;
+        } else if (coupon.discountType === 'percentage') {
+          discountAmount = (serverSubtotal * coupon.amount) / 100;
         }
+
+        // Ensure discount doesn't exceed total
+        const grossTotal = serverSubtotal + shippingCost;
+        if (discountAmount > grossTotal) {
+          discountAmount = grossTotal;
+        }
+
+        // Increment usage
+        await Coupon.findByIdAndUpdate(coupon._id, { $inc: { usedCount: 1 } });
+      } else {
+        // Invalid/expired coupon — ignore silently
+        couponCode = null;
+        discountAmount = 0;
       }
     }
 
@@ -377,7 +349,6 @@ router.post('/', optionalAuth, async (req, res) => {
       tax,
       discount: discountAmount,
       couponCode: couponCode,
-      affiliateCode: affiliateCode || null,
       total: serverSubtotal + shippingCost + tax - discountAmount,
       paymentMethod,
       shippingMethod,
