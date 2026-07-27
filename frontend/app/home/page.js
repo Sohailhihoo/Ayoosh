@@ -256,7 +256,7 @@ export default function HomePage() {
 
                     <div className="absolute inset-0 flex flex-col justify-end p-8 items-center text-center">
                         <div style={{ opacity: hoveredPanel === 'center' || hoveredPanel === null ? 1 : 0.3, transition: 'opacity 0.5s ease' }}>
-                            <p className="hidden md:block text-white/50 text-xs tracking-[0.3em] uppercase mb-2">Anti-Aging</p>
+                            <p className="hidden md:block text-white/50 text-xs tracking-[0.3em] uppercase mb-2">Skincare</p>
                             <h2
                                 className="hidden md:block text-white font-light tracking-wider mb-6"
                                 style={{ fontFamily: 'Georgia, serif', fontSize: hoveredPanel === 'center' ? '3rem' : '2rem', transition: 'font-size 0.5s ease' }}
