@@ -281,6 +281,12 @@ const DEFAULT_ACCORDION = [
   { id: 'key-ingredients', title: 'Key Ingredients', content: <p className="text-gray-500 text-sm leading-relaxed">Content coming soon.</p> },
 ];
 
+// Cloudinary optimization — inserts f_auto,q_auto,w_<size> after /upload/
+function clImg(url, width = 1200) {
+  if (!url || !url.includes('res.cloudinary.com')) return url;
+  return url.replace('/upload/', `/upload/f_auto,q_auto,w_${width}/`);
+}
+
 // Map product slugs to their accordion content
 const PRODUCT_ACCORDION_MAP = {
   'sun-cream-50ml-tube': SUNCREAM_ACCORDION,
@@ -418,11 +424,12 @@ export default function ProductDetailPage() {
             <div className="relative aspect-square bg-white rounded-2xl flex items-center justify-center overflow-hidden">
               {(product.images?.[selectedImageIndex]?.url || product.images?.[0]?.url || product.image) ? (
                 <Image
-                  src={product.images?.[selectedImageIndex]?.url || product.images?.[0]?.url || product.image}
+                  src={clImg(product.images?.[selectedImageIndex]?.url || product.images?.[0]?.url || product.image)}
                   alt={product.name}
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-contain p-4"
+                  priority
                 />
               ) : (
                 <span className="text-8xl">
