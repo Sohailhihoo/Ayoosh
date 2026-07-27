@@ -210,15 +210,15 @@ export default function HomePage() {
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
                     <div className="absolute inset-0 flex flex-col justify-end p-8 items-center text-center">
                         <div style={{ opacity: hoveredPanel === 'left' || hoveredPanel === null ? 1 : 0.3, transition: 'opacity 0.5s ease' }}>
-                            <p className="text-white/50 text-xs tracking-[0.3em] uppercase mb-2">Skincare</p>
+                            <p className="hidden md:block text-white/50 text-xs tracking-[0.3em] uppercase mb-2">Skincare</p>
                             <h2
-                                className="text-white font-light tracking-wider mb-6"
-                                style={{ fontFamily: 'Georgia, serif', fontSize: isMobile ? '1.5rem' : hoveredPanel === 'left' ? '2.5rem' : '1.5rem', transition: 'font-size 0.5s ease' }}
+                                className="hidden md:block text-white font-light tracking-wider mb-6"
+                                style={{ fontFamily: 'Georgia, serif', fontSize: hoveredPanel === 'left' ? '2.5rem' : '1.5rem', transition: 'font-size 0.5s ease' }}
                             >
                                 Sun Cream
                             </h2>
                             <div style={{ maxHeight: isMobile || hoveredPanel === 'left' ? '80px' : '0px', overflow: 'hidden', transition: 'max-height 0.5s ease' }}>
-                                <button className="border border-white/60 text-white text-xs tracking-[0.2em] uppercase px-8 py-3 hover:bg-white hover:text-black transition-all duration-300 cursor-none">
+                                <button className="border border-white/60 text-white text-[10px] tracking-[0.2em] uppercase px-4 py-1.5 md:px-8 md:py-3 hover:bg-white hover:text-black transition-all duration-300 cursor-none">
                                     Shop Now
                                 </button>
                             </div>
@@ -256,15 +256,15 @@ export default function HomePage() {
 
                     <div className="absolute inset-0 flex flex-col justify-end p-8 items-center text-center">
                         <div style={{ opacity: hoveredPanel === 'center' || hoveredPanel === null ? 1 : 0.3, transition: 'opacity 0.5s ease' }}>
-                            <p className="text-white/50 text-xs tracking-[0.3em] uppercase mb-2">Anti-Aging</p>
+                            <p className="hidden md:block text-white/50 text-xs tracking-[0.3em] uppercase mb-2">Anti-Aging</p>
                             <h2
-                                className="text-white font-light tracking-wider mb-6"
-                                style={{ fontFamily: 'Georgia, serif', fontSize: isMobile ? '2rem' : hoveredPanel === 'center' ? '3rem' : '2rem', transition: 'font-size 0.5s ease' }}
+                                className="hidden md:block text-white font-light tracking-wider mb-6"
+                                style={{ fontFamily: 'Georgia, serif', fontSize: hoveredPanel === 'center' ? '3rem' : '2rem', transition: 'font-size 0.5s ease' }}
                             >
                                 Rejoosh
                             </h2>
                             <div style={{ maxHeight: isMobile || hoveredPanel === 'center' ? '80px' : '0px', overflow: 'hidden', transition: 'max-height 0.5s ease' }}>
-                                <button className="border border-white/60 text-white text-xs tracking-[0.2em] uppercase px-10 py-3 hover:bg-white hover:text-black transition-all duration-300 cursor-none">
+                                <button className="border border-white/60 text-white text-[10px] tracking-[0.2em] uppercase px-4 py-1.5 md:px-10 md:py-3 hover:bg-white hover:text-black transition-all duration-300 cursor-none">
                                     Discover
                                 </button>
                             </div>
@@ -298,15 +298,15 @@ export default function HomePage() {
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
                     <div className="absolute inset-0 flex flex-col justify-end p-8 items-center text-center">
                         <div style={{ opacity: hoveredPanel === 'right' || hoveredPanel === null ? 1 : 0.3, transition: 'opacity 0.5s ease' }}>
-                            <p className="text-white/50 text-xs tracking-[0.3em] uppercase mb-2">Eyewear</p>
+                            <p className="hidden md:block text-white/50 text-xs tracking-[0.3em] uppercase mb-2">Eyewear</p>
                             <h2
-                                className="text-white font-light tracking-wider mb-6"
-                                style={{ fontFamily: 'Georgia, serif', fontSize: isMobile ? '1.5rem' : hoveredPanel === 'right' ? '2.5rem' : '1.5rem', transition: 'font-size 0.5s ease' }}
+                                className="hidden md:block text-white font-light tracking-wider mb-6"
+                                style={{ fontFamily: 'Georgia, serif', fontSize: hoveredPanel === 'right' ? '2.5rem' : '1.5rem', transition: 'font-size 0.5s ease' }}
                             >
                                 Sunglasses
                             </h2>
                             <div style={{ maxHeight: isMobile || hoveredPanel === 'right' ? '80px' : '0px', overflow: 'hidden', transition: 'max-height 0.5s ease' }}>
-                                <button className="border border-white/60 text-white text-xs tracking-[0.2em] uppercase px-8 py-3 hover:bg-white hover:text-black transition-all duration-300 cursor-none">
+                                <button className="border border-white/60 text-white text-[10px] tracking-[0.2em] uppercase px-4 py-1.5 md:px-8 md:py-3 hover:bg-white hover:text-black transition-all duration-300 cursor-none">
                                     Shop Now
                                 </button>
                             </div>
