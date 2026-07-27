@@ -68,6 +68,7 @@ export default function HomePage() {
     const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
     const [isHoveringHero, setIsHoveringHero] = useState(false);
     const [showLogoAnimation, setShowLogoAnimation] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
     const heroRef = useRef(null);
 
     /**
@@ -113,10 +114,12 @@ export default function HomePage() {
         setHoveredPanel(null);
     };
 
-    // Mobile Autoplay Effect
+    // Mobile detection + autoplay
     useEffect(() => {
         const checkMobileAndPlay = () => {
-            if (window.innerWidth < 768) {
+            const mobile = window.innerWidth < 768;
+            setIsMobile(mobile);
+            if (mobile) {
                 if (leftVideoRef.current) leftVideoRef.current.play().catch(() => { });
                 if (centerVideoRef.current) centerVideoRef.current.play().catch(() => { });
                 if (rightVideoRef.current) rightVideoRef.current.play().catch(() => { });
@@ -175,7 +178,8 @@ export default function HomePage() {
             {/* Split-Screen Hero Section - 3 Panels */}
             <section
                 ref={heroRef}
-                className="relative h-screen min-h-[600px] flex flex-col md:flex-row bg-black"
+                className="relative flex flex-col md:flex-row bg-black"
+                style={{ height: isMobile ? '100svh' : '100svh', minHeight: isMobile ? 500 : 600 }}
                 aria-label="Hero section"
             >
                 {/* Left Panel - Suncream */}
@@ -183,7 +187,7 @@ export default function HomePage() {
                     href="/suncream"
                     aria-label="Shop skincare collection"
                     className="relative h-1/3 md:h-full overflow-hidden group cursor-none block"
-                    style={{
+                    style={isMobile ? {} : {
                         width: hoveredPanel === 'left' ? '38%' : hoveredPanel !== null ? '24%' : '30%',
                         transition: 'width 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
                         flexShrink: 0,
@@ -209,11 +213,11 @@ export default function HomePage() {
                             <p className="text-white/50 text-xs tracking-[0.3em] uppercase mb-2">Skincare</p>
                             <h2
                                 className="text-white font-light tracking-wider mb-6"
-                                style={{ fontFamily: 'Georgia, serif', fontSize: hoveredPanel === 'left' ? '2.5rem' : '1.5rem', transition: 'font-size 0.5s ease' }}
+                                style={{ fontFamily: 'Georgia, serif', fontSize: isMobile ? '1.5rem' : hoveredPanel === 'left' ? '2.5rem' : '1.5rem', transition: 'font-size 0.5s ease' }}
                             >
                                 Sun Cream
                             </h2>
-                            <div style={{ maxHeight: hoveredPanel === 'left' ? '80px' : '0px', overflow: 'hidden', transition: 'max-height 0.5s ease' }}>
+                            <div style={{ maxHeight: isMobile || hoveredPanel === 'left' ? '80px' : '0px', overflow: 'hidden', transition: 'max-height 0.5s ease' }}>
                                 <button className="border border-white/60 text-white text-xs tracking-[0.2em] uppercase px-8 py-3 hover:bg-white hover:text-black transition-all duration-300 cursor-none">
                                     Shop Now
                                 </button>
@@ -228,7 +232,7 @@ export default function HomePage() {
                     href="/rejoosh"
                     aria-label="Shop Rejoosh collection"
                     className="relative h-1/3 md:h-full overflow-hidden group cursor-none block"
-                    style={{
+                    style={isMobile ? {} : {
                         width: hoveredPanel === 'center' ? '52%' : hoveredPanel !== null ? '28%' : '40%',
                         transition: 'width 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
                         flexShrink: 0,
@@ -255,11 +259,11 @@ export default function HomePage() {
                             <p className="text-white/50 text-xs tracking-[0.3em] uppercase mb-2">Anti-Aging</p>
                             <h2
                                 className="text-white font-light tracking-wider mb-6"
-                                style={{ fontFamily: 'Georgia, serif', fontSize: hoveredPanel === 'center' ? '3rem' : '2rem', transition: 'font-size 0.5s ease' }}
+                                style={{ fontFamily: 'Georgia, serif', fontSize: isMobile ? '2rem' : hoveredPanel === 'center' ? '3rem' : '2rem', transition: 'font-size 0.5s ease' }}
                             >
                                 Rejoosh
                             </h2>
-                            <div style={{ maxHeight: hoveredPanel === 'center' ? '80px' : '0px', overflow: 'hidden', transition: 'max-height 0.5s ease' }}>
+                            <div style={{ maxHeight: isMobile || hoveredPanel === 'center' ? '80px' : '0px', overflow: 'hidden', transition: 'max-height 0.5s ease' }}>
                                 <button className="border border-white/60 text-white text-xs tracking-[0.2em] uppercase px-10 py-3 hover:bg-white hover:text-black transition-all duration-300 cursor-none">
                                     Discover
                                 </button>
@@ -297,11 +301,11 @@ export default function HomePage() {
                             <p className="text-white/50 text-xs tracking-[0.3em] uppercase mb-2">Eyewear</p>
                             <h2
                                 className="text-white font-light tracking-wider mb-6"
-                                style={{ fontFamily: 'Georgia, serif', fontSize: hoveredPanel === 'right' ? '2.5rem' : '1.5rem', transition: 'font-size 0.5s ease' }}
+                                style={{ fontFamily: 'Georgia, serif', fontSize: isMobile ? '1.5rem' : hoveredPanel === 'right' ? '2.5rem' : '1.5rem', transition: 'font-size 0.5s ease' }}
                             >
                                 Sunglasses
                             </h2>
-                            <div style={{ maxHeight: hoveredPanel === 'right' ? '80px' : '0px', overflow: 'hidden', transition: 'max-height 0.5s ease' }}>
+                            <div style={{ maxHeight: isMobile || hoveredPanel === 'right' ? '80px' : '0px', overflow: 'hidden', transition: 'max-height 0.5s ease' }}>
                                 <button className="border border-white/60 text-white text-xs tracking-[0.2em] uppercase px-8 py-3 hover:bg-white hover:text-black transition-all duration-300 cursor-none">
                                     Shop Now
                                 </button>
