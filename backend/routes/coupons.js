@@ -44,7 +44,8 @@ router.post('/validate', async (req, res) => {
             data: {
                 code: coupon.code,
                 discountType: coupon.discountType,
-                amount: coupon.amount
+                amount: coupon.amount,
+                freeShipping: coupon.freeShipping
             }
         });
 

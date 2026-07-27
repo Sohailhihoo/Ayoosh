@@ -37,6 +37,10 @@ const couponSchema = new mongoose.Schema({
     minOrderAmount: {
         type: Number,
         default: 0
+    },
+    freeShipping: {
+        type: Boolean,
+        default: false
     }
 }, { timestamps: true });
 

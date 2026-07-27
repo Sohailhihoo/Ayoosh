@@ -321,6 +321,11 @@ router.post('/', optionalAuth, async (req, res) => {
           discountAmount = (serverSubtotal * coupon.amount) / 100;
         }
 
+        // Also waive shipping if the coupon has freeShipping flag
+        if (coupon.freeShipping && coupon.discountType !== 'free_shipping') {
+          discountAmount += shippingCost;
+        }
+
         // Ensure discount doesn't exceed total
         const grossTotal = serverSubtotal + shippingCost;
         if (discountAmount > grossTotal) {

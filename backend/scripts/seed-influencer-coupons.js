@@ -85,6 +85,7 @@ async function run() {
                     code,
                     discountType: 'percentage',
                     amount: 10,
+                    freeShipping: true,
                     usageLimit: null,
                     isActive: true,
                     minOrderAmount: 0,

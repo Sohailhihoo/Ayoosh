@@ -156,25 +156,23 @@ export default function CheckoutForm() {
     const calculateDiscount = () => {
         if (!coupon) return 0;
 
+        let discount = 0;
         if (coupon.discountType === 'free_shipping') {
             return currentShippingCost;
         } else if (coupon.discountType === 'fixed') {
-            return coupon.amount;
+            discount = coupon.amount;
         } else if (coupon.discountType === 'percentage') {
-            return (subtotal * coupon.amount) / 100;
+            discount = (subtotal * coupon.amount) / 100;
         }
-        return 0;
+        // Also waive shipping if coupon has freeShipping flag
+        if (coupon.freeShipping) {
+            discount += currentShippingCost;
+        }
+        return discount;
     };
 
     const calculateTotal = () => {
-        const shipping = coupon?.discountType === 'free_shipping' ? 0 : currentShippingCost;
-        let total = subtotal + shipping;
-
-        if (coupon && coupon.discountType !== 'free_shipping') {
-            total -= calculateDiscount();
-        }
-
-        return Math.max(0, total);
+        return Math.max(0, subtotal + currentShippingCost - calculateDiscount());
     };
 
     const handleApplyCoupon = async () => {
@@ -296,7 +294,7 @@ export default function CheckoutForm() {
         }
     };
 
-    const shipping = coupon?.discountType === 'free_shipping' ? 0 : currentShippingCost;
+    const shipping = (coupon?.discountType === 'free_shipping' || coupon?.freeShipping) ? 0 : currentShippingCost;
 
     if (pageLoading) {
         return (
@@ -616,7 +614,7 @@ export default function CheckoutForm() {
                                     <span>
                                         {allFreeShipping ? (
                                             <span className="text-green-600 font-medium">FREE</span>
-                                        ) : coupon?.discountType === 'free_shipping' ? (
+                                        ) : (coupon?.discountType === 'free_shipping' || coupon?.freeShipping) ? (
                                             <span className="text-green-600 font-medium">FREE (Coupon)</span>
                                         ) : selectedRate ? (
                                             `R${shipping.toFixed(2)}`

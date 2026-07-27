@@ -175,6 +175,23 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Temporary: patch all influencer coupons with freeShipping: true
+app.post('/api/patch-coupon-free-shipping', async (req, res) => {
+  if (req.headers['x-seed-secret'] !== 'ayoosh-seed-2026') {
+    return res.status(403).json({ success: false, message: 'Forbidden' });
+  }
+  try {
+    const Coupon = require('./models/Coupon');
+    const result = await Coupon.updateMany(
+      { discountType: 'percentage', amount: 10 },
+      { $set: { freeShipping: true } }
+    );
+    res.json({ success: true, modified: result.modifiedCount });
+  } catch (e) {
+    res.status(500).json({ success: false, message: e.message });
+  }
+});
+
 
 
 // Error handling middleware
