@@ -175,6 +175,19 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// ONE-TIME product image update — remove after use
+app.post('/api/update-product-images', async (req, res) => {
+  if (req.headers['x-seed-secret'] !== 'ayoosh-seed-2026') {
+    return res.status(401).json({ success: false, message: 'Unauthorized' });
+  }
+  const Product = require('./models/Product');
+  const { slug, images } = req.body;
+  const product = await Product.findOne({ slug });
+  if (!product) return res.status(404).json({ success: false, message: 'Product not found' });
+  product.images = images;
+  await product.save();
+  res.json({ success: true, message: `Images updated for ${slug}`, images: product.images });
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
