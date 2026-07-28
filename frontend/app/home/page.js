@@ -357,7 +357,7 @@ little more you every day. </p>
                         <p className="text-gray-500 text-sm font-light leading-relaxed mb-6">Discover our statement sunglasses, designed to elevate your look, sharpen your 
 presence, and help you see the world with confidence, clarity, and Ayoosh energy. </p>
                         <Link href="/products?productType=sunglasses" className="inline-block border-b border-black pb-1 text-xs tracking-[0.2em] uppercase font-semibold hover:text-gray-600 hover:border-gray-400 transition-all duration-300">
-                            PRE-ORDER NOW
+                            ORDER NOW
                         </Link>
                     </motion.div>
 

@@ -70,7 +70,7 @@ export default function ProductCard({ product }) {
               onClick={handleAddToCart}
               className="w-full py-3 bg-[#4a4a4a] text-white text-sm tracking-widest hover:bg-[#333] transition-colors"
             >
-              {product.productType === 'sunglasses' ? 'PRE-ORDER' : 'ADD TO CART'}
+              {product.productType === 'sunglasses' ? 'ORDER NOW' : 'ADD TO CART'}
             </button>
           </div>
         </div>
@@ -96,7 +96,7 @@ export default function ProductCard({ product }) {
         onClick={handleAddToCart}
         className="w-full mt-2 py-3 bg-[#4a4a4a] text-white text-sm tracking-widest hover:bg-[#333] transition-colors rounded-lg md:hidden"
       >
-        {product.productType === 'sunglasses' ? 'PRE-ORDER' : 'ADD TO CART'}
+        {product.productType === 'sunglasses' ? 'ORDER NOW' : 'ADD TO CART'}
       </button>
     </Link>
   );

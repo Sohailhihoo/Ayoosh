@@ -583,7 +583,7 @@ export default function ProductDetailPage() {
                 className="flex-1 btn-primary flex items-center justify-center gap-2 py-4 disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
                 <ShoppingBagIcon className="w-5 h-5" />
-                {product.productType === 'sunglasses' ? 'Pre-Order' : 'Add to Cart'}
+                {product.productType === 'sunglasses' ? 'Order Now' : 'Add to Cart'}
               </button>
               <button className="p-4 border-2 border-gray-200 rounded-lg hover:border-yellow-300 transition-colors">
                 <HeartIcon className="w-6 h-6" />

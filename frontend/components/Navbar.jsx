@@ -39,10 +39,15 @@ const ShoppingBagIcon = ({ className }) => (
 
 // Navigation items configuration
 const NAV_ITEMS = [
-  { href: '/suncream', label: 'SKINCARE', ariaLabel: 'Shop Skincare' },
   { href: '/sunglasses', label: 'SUNGLASSES', ariaLabel: 'Shop Sunglasses' },
   { href: '/about', label: 'ABOUT', ariaLabel: 'About us' },
   { href: '/products', label: 'SHOP', ariaLabel: 'Shop products' },
+];
+
+// Skincare dropdown items
+const SKINCARE_ITEMS = [
+  { href: '/suncream', label: 'SUNCREAM' },
+  { href: '/rejoosh', label: 'REJOOSH' },
 ];
 
 const SCROLL_THRESHOLD = 50;
@@ -216,6 +221,26 @@ export default function Navbar() {
 
               {/* Desktop Nav Items (Moved to Left) */}
               <div className="hidden md:flex items-center gap-8">
+                {/* Skincare dropdown */}
+                <div className="relative group">
+                  <button className="text-base tracking-widest hover:opacity-70 transition-opacity flex items-center gap-1">
+                    SKINCARE
+                    <svg className="w-3 h-3 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-36 bg-white text-gray-900 shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 border border-gray-100 z-50">
+                    {SKINCARE_ITEMS.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="block px-5 py-3 text-xs tracking-widest hover:bg-gray-50 border-b border-gray-100 last:border-0"
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
                 {NAV_ITEMS.map((item) => (
                   <Link
                     key={item.href}
@@ -318,6 +343,23 @@ export default function Navbar() {
             aria-label="Mobile navigation menu"
           >
             <div className="px-6 py-4 space-y-4">
+              {/* Skincare group */}
+              <div>
+                <p className="text-base tracking-widest text-gray-400 mb-2">SKINCARE</p>
+                <div className="pl-4 space-y-3">
+                  {SKINCARE_ITEMS.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="block text-base tracking-widest hover:opacity-80"
+                      onClick={closeMenu}
+                      role="menuitem"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
               {NAV_ITEMS.map((item) => (
                 <Link
                   key={item.href}

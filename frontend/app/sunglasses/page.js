@@ -16,7 +16,7 @@ const heroTitleStyle = {
 };
 
 const heroButtons = [
-    { href: '/products?productType=sunglasses', label: 'Pre Order', variant: 'primary', color: '#0077b6' },
+    { href: '/products?productType=sunglasses', label: 'Order Now', variant: 'primary', color: '#0077b6' },
 ];
 
 // Why Choose Us section configuration

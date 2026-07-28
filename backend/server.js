@@ -175,6 +175,24 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// TEMP: Update sunglasses price from 3479 to 2479
+// Remove after use
+app.post('/api/patch-sunglasses-price', async (req, res) => {
+  if (req.headers['x-seed-secret'] !== 'ayoosh-seed-2026') {
+    return res.status(403).json({ success: false, message: 'Forbidden' });
+  }
+  try {
+    const Product = require('./models/Product');
+    const result = await Product.updateMany(
+      { productType: 'sunglasses', price: 3479 },
+      { $set: { price: 2479 } }
+    );
+    res.json({ success: true, modified: result.modifiedCount });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 
 
 

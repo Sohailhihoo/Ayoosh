@@ -120,7 +120,7 @@ export default function SunglassesCircle() {
                                 className="pointer-events-auto text-white px-8 py-3 rounded-full text-sm font-bold tracking-wide uppercase transition-all hover:scale-105 shadow-xl hover:opacity-90 inline-block"
                                 style={{ backgroundColor: activeProduct.color }}
                             >
-                                Pre Order
+                                Order Now
                             </Link>
                         </motion.div>
                     </AnimatePresence>

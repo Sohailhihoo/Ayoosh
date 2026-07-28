@@ -103,7 +103,7 @@ export default function ProductScroller() {
 
                     {/* Center Product */}
                     <motion.img
-                        src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_1280/v1769715388/Sun_Tube_cmxezs.png"
+                        src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_1280,e_bgremoval/v1778476138/1_bc8zys.png"
                         alt="Ayoosh Sun Cream"
                         className="flex-shrink-0 w-auto h-[220px] sm:h-[320px] object-contain"
                         initial={{ opacity: 0, scale: 0.85 }}
@@ -197,7 +197,7 @@ export default function ProductScroller() {
 
                         <Image
                             loader={cloudinaryLoader}
-                            src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_1280/v1769715388/Sun_Tube_cmxezs.png"
+                            src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_1280,e_bgremoval/v1778476138/1_bc8zys.png"
                             alt="Ayoosh Sun Cream"
                             width={400}
                             height={750}
