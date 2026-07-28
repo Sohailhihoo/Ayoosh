@@ -20,6 +20,7 @@ const sunglasses = [
         id: 1,
         productId: '69825dab2d01b1efb4370181',
         name: 'The Confidence',
+        compareAtPrice: 'R 3,479.99',
         price: 'R 2,479.99',
         tagline: 'Confidence',
         description: 'Ayoosh The Confidence sunglasses feature yellow polarized lenses and a lightweight metal aviator frame. They are an ideal choice for everyday wear and a bold presence.',
@@ -31,6 +32,7 @@ const sunglasses = [
         id: 2,
         productId: '69825dab2d01b1efb4370187',
         name: 'The Focus',
+        compareAtPrice: 'R 3,479.99',
         price: 'R 2,479.99',
         tagline: 'Focus',
         description: 'The Focus sunglasses feature Coffee Brown polarized lenses and a lightweight metal aviator frame, delivering everyday comfort and timeless style.',
@@ -42,6 +44,7 @@ const sunglasses = [
         id: 3,
         productId: '69825dab2d01b1efb437018d',
         name: 'The Leadership',
+        compareAtPrice: 'R 3,479.99',
         price: 'R 2,479.99',
         tagline: 'Leadership',
         description: 'Ayoosh The Leadership sunglasses feature blue polarized lenses and a metal aviator frame. It\'s perfect for a confident presence and unisex everyday style.',
@@ -53,6 +56,7 @@ const sunglasses = [
         id: 4,
         productId: '69825dab2d01b1efb4370192',
         name: 'The Rose View',
+        compareAtPrice: 'R 3,479.99',
         price: 'R 2,479.99',
         tagline: 'RoseView',
         description: "Ayoosh The Roseview pink aviator sunglasses feature a gold metal frame and soft pink lenses. They are designed for elegant presence and unisex daily wear.",
@@ -108,9 +112,10 @@ export default function SunglassesCircle() {
                             <h2 className="text-3xl md:text-4xl text-gray-900 mb-2" style={{ fontFamily: "'Tan Pearl', serif" }}>
                                 {activeProduct.name}
                             </h2>
-                            <p className="text-xl font-medium text-gray-900 mb-4">
-                                {activeProduct.price}
-                            </p>
+                            <div className="flex items-center gap-3 mb-4">
+                                <span className="text-gray-400 line-through text-base">{activeProduct.compareAtPrice}</span>
+                                <span className="text-xl font-medium text-gray-900">{activeProduct.price}</span>
+                            </div>
                             <p className={`${montserrat.className} text-gray-600 text-base leading-[2] mb-8 font-normal max-w-sm`}>
                                 {activeProduct.description}
                             </p>

@@ -175,6 +175,23 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// TEMP: Set compareAtPrice 3479.99 on all sunglasses — remove after use
+app.post('/api/patch-sunglasses-compare-price', async (req, res) => {
+  if (req.headers['x-seed-secret'] !== 'ayoosh-seed-2026') {
+    return res.status(403).json({ success: false, message: 'Forbidden' });
+  }
+  try {
+    const Product = require('./models/Product');
+    const result = await Product.updateMany(
+      { productType: 'sunglasses' },
+      { $set: { compareAtPrice: 3479.99 } }
+    );
+    res.json({ success: true, modified: result.modifiedCount });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 
 
 
