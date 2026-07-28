@@ -1,9 +1,18 @@
 const express = require('express');
 const router = express.Router();
+const rateLimit = require('express-rate-limit');
 const Review = require('../models/Review');
 const Product = require('../models/Product');
 const { protect, authorize } = require('../middleware/auth');
 const cloudinary = require('cloudinary').v2;
+
+const reviewLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 5,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { success: false, message: 'Too many review submissions. Please try again in an hour.' }
+});
 const CloudinaryStorage = require('multer-storage-cloudinary');
 const multer = require('multer');
 
@@ -34,7 +43,7 @@ async function syncProductRating(productId) {
 }
 
 // POST /api/reviews — Submit a review (public, optional image)
-router.post('/', uploadReviewImage.single('image'), async (req, res) => {
+router.post('/', reviewLimiter, uploadReviewImage.single('image'), async (req, res) => {
     try {
         const { name, email, rating, title, review, page, productId } = req.body;
 

@@ -286,22 +286,25 @@ const handleITN = async (req, res) => {
         // --- PROCESS ORDER ---
         if (pfData.payment_status === 'COMPLETE') {
             const orderId = pfData.m_payment_id;
-            const order = await Order.findById(orderId);
+            const pfPaymentId = pfData.pf_payment_id;
+
+            // Atomically claim the order — only succeeds if it hasn't been paid yet.
+            // This prevents race conditions when PayFast sends duplicate ITN webhooks
+            // simultaneously (both would find 'pending', both would try to mark paid).
+            const order = await Order.findOneAndUpdate(
+                { _id: orderId, paymentStatus: { $ne: 'paid' } },
+                { $set: { paymentStatus: 'paid', paidAt: new Date(), paymentId: pfPaymentId, status: 'confirmed' } },
+                { new: false } // Return the OLD doc so we can validate amount before committing
+            );
 
             if (!order) {
-                console.error(`Order not found: ${orderId}`);
+                // Either order not found OR already paid (idempotency — safe to ignore)
+                console.log(`ITN skipped for ${orderId}: not found or already paid (pf_payment_id: ${pfPaymentId})`);
                 return res.status(200).send('');
             }
 
-            if (order.paymentStatus === 'paid') {
-                console.log(`Order ${orderId} already paid. Skipping.`);
-                return res.status(200).send('');
-            }
-
-            // Security Check 2: Amount
-            // Recompute expected PayFast total using same logic as initiatePayment
+            // Amount validation against the pre-update snapshot
             const paidAmount = parseFloat(pfData.amount_gross).toFixed(2);
-            // Recompute expected PayFast total — NO tax (matches initiatePayment logic)
             let expectedSubtotal = 0;
             for (const item of order.items) {
                 const overridePrice = PAYFAST_PRICE_OVERRIDES[item.name?.toUpperCase().trim()];
@@ -312,30 +315,36 @@ const handleITN = async (req, res) => {
             const orderAmount = parseFloat(expectedPayfastTotal).toFixed(2);
 
             if (Math.abs(paidAmount - orderAmount) > 0.01) {
-                console.error(`Amount Mismatch: Paid ${paidAmount}, Expected ${orderAmount}`);
+                console.error(`Amount Mismatch for ${orderId}: Paid ${paidAmount}, Expected ${orderAmount}`);
+                // Revert the atomic update — amount doesn't match, mark as failed
+                await Order.findByIdAndUpdate(orderId, {
+                    $set: { paymentStatus: 'failed', status: 'pending' },
+                    $unset: { paidAt: '', paymentId: '' }
+                });
                 return res.status(200).send('');
             }
 
-            // Update DB
-            order.paidAt = new Date();
-            order.paymentStatus = 'paid';
-            order.paymentId = pfData.pf_payment_id;
-            order.status = 'confirmed';
-            order.statusHistory.push({
-                status: 'confirmed',
-                note: `Payment completed via PayFast (ID: ${pfData.pf_payment_id})`,
-                timestamp: new Date()
+            // Push status history entry (separate update — doesn't affect idempotency guard)
+            await Order.findByIdAndUpdate(orderId, {
+                $push: {
+                    statusHistory: {
+                        status: 'confirmed',
+                        note: `Payment completed via PayFast (ID: ${pfPaymentId})`,
+                        timestamp: new Date()
+                    }
+                }
             });
 
-            await order.save();
+            // Reload for downstream processing (commission, email)
+            const paidOrder = await Order.findById(orderId);
 
             // Process affiliate commission
-            await processAffiliateCommission(order);
+            await processAffiliateCommission(paidOrder);
 
             // Send order confirmation email via Klaviyo
-            await sendOrderConfirmation(order);
+            await sendOrderConfirmation(paidOrder);
 
-            console.log(`Order ${orderId} marked as PAID via ITN`);
+            console.log(`Order ${orderId} marked as PAID via ITN (pf_payment_id: ${pfPaymentId})`);
         }
 
         res.status(200).send(''); // Acknowledge receipt

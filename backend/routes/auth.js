@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const rateLimit = require('express-rate-limit');
 const User = require('../models/User');
 const { protect, authorize } = require('../middleware/auth');
 const crypto = require('crypto');
@@ -7,6 +8,14 @@ const redisClient = require('../lib/redis');
 const sendRegisterationEmail = require("../utils/sendRegisterationEmail");
 const { generateSecret, generateURI, verify: verifyTOTP } = require('otplib');
 const QRCode = require('qrcode');
+
+const passwordResetLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many password reset attempts. Please try again in an hour.' }
+});
 
 // Session configuration
 const SESSION_EXPIRY = 604800; // 7 days in seconds
@@ -510,7 +519,7 @@ router.post('/logout', protect, async (req, res) => {
 // @route   POST /api/auth/forgot-password
 // @desc    Forgot password - send reset email
 // @access  Public
-router.post('/forgot-password', async (req, res) => {
+router.post('/forgot-password', passwordResetLimiter, async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
 
@@ -551,7 +560,7 @@ router.post('/forgot-password', async (req, res) => {
 // @route   POST /api/auth/reset-password/:token
 // @desc    Reset password
 // @access  Public
-router.post('/reset-password/:token', async (req, res) => {
+router.post('/reset-password/:token', passwordResetLimiter, async (req, res) => {
   try {
     const hashedToken = crypto
       .createHash('sha256')

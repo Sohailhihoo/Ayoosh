@@ -143,12 +143,13 @@ const orderSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // Generate order number BEFORE validation (pre-validate, not pre-save)
+// Format: ORD-YYMM-XXXXXX where X is 6 random alphanumeric chars (~2 billion combinations)
 orderSchema.pre('validate', function (next) {
   if (!this.orderNumber) {
     const date = new Date();
     const year = date.getFullYear().toString().slice(-2);
     const month = String(date.getMonth() + 1).padStart(2, '0');
-    const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    const random = Math.random().toString(36).substring(2, 8).toUpperCase();
     this.orderNumber = `ORD-${year}${month}-${random}`;
   }
   next();

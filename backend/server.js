@@ -86,15 +86,15 @@ const generalLimiter = rateLimit({
   }
 });
 
-// 2. Auth Limiter: 20 requests per 3 hours (prevent brute force)
+// 2. Auth Limiter: 10 requests per 15 minutes (prevent brute force)
 const authLimiter = rateLimit({
-  windowMs: 3 * 60 * 60 * 1000, // 3 Hours
-  max: 20,
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10,
   standardHeaders: true,
   legacyHeaders: false,
   message: {
     success: false,
-    message: 'Too many login attempts, please try again after 3 hours'
+    message: 'Too many login attempts, please try again after 15 minutes'
   }
 });
 
