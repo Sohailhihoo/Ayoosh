@@ -197,8 +197,8 @@ app.post('/api/patch-sunglasses-price', async (req, res) => {
   try {
     const Product = require('./models/Product');
     const result = await Product.updateMany(
-      { productType: 'sunglasses', price: 3479 },
-      { $set: { price: 2479 } }
+      { productType: 'sunglasses', price: 3479.99 },
+      { $set: { price: 2479.99 } }
     );
     res.json({ success: true, modified: result.modifiedCount });
   } catch (err) {
