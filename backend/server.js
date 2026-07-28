@@ -200,18 +200,23 @@ app.post('/api/patch-sunglasses-price', async (req, res) => {
       { productType: 'sunglasses', price: 3479.99 },
       { $set: { price: 2479.99 } }
     );
-    // Flush all product-related Redis cache keys
-    const redis = require('./lib/redis');
-    let cursor = '0';
+    // Flush all product-related Redis cache keys using a direct connection
     let flushed = 0;
-    do {
-      const [nextCursor, keys] = await redis.scan(cursor, { MATCH: 'cache:*', COUNT: 100 });
-      cursor = nextCursor;
-      if (keys.length > 0) {
-        await redis.del(keys);
-        flushed += keys.length;
-      }
-    } while (cursor !== '0');
+    if (process.env.REDIS_URL) {
+      const { createClient } = require('redis');
+      const tempRedis = createClient({ url: process.env.REDIS_URL });
+      await tempRedis.connect();
+      let cursor = 0;
+      do {
+        const reply = await tempRedis.scan(cursor, { MATCH: 'cache:*', COUNT: 100 });
+        cursor = reply.cursor;
+        if (reply.keys.length > 0) {
+          await tempRedis.del(reply.keys);
+          flushed += reply.keys.length;
+        }
+      } while (cursor !== 0);
+      await tempRedis.disconnect();
+    }
     res.json({ success: true, modified: result.modifiedCount, cacheFlushed: flushed });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
