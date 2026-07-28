@@ -191,15 +191,11 @@ app.post('/api/patch-sunglasses-compare-price', async (req, res) => {
       const { createClient } = require('redis');
       const tempRedis = createClient({ url: process.env.REDIS_URL });
       await tempRedis.connect();
-      let cursor = 0;
-      do {
-        const reply = await tempRedis.scan(cursor, { MATCH: 'cache:*', COUNT: 100 });
-        cursor = reply.cursor;
-        if (reply.keys.length > 0) {
-          await tempRedis.del(reply.keys);
-          flushed += reply.keys.length;
-        }
-      } while (cursor !== 0);
+      const keys = await tempRedis.sendCommand(['KEYS', 'cache:*']);
+      if (keys.length > 0) {
+        await tempRedis.sendCommand(['DEL', ...keys]);
+        flushed = keys.length;
+      }
       await tempRedis.disconnect();
     }
     res.json({ success: true, modified: result.modifiedCount, cacheFlushed: flushed });
