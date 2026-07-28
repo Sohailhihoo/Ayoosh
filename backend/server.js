@@ -175,7 +175,7 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// TEMP: Set compareAtPrice 3479.99 on all sunglasses — remove after use
+// TEMP: Set compareAtPrice 3479.99 on all sunglasses + flush Redis cache — remove after use
 app.post('/api/patch-sunglasses-compare-price', async (req, res) => {
   if (req.headers['x-seed-secret'] !== 'ayoosh-seed-2026') {
     return res.status(403).json({ success: false, message: 'Forbidden' });
@@ -186,7 +186,23 @@ app.post('/api/patch-sunglasses-compare-price', async (req, res) => {
       { productType: 'sunglasses' },
       { $set: { compareAtPrice: 3479.99 } }
     );
-    res.json({ success: true, modified: result.modifiedCount });
+    let flushed = 0;
+    if (process.env.REDIS_URL) {
+      const { createClient } = require('redis');
+      const tempRedis = createClient({ url: process.env.REDIS_URL });
+      await tempRedis.connect();
+      let cursor = 0;
+      do {
+        const reply = await tempRedis.scan(cursor, { MATCH: 'cache:*', COUNT: 100 });
+        cursor = reply.cursor;
+        if (reply.keys.length > 0) {
+          await tempRedis.del(reply.keys);
+          flushed += reply.keys.length;
+        }
+      } while (cursor !== 0);
+      await tempRedis.disconnect();
+    }
+    res.json({ success: true, modified: result.modifiedCount, cacheFlushed: flushed });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
