@@ -20,7 +20,7 @@ const sunglasses = [
         id: 1,
         productId: '69825dab2d01b1efb4370181',
         name: 'The Confidence',
-        price: 'R 3,479.99',
+        price: 'R 2,479.99',
         tagline: 'Confidence',
         description: 'Ayoosh The Confidence sunglasses feature yellow polarized lenses and a lightweight metal aviator frame. They are an ideal choice for everyday wear and a bold presence.',
         specs: ['Yellow Tint', 'UV400', 'Lightweight'],
@@ -31,7 +31,7 @@ const sunglasses = [
         id: 2,
         productId: '69825dab2d01b1efb4370187',
         name: 'The Focus',
-        price: 'R 3,479.99',
+        price: 'R 2,479.99',
         tagline: 'Focus',
         description: 'The Focus sunglasses feature Coffee Brown polarized lenses and a lightweight metal aviator frame, delivering everyday comfort and timeless style.',
         specs: ['Brown Lens', 'Acetate', 'Anti-Glare'],
@@ -42,7 +42,7 @@ const sunglasses = [
         id: 3,
         productId: '69825dab2d01b1efb437018d',
         name: 'The Leadership',
-        price: 'R 3,479.99',
+        price: 'R 2,479.99',
         tagline: 'Leadership',
         description: 'Ayoosh The Leadership sunglasses feature blue polarized lenses and a metal aviator frame. It\'s perfect for a confident presence and unisex everyday style.',
         specs: ['Blue Gradient', 'Polarized', 'Impact Resistant'],
@@ -53,7 +53,7 @@ const sunglasses = [
         id: 4,
         productId: '69825dab2d01b1efb4370192',
         name: 'The Rose View',
-        price: 'R 3,479.99',
+        price: 'R 2,479.99',
         tagline: 'RoseView',
         description: "Ayoosh The Roseview pink aviator sunglasses feature a gold metal frame and soft pink lenses. They are designed for elegant presence and unisex daily wear.",
         specs: ['Pink Tint', 'Gold Frame', 'Adjustable'],
@@ -116,7 +116,7 @@ export default function SunglassesCircle() {
                             </p>
 
                             <Link
-                                href={`/products/${activeProduct.slug}`}
+                                href="/products?productType=sunglasses"
                                 className="pointer-events-auto text-white px-8 py-3 rounded-full text-sm font-bold tracking-wide uppercase transition-all hover:scale-105 shadow-xl hover:opacity-90 inline-block"
                                 style={{ backgroundColor: activeProduct.color }}
                             >
@@ -150,7 +150,7 @@ export default function SunglassesCircle() {
                                     rotate: counterRotate
                                 }}
                             >
-                                <Link href={`/products/${product.slug}`} className={`block transition-all duration-500 ease-out transform ${isActive
+                                <Link href="/products?productType=sunglasses" className={`block transition-all duration-500 ease-out transform ${isActive
                                     ? 'scale-[1.6] z-50 filter-none opacity-100 drop-shadow-2xl'
                                     : 'scale-90 z-0 grayscale opacity-60'
                                     }`}>
