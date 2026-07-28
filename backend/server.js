@@ -200,7 +200,19 @@ app.post('/api/patch-sunglasses-price', async (req, res) => {
       { productType: 'sunglasses', price: 3479.99 },
       { $set: { price: 2479.99 } }
     );
-    res.json({ success: true, modified: result.modifiedCount });
+    // Flush all product-related Redis cache keys
+    const redis = require('./lib/redis');
+    let cursor = '0';
+    let flushed = 0;
+    do {
+      const [nextCursor, keys] = await redis.scan(cursor, { MATCH: 'cache:*', COUNT: 100 });
+      cursor = nextCursor;
+      if (keys.length > 0) {
+        await redis.del(keys);
+        flushed += keys.length;
+      }
+    } while (cursor !== '0');
+    res.json({ success: true, modified: result.modifiedCount, cacheFlushed: flushed });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
