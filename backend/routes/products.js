@@ -69,29 +69,24 @@ router.get('/', cacheProducts, async (req, res) => {
     if (skinType) query.skinType = { $in: skinType.split(',') };
     if (frameShape) query.frameShape = frameShape;
 
-    // Execute query
-    const skip = (Number(page) - 1) * Number(limit);
-
     // Select only essential fields for list view (performance optimization)
     const listFields = 'name slug price compareAtPrice images brand productType stock isFeatured isNewArrival averageRating reviewCount';
 
     // Custom sort: show suncream first, then sunglasses, then others
     const productTypeOrder = { suncream: 0, sunglasses: 1, accessories: 2 };
 
-    const [products, total] = await Promise.all([
-      Product.find(query)
-        .select(listFields)
-        .populate('category', 'name slug')
-        .sort(sort)
-        .skip(skip)
-        .limit(Number(limit))
-        .lean(),
-      Product.countDocuments(query)
-    ]);
+    const result = await Product.paginate(query, {
+      page: Number(page),
+      limit: Number(limit),
+      sort,
+      select: listFields,
+      populate: { path: 'category', select: 'name slug' },
+      lean: true,
+    });
 
     // Sort by product type order when showing all products (no productType filter)
     if (!productType) {
-      products.sort((a, b) => {
+      result.docs.sort((a, b) => {
         const orderA = productTypeOrder[a.productType] ?? 99;
         const orderB = productTypeOrder[b.productType] ?? 99;
         return orderA - orderB;
@@ -101,12 +96,12 @@ router.get('/', cacheProducts, async (req, res) => {
     res.json({
       success: true,
       data: {
-        products,
+        products: result.docs,
         pagination: {
-          page: Number(page),
-          limit: Number(limit),
-          total,
-          pages: Math.ceil(total / Number(limit))
+          page: result.page,
+          limit: result.limit,
+          total: result.totalDocs,
+          pages: result.totalPages
         }
       }
     });

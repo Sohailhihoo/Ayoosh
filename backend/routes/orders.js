@@ -26,27 +26,23 @@ router.get('/', protect, async (req, res) => {
     const query = req.user.role === 'admin' ? {} : { user: req.user._id };
     if (status) query.status = status;
 
-    const skip = (Number(page) - 1) * Number(limit);
-
-    const [orders, total] = await Promise.all([
-      Order.find(query)
-        .populate('user', 'firstName lastName email')
-        .sort(sort)
-        .skip(skip)
-        .limit(Number(limit))
-        .lean(),
-      Order.countDocuments(query)
-    ]);
+    const result = await Order.paginate(query, {
+      page: Number(page),
+      limit: Number(limit),
+      sort,
+      populate: { path: 'user', select: 'firstName lastName email' },
+      lean: true,
+    });
 
     res.json({
       success: true,
       data: {
-        orders,
+        orders: result.docs,
         pagination: {
-          page: Number(page),
-          limit: Number(limit),
-          total,
-          pages: Math.ceil(total / Number(limit))
+          page: result.page,
+          limit: result.limit,
+          total: result.totalDocs,
+          pages: result.totalPages
         }
       }
     });

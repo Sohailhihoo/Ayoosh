@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 const categorySchema = new mongoose.Schema({
   name: {
@@ -43,10 +44,7 @@ const categorySchema = new mongoose.Schema({
 // Generate slug before saving
 categorySchema.pre('save', function (next) {
   if (this.isModified('name')) {
-    this.slug = this.name
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)+/g, '');
+    this.slug = slugify(this.name, { lower: true, strict: true });
   }
   next();
 });

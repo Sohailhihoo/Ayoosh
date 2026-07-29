@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
+const slugify = require('slugify');
 
 const variantSchema = new mongoose.Schema({
   name: String,           // e.g., "Size", "Color", "Shade"
@@ -126,13 +128,12 @@ const productSchema = new mongoose.Schema({
 // Generate slug before saving
 productSchema.pre('save', function (next) {
   if (this.isModified('name')) {
-    this.slug = this.name
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)+/g, '');
+    this.slug = slugify(this.name, { lower: true, strict: true });
   }
   next();
 });
+
+productSchema.plugin(mongoosePaginate);
 
 // Check if product is in stock
 productSchema.virtual('inStock').get(function () {
