@@ -70,6 +70,7 @@ const codes = [
     'KIRSTYA10',
     'FOUNDER10',
     'VELOURA10',
+    'MASOO10',
 ];
 
 async function run() {
