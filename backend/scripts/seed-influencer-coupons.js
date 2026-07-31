@@ -71,6 +71,22 @@ const codes = [
     'FOUNDER10',
     'VELOURA10',
     'MASOO10',
+    'LUNGILE10',
+    'THENDO10',
+    'KIYARA10',
+    'SHERRY10',
+    'JESSIE10',
+    'GABRIELLA10',
+    'LIEZEL10',
+    'SIMMY10',
+    'LEEANN10',
+    'OLWETHU10',
+    'SANELISO10',
+    'OLUHLE10',
+    'STHABILE10',
+    'ASANDA10',
+    'NOKUBONGA10',
+    'KAYLA10',
 ];
 
 async function run() {
