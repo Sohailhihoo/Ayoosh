@@ -87,6 +87,16 @@ const codes = [
     'ASANDA10',
     'NOKUBONGA10',
     'KAYLA10',
+    // batch 7
+    'STACEY10',
+    'DIKELEDI10',
+    'JAYDEN10',
+    'ZIZIPHO10',
+    'AISHA10',
+    'NDIVHUHO10',
+    'VALENTIA10',
+    'SMANGELE10',
+    'MPHO10',
 ];
 
 async function run() {
