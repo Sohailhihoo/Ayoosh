@@ -97,6 +97,11 @@ const codes = [
     'VALENTIA10',
     'SMANGELE10',
     'MPHO10',
+    // batch 8
+    'SANE10',
+    'NICOLE10',
+    'NANETTE10',
+    'TAYLA10',
 ];
 
 async function run() {
