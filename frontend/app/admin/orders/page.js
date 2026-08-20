@@ -64,6 +64,71 @@ export default function AdminOrders() {
         setExpandedOrder(prev => prev === orderId ? null : orderId);
     };
 
+    const exportCSV = () => {
+        const exportable = orders.filter(
+            o => o.paymentStatus === 'paid' && o.status === 'confirmed'
+        );
+
+        if (exportable.length === 0) {
+            toast.error('No paid & confirmed orders to export');
+            return;
+        }
+
+        const escape = (val) => {
+            if (val === null || val === undefined) return '';
+            return `"${String(val).replace(/"/g, '""')}"`;
+        };
+
+        const headers = [
+            'Order #', 'Date', 'Customer Name', 'Email', 'Phone',
+            'Items', 'Subtotal (R)', 'Shipping (R)', 'Discount (R)',
+            'Coupon Code', 'Total (R)',
+            'Street', 'City', 'Zip', 'Country',
+            'Payment Method',
+        ];
+
+        const rows = exportable.map(o => {
+            const cd = o.customerDetails || {};
+            const sa = o.shippingAddress || {};
+            const name = [
+                o.user ? o.user.firstName : cd.firstName,
+                o.user ? o.user.lastName  : cd.lastName,
+            ].filter(Boolean).join(' ');
+            const email = o.user?.email || cd.email || '';
+            const items = (o.items || [])
+                .map(i => `${i.name} x${i.quantity}`)
+                .join(' | ');
+
+            return [
+                escape(o.orderNumber),
+                escape(new Date(o.createdAt).toISOString().slice(0, 10)),
+                escape(name),
+                escape(email),
+                escape(cd.phone || ''),
+                escape(items),
+                escape((o.subtotal    || 0).toFixed(2)),
+                escape((o.shippingCost|| 0).toFixed(2)),
+                escape((o.discount    || 0).toFixed(2)),
+                escape(o.couponCode   || ''),
+                escape((o.total       || 0).toFixed(2)),
+                escape(sa.street      || ''),
+                escape(sa.city        || ''),
+                escape(sa.zipCode     || ''),
+                escape(sa.country     || ''),
+                escape(o.paymentMethod|| ''),
+            ].join(',');
+        });
+
+        const csv = [headers.map(h => `"${h}"`).join(','), ...rows].join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href     = url;
+        a.download = `ayoosh-orders-${new Date().toISOString().slice(0, 10)}.csv`;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+    };
+
     const filteredOrders = filterStatus === 'all'
         ? orders
         : orders.filter(order => order.status === filterStatus);
@@ -79,9 +144,20 @@ export default function AdminOrders() {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div>
-                <h1 className="text-3xl font-bold text-gray-900">Orders</h1>
-                <p className="text-gray-600 mt-1">Manage and view customer orders. Click any order row to expand full details.</p>
+            <div className="flex items-start justify-between">
+                <div>
+                    <h1 className="text-3xl font-bold text-gray-900">Orders</h1>
+                    <p className="text-gray-600 mt-1">Manage and view customer orders. Click any order row to expand full details.</p>
+                </div>
+                <button
+                    onClick={exportCSV}
+                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors"
+                >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Export CSV
+                </button>
             </div>
 
             {/* Filter */}
