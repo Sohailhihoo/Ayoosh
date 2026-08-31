@@ -103,9 +103,9 @@ export default function ProductScroller() {
 
                     {/* Center Product */}
                     <motion.img
-                        src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_1280,e_bgremoval/v1778476138/1_bc8zys.png"
+                        src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_1280/v1775546391/Tube-Mock_e8tunh.png"
                         alt="Ayoosh Sun Cream"
-                        className="flex-shrink-0 w-auto h-[220px] sm:h-[320px] object-contain"
+                        className="flex-shrink-0 w-auto h-[160px] sm:h-[240px] object-contain"
                         initial={{ opacity: 0, scale: 0.85 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
@@ -197,11 +197,11 @@ export default function ProductScroller() {
 
                         <Image
                             loader={cloudinaryLoader}
-                            src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_1280,e_bgremoval/v1778476138/1_bc8zys.png"
+                            src="https://res.cloudinary.com/dpdg462fb/image/upload/f_auto,q_auto,w_1280/v1775546391/Tube-Mock_e8tunh.png"
                             alt="Ayoosh Sun Cream"
                             width={400}
-                            height={750}
-                            className="w-auto h-[750px] object-contain relative z-10"
+                            height={550}
+                            className="w-auto h-[550px] object-contain relative z-10"
                         />
                     </motion.div>
                 </div>
