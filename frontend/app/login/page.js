@@ -52,7 +52,8 @@ function LoginForm() {
         setStep('verify');
       } else {
         toast.success('Welcome back!');
-        router.push(redirect);
+        const destination = result?.role === 'admin' ? '/admin' : redirect;
+        router.push(destination);
       }
     } catch (error) {
       toast.error(error.response?.data?.message || 'Login failed');
@@ -96,9 +97,9 @@ function LoginForm() {
     if (code.length < 6) return toast.error('Enter the full 6-digit code from your authenticator app');
     setLoading(true);
     try {
-      await confirmTotpSetup(pendingToken, code);
+      const setupUser = await confirmTotpSetup(pendingToken, code);
       toast.success('Two-factor authentication enabled!');
-      router.push(redirect);
+      router.push(setupUser?.role === 'admin' ? '/admin' : redirect);
     } catch (error) {
       toast.error(error.response?.data?.message || 'Incorrect code. Please try again.');
       setSetupCode(['', '', '', '', '', '']);
@@ -116,9 +117,9 @@ function LoginForm() {
     if (useRecovery && !code) return toast.error('Enter your recovery code');
     setLoading(true);
     try {
-      await verifyTotp(pendingToken, code);
+      const verifiedUser = await verifyTotp(pendingToken, code);
       toast.success('Welcome back!');
-      router.push(redirect);
+      router.push(verifiedUser?.role === 'admin' ? '/admin' : redirect);
     } catch (error) {
       const data = error.response?.data;
       if (data?.totpResetRequired) {
